@@ -24,5 +24,7 @@ Route::get('/', function () {
 Route::resource('kabupaten', KabupatenController::class);   
 Route::get('/statistik/StatistikKab', [StatistikController::class, 'statistikKab'])->name('statistik.kab');
 Route::resource('statistik', StatistikController::class);
+
+Route::get('/dashboard', [StatistikController::class, 'dashboard'])->name('dashboard');g
 Route::get('/garam/rekap-tahunan', [DataTahunanController::class, 'rekapTahunan'])->name('garam.rekapTahunan');
 Route::get('/garam/rekap-bulanan', [DataBulananController::class, 'rekapBulanan'])->name('garam.rekapBulanan');
