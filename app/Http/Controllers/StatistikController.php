@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Statistik;
 use Illuminate\Http\Request;
-use App\Http\Controllers\DashboardController;
-
 
 class StatistikController extends Controller
 {
@@ -16,7 +14,6 @@ class StatistikController extends Controller
     {
         $data = Statistik::all();
         return view('statistik.index', compact('data'));
-
     }
 
 
