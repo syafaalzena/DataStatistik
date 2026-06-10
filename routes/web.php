@@ -25,16 +25,6 @@ Route::resource('kabupaten', KabupatenController::class);
 Route::resource('statistik', StatistikController::class);
 Route::resource('garam', GaramController::class);
 
-
-
-Route::get('/dashboard',
-    [StatistikController::class,'index'])
-    ->name('dashboard');
-
-Route::get('/garam/rekap-tahunan',
-    [DataTahunanGaramController::class,'rekapTahunan'])
-    ->name('garam.rekapTahunan');
-
-Route::get('/garam/rekap-bulanan',
-    [DataBulananGaramController::class,'rekapBulanan'])
-    ->name('garam.rekapBulanan');
+Route::get('/dashboard', [StatistikController::class, 'dashboard'])->name('dashboard');
+Route::get('/garam/rekap-tahunan', [DataTahunanController::class, 'rekapTahunan'])->name('garam.rekapTahunan');
+Route::get('/garam/rekap-bulanan', [DataBulananController::class, 'rekapBulanan'])->name('garam.rekapBulanan');

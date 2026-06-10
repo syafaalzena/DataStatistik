@@ -80,4 +80,4 @@ class KabupatenController extends Controller
         return redirect()->route('kabupaten.index')
             ->with('success', 'Kabupaten deleted successfully.');
     }
-}
+} 
