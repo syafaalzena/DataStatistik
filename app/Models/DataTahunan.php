@@ -7,10 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class DataTahunan extends Model
 {
+    $fillable = [
+        'kabupaten_id', 
+        'statistik_id', 
+        'jumlah_petani', 
+        'luas_lahan_rebus', 
+        'luas_lahan_jemur', 
+        'jumlah_lahan_unit', 
+        'tahun', 
+        'lokasi'];
     use HasFactory;
+
+    public function kabupaten()
+    {
+        return $this->belongsTo(Kabupaten::class);
+    }
 }
 
-public function kabupaten()
-{
-    return $this->belongsTo(Kabupaten::class);
-}

@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class DataBulanan extends Model
 {
+    $fillable 
     use HasFactory;
+    
+    public function kabupaten()
+    {
+        return $this->belongsTo(Kabupaten::class);
+    }
 }
 
-public function kabupaten()
-{
-    return $this->belongsTo(Kabupaten::class);
-}
