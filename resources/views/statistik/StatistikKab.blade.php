@@ -4,8 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+    <style>
+    /* Styling tombol wilayah agar terlihat modern & semi-transparan greyish */
+    .custom-pill-btn {
+        background-color: #f1f5f9;
+        color: #334155;
+        border: 1px solid #e2e8f0;
+        border-radius: 30px;
+        transition: all 0.2s ease;
+    }
+    
+    .custom-pill-btn:hover {
+        background-color: #0f172a;
+        color: #ffffff;
+        border-color: #0f172a;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Animasi hover halus untuk card rekap bawah */
+    .transition-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .transition-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 15px rgba(0,0,0,0.1) !important;
+    }
+
+    .kab-card {
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+        transition: all 0.2s ease;
+    }
+    .kab-card:hover {
+        background-color: #0f172a;
+        color: white;
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15) !important;
+    }
+    .kab-card:hover h5 {
+        color: white !important;
+    }
+</style>
+</head>
+<body>
+
 <div class="container py-4">
 
     <div class="row mb-4">
@@ -17,28 +63,24 @@
 
     <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
         <div class="card-body p-4">
-            <h5 class="fw-bold text-dark mb-3">🔍 Pilih Wilayah Kabupaten:</h5>
             
-            <div class="d-flex flex-wrap gap-2">
-                @php
-                    $kabupaten_list = [
-                        ['id' => 1, 'nama' => 'Aceh Besar'],
-                        ['id' => 2, 'nama' => 'Pidie'],
-                        ['id' => 3, 'nama' => 'Aceh Utara'],
-                        ['id' => 4, 'nama' => 'Pidie Jaya'],
-                        ['id' => 5, 'nama' => 'Bireuen'],
-                        ['id' => 6, 'nama' => 'Aceh Timur'],
-                        ['id' => 7, 'nama' => 'Aceh Tamiang'],
-                        ['id' => 8, 'nama' => 'Banda Aceh']
-                    ];
-                @endphp
+            <div class="container py-5">
+    <h2 class="fw-bold mb-4">Pilih Kabupaten</h2>
 
-                @foreach($kabupaten_list as $kab)
-                    <a href="{{ route('kabupaten.show', $kab['id']) }}" class="btn custom-pill-btn py-2 px-4 fw-medium">
-                        📍 {{ $kab['nama'] }}
-                    </a>
-                @endforeach
-            </div>
+    <div class="row g-3">
+        @foreach($data as $kab)
+        <div class="col-6 col-md-4 col-lg-3">
+            <a href="{{ route('kabupaten.show', $kab->id) }}" class="text-decoration-none">
+                <div class="card h-100 shadow-sm text-center p-3 kab-card">
+                    <div class="card-body">
+                        <h5 class="fw-semibold text-dark">{{ $kab->nama_kabupaten }}</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+        @endforeach
+    </div>
+</div>
         </div>
     </div>
 
@@ -92,34 +134,6 @@
     </div>
 
 </div>
-
-<style>
-    /* Styling tombol wilayah agar terlihat modern & semi-transparan greyish */
-    .custom-pill-btn {
-        background-color: #f1f5f9;
-        color: #334155;
-        border: 1px solid #e2e8f0;
-        border-radius: 30px;
-        transition: all 0.2s ease;
-    }
-    
-    .custom-pill-btn:hover {
-        background-color: #0f172a;
-        color: #ffffff;
-        border-color: #0f172a;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    }
-
-    /* Animasi hover halus untuk card rekap bawah */
-    .transition-card {
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    .transition-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 15px rgba(0,0,0,0.1) !important;
-    }
-</style>
-@endsection
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -1,167 +1,107 @@
-<<<<<<< Updated upstream:resources/views/kabupaten/index.blade.php
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Data Statistik Garam Provinsi Aceh</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    
-=======
-@extends('layouts.app')
->>>>>>> Stashed changes:resources/views/kabupaten/dashboardKab.blade.php
-
-@section('content')
 <div class="container py-4">
-    
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2 class="fw-bold text-dark">Kelola Data Garam</h2>
-            <p class="text-muted mb-0">Kabupaten: <span class="badge bg-primary text-white fs-6">Kab. Aceh Besar</span></p>
-        </div>
-        <a href="{{ route('statistik.index') }}" class="btn btn-outline-secondary">
-            ← Kembali ke Statistik
-        </a>
+
+    <div class="mb-4">
+        <h2 class="fw-bold text-dark mb-1">Data Statistik Garam Provinsi Aceh</h2>
+        <p class="text-muted">Silakan pilih wilayah kabupaten untuk melihat data statistik garam.</p>
     </div>
 
-    <div class="row g-4">
-        
-        <div class="col-lg-6">
-            <div class="card shadow-sm border-0 h-100">
-                <div class="card-header bg-dark text-white py-3">
-                    <h5 class="mb-0 fw-semibold">📊 1. Input Data Tahunan</h5>
+    {{-- CARD KABUPATEN --}}
+    <div class="row g-3 mb-4">
+        @foreach($kabupaten as $kab)
+        <div class="col-6 col-md-4 col-lg-3">
+            <a href="{{ route('kabupaten.show', $kab->id) }}" class="text-decoration-none">
+                <div class="card h-100 shadow-sm text-center p-3 kab-card">
+                    <div class="card-body">
+                        <h5 class="fw-semibold text-dark">{{ $kab->nama_kabupaten }}</h5>
+                    </div>
                 </div>
-                <div class="card-body p-4">
-                    <form action="#" method="POST">
-                        @csrf
-                        
-                        <div class="mb-3">
-                            <label class="form-label fw-medium">Jumlah Petani Garam</label>
-                            <div class="input-group">
-                                <input type="number" class="form-control" placeholder="Contoh: 150">
-                                <span class="input-group-text">Orang</span>
-                            </div>
-                        </div>
+            </a>
+        </div>
+        @endforeach
+    </div>
 
-                        <div class="mb-3">
-                            <label class="form-label fw-medium">Luas Lahan Rebus</label>
-                            <div class="input-group">
-                                <input type="number" step="0.01" class="form-control" placeholder="Contoh: 12.5">
-                                <span class="input-group-text">Ha</span>
-                            </div>
-                        </div>
+    {{-- REKAP PROVINSI --}}
+    <div class="card border-0 shadow-sm mb-4" style="background: linear-gradient(145deg, #1e293b, #0f172a); border-radius: 16px;">
+        <div class="card-body p-4 text-white">
+            <div class="row align-items-center">
+                <div class="col-md-8 mb-3 mb-md-0">
+                    <h4 class="fw-bold mb-2">Akumulasi Data Tingkat Provinsi</h4>
+                    <p class="text-white-50 m-0">Ringkasan total keseluruhan data dari seluruh kabupaten.</p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <div class="bg-white bg-opacity-10 p-3 rounded-3 d-inline-block text-center">
+                        <span class="small text-white-50 d-block">Total Wilayah</span>
+                        <span class="fs-3 fw-bold">{{ $kabupaten->count() }} Kabupaten</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                        <div class="mb-3">
-                            <label class="form-label fw-medium">Jumlah Lahan</label>
-                            <div class="input-group">
-                                <input type="number" class="form-control" placeholder="Contoh: 45">
-                                <span class="input-group-text">Unit</span>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label fw-medium">Harga Per Bulan (Rata-rata)</label>
-                            <div class="input-group">
-                                <span class="input-group-text">Rp</span>
-                                <input type="number" class="form-control" placeholder="Contoh: 5000">
-                            </div>
-                        </div>
-
-<<<<<<< Updated upstream:resources/views/kabupaten/index.blade.php
-    <div class="row">
-
-        @foreach($data as $kabupaten)
-
-        <div class="col-md-3 mb-3">
-            <div class="card">
-                <div class="card-body">
-
-                    <h5>
-                        {{ $kabupaten->nama_kabupaten }}
-                    </h5>
-
-                    <a href="{{ route('garam.show',$kabupaten->id) }}"
-                       class="btn btn-primary">
-                       Kelola Data
+    {{-- REKAP BULANAN & TAHUNAN --}}
+    <div class="row g-3">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm transition-card" style="border-radius: 12px;">
+                <div class="card-body p-4 d-flex align-items-center justify-content-between">
+                    <div>
+                        <h5 class="fw-bold text-dark mb-1">📅 Rekap Bulanan Provinsi</h5>
+                        <p class="text-muted small m-0">Lihat total grafik & tren bulanan se-Aceh</p>
+                    </div>
+                    <a href="{{ route('garam.rekapBulanan') }}" class="btn btn-dark px-4 py-2 fw-semibold" style="border-radius: 8px;">
+                        Buka Rekap →
                     </a>
-=======
-                        <div class="mb-4">
-                            <label class="form-label fw-medium">Lokasi / Desa / Kecamatan</label>
-                            <textarea class="form-control" rows="3" placeholder="Masukkan detail lokasi produksi garam..."></textarea>
-                        </div>
->>>>>>> Stashed changes:resources/views/kabupaten/dashboardKab.blade.php
-
-                        <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
-                            Simpan Data Tahunan
-                        </button>
-                    </form>
                 </div>
             </div>
         </div>
-
-        <div class="col-lg-6">
-            <div class="card shadow-sm border-0 h-100">
-                <div class="card-header bg-secondary text-white py-3">
-                    <h5 class="mb-0 fw-semibold">📅 2. Input Data Bulanan</h5>
-                </div>
-                <div class="card-body p-4">
-                    <form action="#" method="POST">
-                        @csrf
-                        
-                        <div class="mb-3">
-                            <label class="form-label fw-medium">Pilih Bulan</label>
-                            <select class="form-select">
-                                <option selected disabled>-- Pilih Bulan --</option>
-                                <option value="1">Januari</option>
-                                <option value="2">Februari</option>
-                                <option value="3">Maret</option>
-                                <option value="4">April</option>
-                                <option value="5">Mei</option>
-                                <option value="6">Juni</option>
-                                <option value="7">Juli</option>
-                                <option value="8">Agustus</option>
-                                <option value="9">September</option>
-                                <option value="10">Oktober</option>
-                                <option value="11">November</option>
-                                <option value="12">Desember</option>
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label fw-medium d-block">Jenis Produksi</label>
-                            <div class="form-check form-check-inline mt-1">
-                                <input class="form-check-input" type="radio" name="jenis_produksi" id="jemur" value="jemur">
-                                <label class="form-check-input-label" for="jemur">☀️ Garam Jemur</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="jenis_produksi" id="rebus" value="rebus">
-                                <label class="form-check-input-label" for="rebus">🔥 Garam Rebus</label>
-                            </div>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="form-label fw-medium">Harga / Total Pendapatan Bulan Ini</label>
-                            <div class="input-group">
-                                <span class="input-group-text">Rp</span>
-                                <input type="number" class="form-control" placeholder="Masukkan total nominal">
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn btn-success w-100 py-2 fw-semibold mt-auto">
-                            Simpan Data Bulanan
-                        </button>
-                    </form>
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm transition-card" style="border-radius: 12px;">
+                <div class="card-body p-4 d-flex align-items-center justify-content-between">
+                    <div>
+                        <h5 class="fw-bold text-dark mb-1">📊 Rekap Tahunan Provinsi</h5>
+                        <p class="text-muted small m-0">Lihat perbandingan total tahunan semua wilayah</p>
+                    </div>
+                    <a href="{{ route('garam.rekapTahunan') }}" class="btn btn-primary px-4 py-2 fw-semibold" style="border-radius: 8px;">
+                        Buka Rekap →
+                    </a>
                 </div>
             </div>
         </div>
-
     </div>
-</div>
-<<<<<<< Updated upstream:resources/views/kabupaten/index.blade.php
 
+</div>
+
+<style>
+    .kab-card {
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+        transition: all 0.2s ease;
+    }
+    .kab-card:hover {
+        background-color: #0f172a;
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15) !important;
+    }
+    .kab-card:hover h5 {
+        color: white !important;
+    }
+    .transition-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .transition-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 15px rgba(0,0,0,0.1) !important;
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-=======
-@endsection
->>>>>>> Stashed changes:resources/views/kabupaten/dashboardKab.blade.php

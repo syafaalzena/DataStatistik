@@ -12,8 +12,8 @@ class KabupatenController extends Controller
      */
     public function index()
     {
-        $data = Kabupaten::all();
-        return view('kabupaten.index', compact('data'));    
+        $kabupaten = Kabupaten::all();
+        return view('kabupaten.index', compact('kabupaten'));   
     }
 
     /**
@@ -44,7 +44,9 @@ class KabupatenController extends Controller
      */
     public function show(Kabupaten $kabupaten)
     {
-        return view('kabupaten.show', compact('kabupaten'));
+        $dataTahunan = $kabupaten->dataTahunan()->orderBy('tahun', 'desc')->get();
+        $dataBulanan = $kabupaten->dataBulanan()->orderBy('tahun', 'desc')->orderBy('bulan', 'desc')->get();
+        return view('kabupaten.show', compact('kabupaten', 'dataTahunan', 'dataBulanan'));
     }
 
     /**

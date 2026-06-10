@@ -21,7 +21,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('kabupaten', KabupatenController::class);   
+Route::resource('kabupaten', KabupatenController::class);  
 Route::get('/statistik/StatistikKab', [StatistikController::class, 'statistikKab'])->name('statistik.kab');
 Route::resource('statistik', StatistikController::class);
 

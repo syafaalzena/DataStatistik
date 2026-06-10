@@ -15,11 +15,12 @@ class Kabupaten extends Model
      */
     public function dataTahunan()
     {
-        return $this->hasMany(DataTahunanGaram::class);
+        return $this->hasMany(DataTahunan::class);
     }
     
     public function dataBulanan()
     {
-        return $this->hasMany(DataBulananGaram::class);
+        return $this->hasMany(DataBulanan::class);
     }
+    
 }

@@ -8,7 +8,7 @@
 
 </head>
 <body>
-
+    
     <div class="navbar">
         <h2>Sistem Data Statistik Garam Aceh</h2>
     </div>
@@ -26,7 +26,7 @@
                 <h2> Data Garam</h2>
                 <p>Kelola data produksi garam dan statistik garam Aceh.</p>
 
-                <a href="{{ route('statistik.index') }}" class="btn">
+                <a href="{{ route('kabupaten.index') }}" class="btn">
                     Masuk
                 </a>
             </div>
