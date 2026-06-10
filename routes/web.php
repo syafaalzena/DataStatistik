@@ -23,6 +23,7 @@ Route::get('/', function () {
 
 Route::resource('kabupaten', KabupatenController::class);   
 Route::resource('statistik', StatistikController::class);
+Route::resource('garam', GaramController::class);
 
 
 
