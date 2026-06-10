@@ -12,7 +12,8 @@ class KabupatenController extends Controller
      */
     public function index()
     {
-        //
+        $data = Kabupaten::all();
+        return view('kabupaten.index', compact('data'));    
     }
 
     /**
@@ -20,7 +21,7 @@ class KabupatenController extends Controller
      */
     public function create()
     {
-        //
+        return view('kabupaten.create');
     }
 
     /**
@@ -28,7 +29,14 @@ class KabupatenController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nama_kabupaten' => 'required|string|max:255',
+        ]);
+
+        Kabupaten::create($request->all());
+
+        return redirect()->route('kabupaten.index')
+            ->with('success', 'Kabupaten created successfully.');
     }
 
     /**
@@ -36,7 +44,7 @@ class KabupatenController extends Controller
      */
     public function show(Kabupaten $kabupaten)
     {
-        //
+        return view('kabupaten.show', compact('kabupaten'));
     }
 
     /**
@@ -44,7 +52,7 @@ class KabupatenController extends Controller
      */
     public function edit(Kabupaten $kabupaten)
     {
-        //
+        return view('kabupaten.edit', compact('kabupaten'));
     }
 
     /**
@@ -52,7 +60,14 @@ class KabupatenController extends Controller
      */
     public function update(Request $request, Kabupaten $kabupaten)
     {
-        //
+        $request->validate([
+            'nama_kabupaten' => 'required|string|max:255',
+        ]);
+
+        $kabupaten->update($request->all());
+
+        return redirect()->route('kabupaten.index')
+            ->with('success', 'Kabupaten updated successfully.');
     }
 
     /**
@@ -60,6 +75,9 @@ class KabupatenController extends Controller
      */
     public function destroy(Kabupaten $kabupaten)
     {
-        //
+        $kabupaten->delete();
+
+        return redirect()->route('kabupaten.index')
+            ->with('success', 'Kabupaten deleted successfully.');
     }
 }

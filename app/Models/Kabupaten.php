@@ -8,14 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 class Kabupaten extends Model
 {
     use HasFactory;
-}
+    protected $fillable = ['nama_kabupaten'];
 
-public function dataTahunan()
-{
-    return $this->hasMany(DataTahunanGaram::class);
-}
-
-public function dataBulanan()
-{
-    return $this->hasMany(DataBulananGaram::class);
+     /**
+     * Get the data tahunan for the kabupaten.
+     */
+    public function dataTahunan()
+    {
+        return $this->hasMany(DataTahunanGaram::class);
+    }
+    
+    public function dataBulanan()
+    {
+        return $this->hasMany(DataBulananGaram::class);
+    }
 }

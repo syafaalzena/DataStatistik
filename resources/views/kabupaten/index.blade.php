@@ -6,7 +6,7 @@
     <title>Document</title>
 </head>
 <body>
-    @extends('layouts.app')
+    
 
 @section('content')
 <div class="container">
@@ -27,7 +27,7 @@
 
     <div class="row">
 
-        @foreach($kabupatens as $kabupaten)
+        @foreach($data as $kabupaten)
 
         <div class="col-md-3 mb-3">
             <div class="card">
@@ -51,6 +51,6 @@
     </div>
 
 </div>
-@endsection
+
 </body>
 </html>
