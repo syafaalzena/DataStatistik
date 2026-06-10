@@ -19,6 +19,7 @@ class StatistikController extends Controller
 
     }
 
+
     /**
      * Show the form for creating a new resource.
      */
@@ -82,5 +83,11 @@ class StatistikController extends Controller
 
         return redirect()->route('statistik.index')
             ->with('success', 'Statistik deleted successfully.');
+    }
+    
+    public function statistikKab()
+    {
+        $data = Statistik::all();
+        return view('statistik.StatistikKab', compact('data'));
     }
 }
