@@ -22,7 +22,7 @@ Route::get('/', function () {
 });
 
 Route::resource('kabupaten', KabupatenController::class);   
-Route::resource('statistik', StatistikController::class);
+Route::resource('statistik', StatistikController::class);   
 
 Route::get('/dashboard', [StatistikController::class, 'dashboard'])->name('dashboard');
 Route::get('/garam/rekap-tahunan', [DataTahunanController::class, 'rekapTahunan'])->name('garam.rekapTahunan');
