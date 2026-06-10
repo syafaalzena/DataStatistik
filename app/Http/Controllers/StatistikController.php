@@ -6,6 +6,7 @@ use App\Models\Statistik;
 use Illuminate\Http\Request;
 use App\Http\Controllers\DashboardController;
 
+
 class StatistikController extends Controller
 {
     /**
@@ -13,7 +14,9 @@ class StatistikController extends Controller
      */
     public function index()
     {
-        //
+        $data = Statistik::all();
+        return view('statistik.index', compact('data'));
+
     }
 
     /**
@@ -21,7 +24,7 @@ class StatistikController extends Controller
      */
     public function create()
     {
-        //
+        return view('statistik.create');
     }
 
     /**
@@ -29,7 +32,14 @@ class StatistikController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nama_statistik' => 'required|string|max:255',
+        ]);
+
+        Statistik::create($request->all());
+
+        return redirect()->route('statistik.index')
+            ->with('success', 'Statistik created successfully.');
     }
 
     /**
@@ -37,7 +47,7 @@ class StatistikController extends Controller
      */
     public function show(Statistik $statistik)
     {
-        //
+        return view('statistik.show', compact('statistik'));
     }
 
     /**
@@ -45,7 +55,7 @@ class StatistikController extends Controller
      */
     public function edit(Statistik $statistik)
     {
-        //
+        return view('statistik.edit', compact('statistik'));
     }
 
     /**
@@ -53,7 +63,14 @@ class StatistikController extends Controller
      */
     public function update(Request $request, Statistik $statistik)
     {
-        //
+        $request->validate([
+            'nama_statistik' => 'required|string|max:255',
+        ]);
+
+        $statistik->update($request->all());
+
+        return redirect()->route('statistik.index')
+            ->with('success', 'Statistik updated successfully.');
     }
 
     /**
@@ -61,6 +78,9 @@ class StatistikController extends Controller
      */
     public function destroy(Statistik $statistik)
     {
-        //
+        $statistik->delete();
+
+        return redirect()->route('statistik.index')
+            ->with('success', 'Statistik deleted successfully.');
     }
 }
