@@ -40,8 +40,8 @@ class DataBulananController extends Controller
 
         DataBulanan::create($request->all());
 
-        return redirect()->route('data-bulanan.index')
-            ->with('success', 'Data bulanan created successfully.');
+    return redirect()->route('kabupaten.show', $request->kabupaten_id)
+    ->with('success', 'Data bulanan berhasil ditambahkan.');
     }
 
     /**
@@ -76,7 +76,7 @@ class DataBulananController extends Controller
 
         $dataBulanan->update($request->all());
 
-        return redirect()->route('data-bulanan.index')
+        return redirect()->route('kabupaten.show', $request->kabupaten_id)
             ->with('success', 'Data bulanan updated successfully.');
     }
 
@@ -86,7 +86,7 @@ class DataBulananController extends Controller
     public function destroy(DataBulanan $dataBulanan)
     {
         $dataBulanan->delete();
-        return redirect()->route('data-bulanan.index')
+        return redirect()->route('kabupaten.show', $dataBulanan->kabupaten_id)
             ->with('success', 'Data bulanan deleted successfully.');
     }
 

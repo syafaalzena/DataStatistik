@@ -11,13 +11,13 @@
             <h3>Rekap Tahunan</h3>
         <table class="table table-bordered" border="1">
             <thead>
-        <tr>
-            <th>Kabupaten</th>
-            <th>Petani</th>
-            <th>Lahan Rebus</th>
-            <th>Jumlah Unit</th>
-        </tr>
-        </thead>
+                <tr>
+                    <th>Kabupaten</th>
+                    <th>Petani</th>
+                    <th>Lahan Rebus</th>
+                    <th>Jumlah Unit</th>
+                </tr>
+            </thead>
 
         <tbody>
 
