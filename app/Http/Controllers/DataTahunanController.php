@@ -12,7 +12,8 @@ class DataTahunanController extends Controller
      */
     public function index()
     {
-        
+        $data = DataTahunan::with('kabupaten')->orderBy('tahun', 'desc')->get();
+        return view('garam.tahunan.index', compact('data'));
     }
 
     /**
@@ -20,7 +21,7 @@ class DataTahunanController extends Controller
      */
     public function create()
     {
-        //
+        return view('garam.tahunan.create');
     }
 
     /**
@@ -28,7 +29,21 @@ class DataTahunanController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'kabupaten_id' => 'required|exists:kabupatens,id',
+            'statistik_id' => 'required|integer',
+            'jumlah_petani' => 'required|integer',
+            'luas_lahan_rebus' => 'required|numeric',
+            'luas_lahan_jemur' => 'required|numeric',
+            'jumlah_lahan_unit' => 'required|integer',
+            'tahun' => 'required|integer',
+            'lokasi' => 'nullable|string|max:255',
+        ]);
+
+        DataTahunan::create($request->all());
+
+        return redirect()->route('data-tahunan.index')
+            ->with('success', 'Data tahunan created successfully.');
     }
 
     /**
@@ -36,7 +51,7 @@ class DataTahunanController extends Controller
      */
     public function show(DataTahunan $dataTahunan)
     {
-        //
+        return view('garam.tahunan.show', compact('dataTahunan'));
     }
 
     /**
@@ -44,7 +59,7 @@ class DataTahunanController extends Controller
      */
     public function edit(DataTahunan $dataTahunan)
     {
-        //
+        return view('garam.tahunan.edit', compact('dataTahunan'));
     }
 
     /**
@@ -52,7 +67,21 @@ class DataTahunanController extends Controller
      */
     public function update(Request $request, DataTahunan $dataTahunan)
     {
-        //
+        $request->validate([
+            'kabupaten_id' => 'required|exists:kabupatens,id',
+            'statistik_id' => 'required|integer',
+            'jumlah_petani' => 'required|integer',
+            'luas_lahan_rebus' => 'required|numeric',
+            'luas_lahan_jemur' => 'required|numeric',
+            'jumlah_lahan_unit' => 'required|integer',
+            'tahun' => 'required|integer',
+            'lokasi' => 'nullable|string|max:255',
+        ]);
+
+        $dataTahunan->update($request->all());
+
+        return redirect()->route('data-tahunan.index')
+            ->with('success', 'Data tahunan updated successfully.');
     }
 
     /**
@@ -60,6 +89,15 @@ class DataTahunanController extends Controller
      */
     public function destroy(DataTahunan $dataTahunan)
     {
-        //
+        $dataTahunan->delete();
+
+        return redirect()->route('data-tahunan.index')
+            ->with('success', 'Data tahunan deleted successfully.');
+    }
+
+    public function rekapTahunan()
+    {
+        $data = DataTahunan::with('kabupaten')->orderBy('tahun', 'desc')->get();
+        return view('garam.rekap-tahunan', compact('data'));
     }
 }
