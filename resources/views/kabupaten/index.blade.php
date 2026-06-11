@@ -69,7 +69,7 @@
                         <h5 class="fw-bold text-dark mb-1">📊 Rekap Tahunan Provinsi</h5>
                         <p class="text-muted small m-0">Lihat perbandingan total tahunan semua wilayah</p>
                     </div>
-                    <a href="{{ route('garam.rekapTahunan') }}" class="btn btn-primary px-4 py-2 fw-semibold" style="border-radius: 8px;">
+                    <a href="{{ route('garam.rekapTahunan') }}" class="btn btn-dark px-4 py-2 fw-semibold" style="border-radius: 8px;">
                         Buka Rekap →
                     </a>
                 </div>
