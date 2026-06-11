@@ -6,46 +6,35 @@
     <title>Document</title>
 </head>
 <body>
-    @extends('layouts.app')
+    <div class="container">
+        <h3>Rekap Bulanan</h3>
+        <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Kabupaten</th>
+            <th>Bulan</th>
+            <th>Jenis</th>
+            <th>Produksi</th>
+            <th>Harga</th>
+        </tr>
+        </thead>
 
-@section('content')
+        <tbody>
 
-<div class="container">
+        @foreach($data as $row)
 
-<h3>Rekap Bulanan</h3>
+        <tr>
+            <td>{{ $row->nama_kabupaten }}</td>
+            <td>{{ $row->bulan }}</td>
+            <td>{{ $row->jenis_produksi }}</td>
+            <td>{{ $row->produksi }}</td>
+            <td>Rp {{ number_format($row->harga) }}</td>
+        </tr>
 
-<table class="table table-bordered">
+        @endforeach
+        </tbody>
+        </table>
+    </div>
 
-<thead>
-<tr>
-    <th>Kabupaten</th>
-    <th>Bulan</th>
-    <th>Jenis</th>
-    <th>Produksi</th>
-    <th>Harga</th>
-</tr>
-</thead>
-
-<tbody>
-
-@foreach($data as $row)
-
-<tr>
-    <td>{{ $row->nama_kabupaten }}</td>
-    <td>{{ $row->bulan }}</td>
-    <td>{{ $row->jenis_produksi }}</td>
-    <td>{{ $row->produksi }}</td>
-    <td>Rp {{ number_format($row->harga) }}</td>
-</tr>
-
-@endforeach
-
-</tbody>
-
-</table>
-
-</div>
-
-@endsection
 </body>
 </html>

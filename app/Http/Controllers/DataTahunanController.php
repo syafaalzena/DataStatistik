@@ -12,8 +12,8 @@ class DataTahunanController extends Controller
      */
     public function index()
     {
-        $data = DataTahunan::with('kabupaten')->orderBy('tahun', 'desc')->get();
-        return view('garam.tahunan.index', compact('data'));
+        $kabupaten = \App\Models\Kabupaten::all();
+    return view('Garam.index', compact('kabupaten'));
     }
 
     /**
@@ -98,6 +98,6 @@ class DataTahunanController extends Controller
     public function rekapTahunan()
     {
         $data = DataTahunan::with('kabupaten')->orderBy('tahun', 'desc')->get();
-        return view('garam.rekap-tahunan', compact('data'));
+        return view('garam.rekap_tahunan', compact('data'));
     }
 }

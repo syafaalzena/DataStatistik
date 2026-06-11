@@ -9,7 +9,14 @@ class DataBulanan extends Model
 {
     
     use HasFactory;
-    protected $fillable = [];
+    protected $fillable = [
+        'kabupaten_id',
+        'bulan',
+        'tahun',
+        'jenis_produksi',
+        'produksi',
+        'harga',
+    ];
         
     
     public function kabupaten()

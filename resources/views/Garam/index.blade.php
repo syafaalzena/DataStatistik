@@ -7,44 +7,43 @@
 </head>
 <body>
 
-@extends('layouts.app')
-
-@section('content')
 <div class="container">
 
-<h3>{{ $kabupaten->nama_kabupaten }}</h3>
+@foreach($kabupaten as $kab)
+    <h3>{{ $kab->nama_kabupaten }}</h3>
+@endforeach
 
-<form action="{{ route('garam.storeTahunan') }}"
-      method="POST">
+<form action=""
+    method="POST">
 
 @csrf
 
 <input type="hidden"
-       name="kabupaten_id"
-       value="{{ $kabupaten->id }}">
+    name="kabupaten_id"
+    value="{{ $kab->id }}">
 
 <h4>Data Tahunan</h4>
 
 <div class="mb-3">
     <label>Jumlah Petani Garam</label>
     <input type="number"
-           name="jumlah_petani"
-           class="form-control">
+        name="jumlah_petani"
+        class="form-control">
 </div>
 
 <div class="mb-3">
     <label>Luas Lahan Rebus (Ha)</label>
     <input type="number"
-           step="0.01"
-           name="luas_lahan_rebus"
-           class="form-control">
+        step="0.01"
+        name="luas_lahan_rebus"
+        class="form-control">
 </div>
 
 <div class="mb-3">
     <label>Jumlah Lahan (Unit)</label>
     <input type="number"
-           name="jumlah_lahan_unit"
-           class="form-control">
+        name="jumlah_lahan_unit"
+        class="form-control">
 </div>
 
 <div class="mb-3">
@@ -92,12 +91,12 @@
 
 <td>
 <input type="number"
-       class="form-control">
+    class="form-control">
 </td>
 
 <td>
 <input type="number"
-       class="form-control">
+    class="form-control">
 </td>
 
 </tr>
@@ -109,7 +108,7 @@
 </table>
 
 </div>
-@endsection
+
     
 </body>
 </html>
