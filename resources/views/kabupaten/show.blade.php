@@ -5,25 +5,246 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $kabupaten->nama_kabupaten }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ── Token System ─────────────────────────────── */
+        :root {
+            --clr-sea:      #0d1b2a;   /* teal laut dalam */
+            --clr-sea-lt:   #E8F5F6;   /* teal muda / background accent */
+            --clr-salt:     #F7F5F0;   /* krem pasir / page bg */
+            --clr-stone:    #3D3D3A;   /* teks utama */
+            --clr-mist:     #8A8A85;   /* teks sekunder */
+            --clr-border:   #E2DED6;   /* garis halus */
+            --clr-white:    #FFFFFF;
+            --clr-gold:     #C68B2F;   /* aksen harga / angka penting */
+
+            --radius-card:  14px;
+            --shadow-card:  0 2px 16px rgba(26,107,114,.08);
+            --font-base:    'Plus Jakarta Sans', sans-serif;
+            --font-mono:    'DM Mono', monospace;
+        }
+
+        /* ── Base ─────────────────────────────────────── */
+        body {
+            background-color: var(--clr-salt);
+            font-family: var(--font-base);
+            color: var(--clr-stone);
+            min-height: 100vh;
+        }
+
+        /* ── Header strip ─────────────────────────────── */
+        .page-header {
+            background: linear-gradient(135deg, var(--clr-sea) 0%, #0F4A50 100%);
+            border-radius: 0 0 28px 28px;
+            padding: 2rem 0 2.4rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Garis tipis seperti kristal garam — signature element */
+        .page-header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                105deg,
+                transparent,
+                transparent 38px,
+                rgba(255,255,255,.04) 38px,
+                rgba(255,255,255,.04) 39px
+            );
+            pointer-events: none;
+        }
+
+        .page-header .btn-back {
+            background: rgba(255,255,255,.12);
+            border: 1px solid rgba(255,255,255,.22);
+            color: #fff;
+            border-radius: 8px;
+            font-size: .85rem;
+            padding: .4rem .9rem;
+            transition: background .2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+        }
+        .page-header .btn-back:hover {
+            background: rgba(255,255,255,.22);
+        }
+
+        .page-header h2 {
+            color: #fff;
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin: .75rem 0 .25rem;
+            letter-spacing: -.3px;
+        }
+
+        .page-header .subtitle {
+            color: rgba(255,255,255,.65);
+            font-size: .88rem;
+            margin: 0;
+        }
+
+        /* ── Cards ────────────────────────────────────── */
+        .data-card {
+            background: var(--clr-white);
+            border-radius: var(--radius-card);
+            box-shadow: var(--shadow-card);
+            border: 1px solid var(--clr-border);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .data-card-header {
+            padding: 1.25rem 1.5rem 1rem;
+            border-bottom: 1px solid var(--clr-border);
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+        }
+
+        .data-card-header .card-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 9px;
+            background: var(--clr-sea-lt);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .data-card-header h5 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin: 0;
+            color: var(--clr-stone);
+        }
+
+        .data-card-body {
+            padding: 1.25rem 1.5rem 1.5rem;
+        }
+
+        /* ── Tables ───────────────────────────────────── */
+        .table {
+            font-size: .875rem;
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background: var(--clr-sea);
+            color: #fff;
+            font-weight: 600;
+            font-size: .78rem;
+            text-transform: uppercase;
+            letter-spacing: .6px;
+            padding: .75rem 1rem;
+            border: none;
+            white-space: nowrap;
+        }
+
+        .table thead th:first-child { border-radius: 8px 0 0 0; }
+        .table thead th:last-child  { border-radius: 0 8px 0 0; }
+
+        .table tbody tr {
+            border-bottom: 1px solid var(--clr-border);
+            transition: background .15s;
+        }
+        .table tbody tr:last-child { border-bottom: none; }
+        .table tbody tr:hover { background: var(--clr-sea-lt); }
+
+        .table tbody td {
+            padding: .7rem 1rem;
+            vertical-align: middle;
+            color: var(--clr-stone);
+            border: none;
+        }
+
+        /* Kolom tahun & angka — mono agar lurus */
+        .table tbody td:first-child,
+        .table tbody td:nth-child(2),
+        .table tbody td:nth-child(4),
+        .table tbody td:nth-child(5) {
+            font-family: var(--font-mono);
+            font-size: .83rem;
+        }
+
+        /* Kolom harga */
+        .cell-harga {
+            font-family: var(--font-mono);
+            font-weight: 500;
+            color: var(--clr-gold);
+        }
+
+        /* Badge tahun */
+        .badge-tahun {
+            display: inline-block;
+            background: var(--clr-sea-lt);
+            color: var(--clr-sea);
+            border-radius: 6px;
+            padding: .2rem .55rem;
+            font-family: var(--font-mono);
+            font-size: .8rem;
+            font-weight: 500;
+        }
+
+        /* ── Empty state ──────────────────────────────── */
+        .empty-state {
+            text-align: center;
+            padding: 2.5rem 1rem;
+            color: var(--clr-mist);
+        }
+        .empty-state .empty-icon {
+            font-size: 2rem;
+            margin-bottom: .5rem;
+            opacity: .5;
+        }
+        .empty-state p {
+            font-size: .9rem;
+            margin: 0;
+        }
+
+        /* ── Responsive ───────────────────────────────── */
+        @media (max-width: 576px) {
+            .page-header { border-radius: 0 0 20px 20px; padding: 1.5rem 0 2rem; }
+            .page-header h2 { font-size: 1.35rem; }
+            .data-card-body { padding: 1rem; }
+        }
+    </style>
 </head>
 <body>
-<div class="container py-4">
 
-    <a href="{{ route('kabupaten.index') }}" class="btn btn-outline-secondary mb-4">← Kembali</a>
+{{-- HEADER --}}
+<div class="page-header">
+    <div class="container">
+        <a href="{{ route('kabupaten.index') }}" class="btn-back">← Kembali</a>
+        <h2>{{ $kabupaten->nama_kabupaten }}</h2>
+        <p class="subtitle">Data statistik garam wilayah ini</p>
+    </div>
+</div>
 
-    <h2 class="fw-bold mb-1">{{ $kabupaten->nama_kabupaten }}</h2>
-    <p class="text-muted mb-4">Data statistik garam wilayah ini</p>
+<div class="container pb-5">
 
     {{-- DATA TAHUNAN --}}
-    <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
-        <div class="card-body p-4">
-            <h5 class="fw-bold mb-3">📊 Data Tahunan</h5>
+    <div class="data-card">
+        <div class="data-card-header">
+            <div class="card-icon">📊</div>
+            <h5>Data Tahunan</h5>
+        </div>
+        <div class="data-card-body">
             @if($dataTahunan->isEmpty())
-                <p class="text-muted">Belum ada data tahunan.</p>
+                <div class="empty-state">
+                    <div class="empty-icon">📭</div>
+                    <p>Belum ada data tahunan untuk wilayah ini.</p>
+                </div>
             @else
             <div class="table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead class="table-dark">
+                <table class="table">
+                    <thead>
                         <tr>
                             <th>Tahun</th>
                             <th>Jumlah Petani</th>
@@ -36,7 +257,7 @@
                     <tbody>
                         @foreach($dataTahunan as $dt)
                         <tr>
-                            <td>{{ $dt->tahun }}</td>
+                            <td><span class="badge-tahun">{{ $dt->tahun }}</span></td>
                             <td>{{ $dt->jumlah_petani }}</td>
                             <td>{{ $dt->luas_lahan_rebus }}</td>
                             <td>{{ $dt->luas_lahan_jemur }}</td>
@@ -52,15 +273,21 @@
     </div>
 
     {{-- DATA BULANAN --}}
-    <div class="card border-0 shadow-sm" style="border-radius: 12px;">
-        <div class="card-body p-4">
-            <h5 class="fw-bold mb-3">📅 Data Bulanan</h5>
+    <div class="data-card">
+        <div class="data-card-header">
+            <div class="card-icon">📅</div>
+            <h5>Data Bulanan</h5>
+        </div>
+        <div class="data-card-body">
             @if($dataBulanan->isEmpty())
-                <p class="text-muted">Belum ada data bulanan.</p>
+                <div class="empty-state">
+                    <div class="empty-icon">📭</div>
+                    <p>Belum ada data bulanan untuk wilayah ini.</p>
+                </div>
             @else
             <div class="table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead class="table-dark">
+                <table class="table">
+                    <thead>
                         <tr>
                             <th>Tahun</th>
                             <th>Bulan</th>
@@ -72,11 +299,11 @@
                     <tbody>
                         @foreach($dataBulanan as $db)
                         <tr>
-                            <td>{{ $db->tahun }}</td>
+                            <td><span class="badge-tahun">{{ $db->tahun }}</span></td>
                             <td>{{ $db->bulan }}</td>
                             <td>{{ $db->jenis_produksi }}</td>
                             <td>{{ $db->produksi }}</td>
-                            <td>{{ number_format($db->harga, 0, ',', '.') }}</td>
+                            <td class="cell-harga">Rp {{ number_format($db->harga, 0, ',', '.') }}</td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -87,6 +314,7 @@
     </div>
 
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
