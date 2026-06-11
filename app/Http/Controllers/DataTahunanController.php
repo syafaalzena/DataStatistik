@@ -12,7 +12,7 @@ class DataTahunanController extends Controller
      */
     public function index()
     {
-        //
+        
     }
 
     /**

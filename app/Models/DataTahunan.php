@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class DataTahunan extends Model
 {
-    $fillable = [
+    use HasFactory;
+    protected $fillable = [
         'kabupaten_id', 
         'statistik_id', 
         'jumlah_petani', 
@@ -16,7 +17,7 @@ class DataTahunan extends Model
         'jumlah_lahan_unit', 
         'tahun', 
         'lokasi'];
-    use HasFactory;
+    
 
     public function kabupaten()
     {

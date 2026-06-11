@@ -7,8 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class DataBulanan extends Model
 {
-    $fillable 
+    
     use HasFactory;
+    protected $fillable = [];
+        
     
     public function kabupaten()
     {
