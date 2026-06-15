@@ -225,6 +225,7 @@
     padding: .55rem 1.4rem;
 }
 .btn-simpan:hover { opacity: .85; color: #fff; }
+
     </style>
 </head>
 <body>
@@ -232,19 +233,18 @@
 {{-- HEADER --}}
 <div class="page-header">
     <div class="container">
-        <a href="{{ route('kabupaten.index') }}" class="btn-back">← Kembali</a>
+        <a href="{{ route('kabupaten.index') }}" class="btn-back">Kembali</a>
         <h2>{{ $kabupaten->nama_kabupaten }}</h2>
         <p class="subtitle">Data statistik garam wilayah ini</p>
     </div>
-
-       <div class="modal-header">
-            <<button class="btn btn-sm" 
-                style="background:var(--clr-sea); color:#fff; border-radius:8px; font-size:.83rem; font-weight:600;"
-                data-bs-toggle="modal" 
-                data-bs-target="#modalTambahBulanan">
-                + Tambah Data
-            </button>
-            </div>
+<div style="margin-left:60px; margin-top:14px;">
+       <button class="btn btn-sm"
+    style="background:white; color:#black; border-radius:8px; font-size:.99rem; font-weight:600;"
+    data-bs-toggle="modal"
+    data-bs-target="#modalTambahBulanan">
+    + Tambah Data
+</button>
+</div>
 </div>
 
 <div class="container pb-5">
