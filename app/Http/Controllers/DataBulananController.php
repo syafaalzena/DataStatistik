@@ -90,9 +90,33 @@ class DataBulananController extends Controller
             ->with('success', 'Data bulanan deleted successfully.');
     }
 
-    public function rekapBulanan()
-    {
-        $data = DataBulanan::with('kabupaten')->orderBy('tahun', 'desc')->orderBy('bulan', 'desc')->get();
-        return view('garam.rekap_bulanan', compact('data'));
-    }
+
+
+    public function rekapBulanan(Request $request)
+{
+    // Ambil semua tahun yang tersedia untuk filter
+    $tahunList = DataBulanan::select('tahun')
+                    ->distinct()
+                    ->orderBy('tahun', 'desc')
+                    ->pluck('tahun');
+
+    // Tahun yang dipilih, default tahun terbaru
+    $tahunDipilih = $request->tahun ?? $tahunList->first();
+
+    // Data tabel — semua kabupaten untuk tahun dipilih
+    $data = DataBulanan::with('kabupaten')
+                ->where('tahun', $tahunDipilih)
+                ->orderBy('kabupaten_id')
+                ->orderBy('bulan')
+                ->get();
+
+    // Data grafik — total produksi per bulan
+    $dataGrafik = DataBulanan::where('tahun', $tahunDipilih)
+                ->selectRaw('bulan, SUM(produksi) as total_produksi')
+                ->groupBy('bulan')
+                ->orderBy('bulan')
+                ->get();
+
+    return view('garam.rekap_bulanan', compact('data', 'tahunList', 'tahunDipilih', 'dataGrafik'));
+}
 }
