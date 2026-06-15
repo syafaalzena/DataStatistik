@@ -91,7 +91,7 @@
             border-radius: 6px; padding: .2rem .55rem;
             font-family: var(--font-mono); font-size: .8rem; font-weight: 500;
         }
-        .cell-harga { font-family: var(--font-mono); font-weight: 500; color: var(--clr-gold); }
+        .cell-harga { font-weight: 500; color: var(--clr-gold); }
 
         .filter-form select {
             border: 1px solid var(--clr-border); border-radius: 8px;
@@ -128,6 +128,37 @@
         </select>
         <button type="submit">Tampilkan</button>
     </form>
+
+    <div class="row mb-4">
+    <div class="col-md-4">
+        <div class="data-card">
+            <div class="data-card-body text-center">
+                <h6 class="text-muted">Total Data</h6>
+                <h3 class="fw-bold">{{ $data->count() }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="data-card">
+            <div class="data-card-body text-center">
+                <h6 class="text-muted">Total Produksi</h6>
+                <h3 class="fw-bold">{{ $data->sum('produksi') }} Ton</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="data-card">
+            <div class="data-card-body text-center">
+                <h6 class="text-muted">Total Harga</h6>
+                <h3 class="fw-bold">
+                    Rp {{ number_format($data->sum('harga'), 0, ',', '.') }}
+                </h3>
+            </div>
+        </div>
+    </div>
+</div>
 
     {{-- GRAFIK --}}
     <div class="data-card">
