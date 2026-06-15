@@ -252,6 +252,27 @@ a {
 
 <div class="container pb-5">
 
+<div class="container pb-5">
+
+@if(session('success'))
+<div class="alert alert-success alert-dismissible fade show"
+     role="alert"
+     style="
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        min-width: 300px;
+        box-shadow: 0 4px 15px rgba(0,0,0,.15);
+     ">
+     {{ session('success') }}
+
+    <button type="button"
+            class="btn-close"
+            data-bs-dismiss="alert"></button>
+</div>
+@endif
+
     {{-- DATA TAHUNAN --}}
     <div class="data-card">
         <div class="data-card-header">

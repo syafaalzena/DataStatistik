@@ -53,11 +53,17 @@
             <div class="card border-0 shadow-sm transition-card" style="border-radius: 12px;">
                 <div class="card-body p-4 d-flex align-items-center justify-content-between">
                     <div>
-                        <h5 class="fw-bold text-dark mb-1">📅 Rekap Bulanan Provinsi</h5>
+                        <h5 class="fw-bold text-dark mb-1 d-flex align-items-center gap-2">
+    <img src="{{ asset('images/kalender.png') }}"
+         alt="Kalender"
+         width="24"
+         height="24">
+    Rekap Bulanan Provinsi
+</h5>
                         <p class="text-muted small m-0">Lihat total grafik & tren bulanan se-Aceh</p>
                     </div>
                     <a href="{{ route('garam.rekapBulanan') }}" class="btn btn-dark px-4 py-2 fw-semibold" style="border-radius: 8px;">
-                        Buka Rekap →
+                        Buka Rekap
                     </a>
                 </div>
             </div>
@@ -66,11 +72,17 @@
             <div class="card border-0 shadow-sm transition-card" style="border-radius: 12px;">
                 <div class="card-body p-4 d-flex align-items-center justify-content-between">
                     <div>
-                        <h5 class="fw-bold text-dark mb-1">📊 Rekap Tahunan Provinsi</h5>
+                        <h5 class="fw-bold text-dark mb-1 d-flex align-items-center gap-2">
+    <img src="{{ asset('images/statistik.png') }}"
+         alt="Statistik"
+         width="24"
+         height="24">
+    Rekap Tahunan Provinsi
+</h5>
                         <p class="text-muted small m-0">Lihat perbandingan total tahunan semua wilayah</p>
                     </div>
                     <a href="{{ route('garam.rekapTahunan') }}" class="btn btn-dark px-4 py-2 fw-semibold" style="border-radius: 8px;">
-                        Buka Rekap →
+                        Buka Rekap
                     </a>
                 </div>
             </div>
@@ -80,9 +92,14 @@
 </div>
 
 <style>
+
+    body{
+    background: #F7F5F0;
+}
+   
     .kab-card {
         border-radius: 12px;
-        border: 1px solid #e2e8f0;
+        border: 1px solid #d6d7c4;
         transition: all 0.2s ease;
     }
     .kab-card:hover {
