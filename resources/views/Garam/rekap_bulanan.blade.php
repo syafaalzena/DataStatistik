@@ -22,6 +22,7 @@
             --font-base:  'Plus Jakarta Sans', sans-serif;
             --font-mono:  'DM Mono', monospace;
         }
+
         body { background: var(--clr-salt); font-family: var(--font-base); color: var(--clr-stone); }
 
         .page-header {
@@ -86,24 +87,49 @@
         .table tbody tr:hover { background: var(--clr-sea-lt); }
         .table tbody td { padding: .7rem 1rem; vertical-align: middle; border: none; }
 
-        .badge-tahun {
+        .badge-bulan {
             display: inline-block; background: var(--clr-sea-lt); color: var(--clr-sea);
             border-radius: 6px; padding: .2rem .55rem;
             font-family: var(--font-mono); font-size: .8rem; font-weight: 500;
         }
-        .cell-harga { font-family: var(--font-mono); font-weight: 500; color: var(--clr-gold); }
+        .cell-harga { font-weight: 500; color: var(--clr-gold); }
 
-        .filter-form select {
-            border: 1px solid var(--clr-border); border-radius: 8px;
-            font-size: .88rem; padding: .45rem .85rem;
-            font-family: var(--font-base); color: var(--clr-stone);
+        /* Filter */
+        .filter-card {
+            background: var(--clr-white);
+            border-radius: var(--radius-card);
+            box-shadow: var(--shadow-card);
+            border: 1px solid var(--clr-border);
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
         }
-        .filter-form select:focus { outline: none; border-color: var(--clr-sea); }
-        .filter-form button {
+        .filter-label { font-weight: 600; font-size: .85rem; color: var(--clr-mist); white-space: nowrap; }
+        .filter-select {
+            border: 1px solid var(--clr-border);
+            border-radius: 8px;
+            font-size: .88rem;
+            padding: .45rem .85rem;
+            font-family: var(--font-base);
+            color: var(--clr-stone);
+            background: var(--clr-salt);
+        }
+        .filter-select:focus { outline: none; border-color: var(--clr-sea); }
+        .filter-btn {
             background: var(--clr-sea); color: #fff; border: none;
             border-radius: 8px; font-size: .85rem; font-weight: 600;
-            padding: .45rem 1rem; cursor: pointer;
+            padding: .48rem 1.2rem; cursor: pointer; transition: opacity .2s;
         }
+        .filter-btn:hover { opacity: .85; }
+
+        .empty-state {
+            text-align: center; padding: 2.5rem 1rem; color: var(--clr-mist);
+        }
+        .empty-state .empty-icon { font-size: 2rem; margin-bottom: .5rem; opacity: .5; }
+        .empty-state p { font-size: .9rem; margin: 0; }
     </style>
 </head>
 <body>
@@ -118,25 +144,66 @@
 
 <div class="container pb-5">
 
-    {{-- FILTER TAHUN --}}
-    <form method="GET" class="filter-form d-flex align-items-center gap-2 mb-4">
-        <label style="font-weight:600; font-size:.88rem;">Pilih Tahun:</label>
-        <select name="tahun">
-            @foreach($tahunList as $t)
-                <option value="{{ $t }}" {{ $t == $tahunDipilih ? 'selected' : '' }}>{{ $t }}</option>
-            @endforeach
-        </select>
-        <button type="submit">Tampilkan</button>
+    {{-- FILTER --}}
+    <form method="GET">
+        <div class="filter-card">
+            <span class="filter-label">Filter:</span>
+
+            <select name="tahun" class="filter-select">
+                @foreach($tahunList as $t)
+                    <option value="{{ $t }}" {{ $t == $tahunDipilih ? 'selected' : '' }}>{{ $t }}</option>
+                @endforeach
+            </select>
+
+            <select name="bulan" class="filter-select">
+                @foreach($bulanList as $num => $nama)
+                    <option value="{{ $num }}" {{ $num == $bulanDipilih ? 'selected' : '' }}>{{ $nama }}</option>
+                @endforeach
+            </select>
+
+            <button type="submit" class="filter-btn">Tampilkan</button>
+        </div>
     </form>
+
+    <div class="row mb-4">
+    <div class="col-md-4">
+        <div class="data-card">
+            <div class="data-card-body text-center">
+                <h6 class="text-muted">Total Data</h6>
+                <h3 class="fw-bold">{{ $data->count() }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="data-card">
+            <div class="data-card-body text-center">
+                <h6 class="text-muted">Total Produksi</h6>
+                <h3 class="fw-bold">{{ $data->sum('produksi') }} Ton</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="data-card">
+            <div class="data-card-body text-center">
+                <h6 class="text-muted">Total Harga</h6>
+                <h3 class="fw-bold">
+                    Rp {{ number_format($data->sum('harga'), 0, ',', '.') }}
+                </h3>
+            </div>
+        </div>
+    </div>
+</div>
 
     {{-- GRAFIK --}}
     <div class="data-card">
         <div class="data-card-header">
             <div class="card-icon">📈</div>
-            <h5>Grafik Produksi Bulanan {{ $tahunDipilih }}</h5>
+            <h5>Tren Produksi Bulanan {{ $tahunDipilih }}</h5>
         </div>
         <div class="data-card-body">
-            <canvas id="grafikBulanan" height="100"></canvas>
+            <canvas id="grafikBulanan" height="90"></canvas>
         </div>
     </div>
 
@@ -144,32 +211,30 @@
     <div class="data-card">
         <div class="data-card-header">
             <div class="card-icon">📅</div>
-            <h5>Data Bulanan Tahun {{ $tahunDipilih }}</h5>
+            <h5>Data {{ $bulanList[$bulanDipilih] }} {{ $tahunDipilih }} — Semua Kabupaten</h5>
         </div>
         <div class="data-card-body">
             @if($data->isEmpty())
-                <p class="text-muted text-center py-4">Belum ada data untuk tahun ini.</p>
+                <div class="empty-state">
+                    <div class="empty-icon">📭</div>
+                    <p>Belum ada data untuk bulan & tahun ini.</p>
+                </div>
             @else
             <div class="table-responsive">
                 <table class="table">
                     <thead>
                         <tr>
                             <th>Kabupaten</th>
-                            <th>Bulan</th>
                             <th>Jenis Produksi</th>
                             <th>Produksi (Ton)</th>
                             <th>Harga</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @php
-                            $namaBulan = ['','Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-                        @endphp
                         @foreach($data as $d)
                         <tr>
                             <td>{{ $d->kabupaten->nama_kabupaten }}</td>
-                            <td><span class="badge-tahun">{{ $namaBulan[$d->bulan] }}</span></td>
-                            <td>{{ $d->jenis_produksi }}</td>
+                            <td><span class="badge-bulan">{{ $d->jenis_produksi }}</span></td>
                             <td>{{ $d->produksi }}</td>
                             <td class="cell-harga">Rp {{ number_format($d->harga, 0, ',', '.') }}</td>
                         </tr>
@@ -184,26 +249,41 @@
 </div>
 
 <script>
-    const labels = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    const bulanNames = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
     const dataGrafik = @json($dataGrafik);
+    const bulanDipilih = {{ $bulanDipilih }};
 
     const produksiPerBulan = Array(12).fill(0);
     dataGrafik.forEach(d => { produksiPerBulan[d.bulan - 1] = d.total_produksi; });
 
+    // Warna bar — highlight bulan yang dipilih
+    const barColors = produksiPerBulan.map((_, i) =>
+        i + 1 === bulanDipilih
+            ? '#C68B2F'               // gold untuk bulan dipilih
+            : 'rgba(13, 27, 42, 0.7)' // sea untuk bulan lain
+    );
+
     new Chart(document.getElementById('grafikBulanan'), {
         type: 'bar',
         data: {
-            labels: labels,
+            labels: bulanNames,
             datasets: [{
                 label: 'Total Produksi (Ton)',
                 data: produksiPerBulan,
-                backgroundColor: 'rgba(13, 27, 42, 0.75)',
+                backgroundColor: barColors,
                 borderRadius: 6,
             }]
         },
         options: {
             responsive: true,
-            plugins: { legend: { display: false } },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: ctx => ` ${ctx.parsed.y} Ton`
+                    }
+                }
+            },
             scales: {
                 y: { beginAtZero: true, grid: { color: '#E2DED6' } },
                 x: { grid: { display: false } }

@@ -98,29 +98,37 @@ class DataBulananController extends Controller
 
     public function rekapBulanan(Request $request)
 {
-    // Ambil semua tahun yang tersedia untuk filter
     $tahunList = DataBulanan::select('tahun')
                     ->distinct()
                     ->orderBy('tahun', 'desc')
                     ->pluck('tahun');
 
-    // Tahun yang dipilih, default tahun terbaru
+    $bulanList = [
+        1=>'Januari', 2=>'Februari', 3=>'Maret', 4=>'April',
+        5=>'Mei', 6=>'Juni', 7=>'Juli', 8=>'Agustus',
+        9=>'September', 10=>'Oktober', 11=>'November', 12=>'Desember'
+    ];
+
     $tahunDipilih = $request->tahun ?? $tahunList->first();
+    $bulanDipilih = $request->bulan ?? now()->month;
 
-    // Data tabel — semua kabupaten untuk tahun dipilih
-    $data = DataBulanan::with('kabupaten')
-                ->where('tahun', $tahunDipilih)
-                ->orderBy('kabupaten_id')
-                ->orderBy('bulan')
-                ->get();
-
-    // Data grafik — total produksi per bulan
+    // Data grafik — total produksi per bulan dalam tahun dipilih
     $dataGrafik = DataBulanan::where('tahun', $tahunDipilih)
                 ->selectRaw('bulan, SUM(produksi) as total_produksi')
                 ->groupBy('bulan')
                 ->orderBy('bulan')
                 ->get();
 
-    return view('garam.rekap_bulanan', compact('data', 'tahunList', 'tahunDipilih', 'dataGrafik'));
+    // Data tabel — semua kabupaten di bulan & tahun dipilih
+    $data = DataBulanan::with('kabupaten')
+                ->where('tahun', $tahunDipilih)
+                ->where('bulan', $bulanDipilih)
+                ->orderBy('kabupaten_id')
+                ->get();
+
+    return view('garam.rekap_bulanan', compact(
+        'data', 'tahunList', 'bulanList',
+        'tahunDipilih', 'bulanDipilih', 'dataGrafik'
+    ));
 }
 }
