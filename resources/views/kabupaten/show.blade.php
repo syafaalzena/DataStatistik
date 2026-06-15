@@ -226,6 +226,10 @@
 }
 .btn-simpan:hover { opacity: .85; color: #fff; }
 
+a {
+    text-decoration: none;
+}
+
     </style>
 </head>
 <body>
@@ -238,12 +242,11 @@
         <p class="subtitle">Data statistik garam wilayah ini</p>
     </div>
 <div style="margin-left:60px; margin-top:14px;">
-       <button class="btn btn-sm"
-    style="background:white; color:#black; border-radius:8px; font-size:.99rem; font-weight:600;"
-    data-bs-toggle="modal"
-    data-bs-target="#modalTambahBulanan">
-    + Tambah Data Produksi
-</button>
+    <a href="{{ route('data-bulanan.create', $kabupaten->id) }}"
+       class="btn btn-sm"
+       style="background:white; color:black; border-radius:8px; font-size:.99rem; font-weight:600;">
+        + Tambah Data Produksi
+    </a>
 </div>
 </div>
 
@@ -252,7 +255,12 @@
     {{-- DATA TAHUNAN --}}
     <div class="data-card">
         <div class="data-card-header">
-            <div class="card-icon">📊</div>
+           <div class="card-icon">
+    <img src="{{ asset('images/statistik.png') }}"
+         alt="Statistik"
+         width="20"
+         height="20">
+</div>
             <h5>Data Tahunan</h5>
         </div>
         <div class="data-card-body">
@@ -296,7 +304,12 @@
     <div class="data-card">
         <div class="data-card-header" style="display:flex; justify-content:space-between; align-items:center;">
     <div style="display:flex; align-items:center; gap:.6rem;">
-        <div class="card-icon">📅</div>
+        <div class="card-icon">
+    <img src="{{ asset('images/kalender.png') }}"
+         alt="Kalender"
+         width="20"
+         height="20">
+</div>
         <h5>Data Bulanan</h5>
     </div>
     
@@ -317,6 +330,8 @@
                             <th>Jenis Produksi</th>
                             <th>Produksi</th>
                             <th>Harga</th>
+                            <th>Aksi<th>
+                           
                         </tr>
                     </thead>
                     <tbody>
@@ -326,7 +341,42 @@
                             <td>{{ $db->bulan }}</td>
                             <td>{{ $db->jenis_produksi }}</td>
                             <td>{{ $db->produksi }}</td>
-                            <td class="cell-harga">Rp {{ number_format($db->harga, 0, ',', '.') }}</td>
+                            <td class="cell-harga">Rp {{ number_format($db->harga, 0, ',', '.') }}
+                            </td>
+                            <td>
+
+   <td>
+    <div style="display:flex; align-items:center; gap:10px;">
+
+        <a href="{{ route('data-bulanan.edit', $db->id) }}"
+           style="text-decoration:none; display:flex; align-items:center;">
+            <img src="{{ asset('images/pencil.png') }}"
+                 alt="Edit"
+                 width="20"
+                 height="20">
+        </a>
+
+        <form action="{{ route('data-bulanan.destroy', $db->id) }}"
+              method="POST"
+              onsubmit="return confirm('Yakin ingin menghapus data ini?')"
+              style="margin:0;">
+
+            @csrf
+            @method('DELETE')
+
+            <button type="submit"
+                    style="background:none; border:none; padding:0; display:flex; align-items:center;">
+                <img src="{{ asset('images/delete.png') }}"
+                     alt="Hapus"
+                     width="20"
+                     height="20">
+            </button>
+
+        </form>
+
+    </div>
+</td>
+                            
                         </tr>
                         @endforeach
                     </tbody>
@@ -338,67 +388,7 @@
 
 </div>
 
-{{-- MODAL TAMBAH DATA BULANAN --}}
-<div class="modal fade" id="modalTambahBulanan" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form action="{{ route('data-bulanan.store') }}" method="POST">
-                @csrf
-                <input type="hidden" name="kabupaten_id" value="{{ $kabupaten->id }}">
-                <div class="modal-body">
 
-                    <div class="mb-3">
-                        <label class="form-label">Tahun</label>
-                        <input type="number" name="tahun" class="form-control" placeholder="2024" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Bulan</label>
-                        <select name="bulan" class="form-select" required>
-                            <option value="">-- Pilih Bulan --</option>
-                            <option value="1">Januari</option>
-                            <option value="2">Februari</option>
-                            <option value="3">Maret</option>
-                            <option value="4">April</option>
-                            <option value="5">Mei</option>
-                            <option value="6">Juni</option>
-                            <option value="7">Juli</option>
-                            <option value="8">Agustus</option>
-                            <option value="9">September</option>
-                            <option value="10">Oktober</option>
-                            <option value="11">November</option>
-                            <option value="12">Desember</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Jenis Produksi</label>
-                        <select name="jenis_produksi" class="form-select" required>
-                            <option value="">-- Pilih Jenis --</option>
-                            <option value="Rebus">Rebus</option>
-                            <option value="Jemur">Jemur</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Produksi (Ton)</label>
-                        <input type="number" name="produksi" class="form-control" placeholder="0" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Harga (Rp)</label>
-                        <input type="number" name="harga" class="form-control" placeholder="0" required>
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-simpan">Simpan</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

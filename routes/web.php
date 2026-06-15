@@ -29,3 +29,10 @@ Route::get('/dashboard', [StatistikController::class, 'dashboard'])->name('dashb
 Route::get('/garam/rekap_tahunan', [DataTahunanController::class, 'rekapTahunan'])->name('garam.rekapTahunan');
 Route::get('/garam/rekap_bulanan', [DataBulananController::class, 'rekapBulanan'])->name('garam.rekapBulanan');
 Route::post('/data-bulanan', [DataBulananController::class, 'store'])->name('data-bulanan.store');
+Route::get('/data-bulanan/create/{kabupaten_id}', [DataBulananController::class, 'create']) ->name('data-bulanan.create');
+Route::delete('/data-bulanan/{dataBulanan}', [DataBulananController::class, 'destroy']) ->name('data-bulanan.destroy');
+Route::get('/data-bulanan/{dataBulanan}/edit', [DataBulananController::class, 'edit'])
+    ->name('data-bulanan.edit');
+
+Route::put('/data-bulanan/{dataBulanan}', [DataBulananController::class, 'update'])
+    ->name('data-bulanan.update');
