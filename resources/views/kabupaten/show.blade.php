@@ -343,7 +343,7 @@ a {
                             <td>{{ $db->produksi }}</td>
                             <td class="cell-harga">Rp {{ number_format($db->harga, 0, ',', '.') }}
                             </td>
-                            <td>
+                        
 
    <td>
     <div style="display:flex; align-items:center; gap:10px;">
