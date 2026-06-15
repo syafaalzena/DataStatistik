@@ -169,13 +169,12 @@
         .table tbody td:nth-child(2),
         .table tbody td:nth-child(4),
         .table tbody td:nth-child(5) {
-            font-family: var(--font-mono);
+            font-family: var(--font-base);
             font-size: .83rem;
         }
 
         /* Kolom harga */
         .cell-harga {
-            font-family: var(--font-mono);
             font-weight: 500;
             color: var(--clr-gold);
         }
@@ -187,7 +186,7 @@
             color: var(--clr-sea);
             border-radius: 6px;
             padding: .2rem .55rem;
-            font-family: var(--font-mono);
+            font-family: var(--font-base);
             font-size: .8rem;
             font-weight: 500;
         }
