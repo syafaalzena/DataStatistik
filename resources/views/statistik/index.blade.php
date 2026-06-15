@@ -6,6 +6,24 @@
     <title>Dashboard Statistik Garam Aceh</title>
 
     <style>
+
+     :root {
+            --clr-sea:    #0d1b2a;
+            --clr-sea-lt: #E8F5F6;
+            --clr-salt:   #F7F5F0;
+            --clr-stone:  #3D3D3A;
+            --clr-mist:   #8A8A85;
+            --clr-border: #E2DED6;
+            --clr-white:  #FFFFFF;
+            --clr-gold:   #C68B2F;
+            --radius-card: 14px;
+            --shadow-card: 0 2px 16px rgba(26,107,114,.08);
+            --font-base:  'Plus Jakarta Sans', sans-serif;
+            --font-mono:  'DM Mono', monospace;
+        }
+
+        body { background: var(--clr-salt); font-family: var(--font-base); color: var(--clr-stone); }
+
         *{
     margin:0;
     padding:0;
@@ -13,10 +31,7 @@
     font-family:Inter, sans-serif;
 }
 
-body{
-    background:#f8fafc;
-    color:#0f172a;
-}
+
 
 /* Navbar */
 .navbar{

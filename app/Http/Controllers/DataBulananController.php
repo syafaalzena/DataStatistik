@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\DataBulanan;
 use Illuminate\Http\Request;
+use App\Models\Kabupaten;
 
 class DataBulananController extends Controller
 {
@@ -19,10 +20,12 @@ class DataBulananController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        return view('garam.bulanan.create');
-    }
+    public function create($kabupaten_id)
+{
+    $kabupaten = Kabupaten::findOrFail($kabupaten_id);
+
+    return view('kabupaten.data-bulanan.create', compact('kabupaten'));
+}
 
     /**
      * Store a newly created resource in storage.
@@ -56,9 +59,9 @@ class DataBulananController extends Controller
      * Show the form for editing the specified resource.
      */
     public function edit(DataBulanan $dataBulanan)
-    {
-        return view('garam.bulanan.edit', compact('dataBulanan'));
-    }
+{
+    return view('kabupaten.data-bulanan.edit', compact('dataBulanan'));
+}
 
     /**
      * Update the specified resource in storage.
@@ -84,11 +87,12 @@ class DataBulananController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy(DataBulanan $dataBulanan)
-    {
-        $dataBulanan->delete();
-        return redirect()->route('kabupaten.show', $dataBulanan->kabupaten_id)
-            ->with('success', 'Data bulanan deleted successfully.');
-    }
+{
+    $dataBulanan->delete();
+
+    return redirect()->route('kabupaten.show', $dataBulanan->kabupaten_id)
+        ->with('success', 'Data bulanan berhasil dihapus.');
+}
 
 
 

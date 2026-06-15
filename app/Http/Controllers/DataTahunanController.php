@@ -98,7 +98,6 @@ class DataTahunanController extends Controller
 
     public function rekapTahunan(Request $request)
 {
-    // Ambil semua tahun dari data bulanan
     $tahunList = DataBulanan::select('tahun')
                     ->distinct()
                     ->orderBy('tahun', 'desc')
@@ -108,7 +107,6 @@ class DataTahunanController extends Controller
     $tahunDipilih     = $request->tahun ?? $tahunList->first();
     $kabupatenDipilih = $request->kabupaten_id ?? null;
 
-    // Query data bulanan berdasarkan tahun
     $query = DataBulanan::with('kabupaten')
                 ->where('tahun', $tahunDipilih);
 
@@ -118,7 +116,6 @@ class DataTahunanController extends Controller
 
     $data = $query->orderBy('kabupaten_id')->orderBy('bulan')->get();
 
-    // Grafik — total produksi per kabupaten di tahun dipilih
     $grafikQuery = DataBulanan::with('kabupaten')
                     ->where('tahun', $tahunDipilih)
                     ->selectRaw('kabupaten_id, SUM(produksi) as total_produksi')
@@ -135,4 +132,5 @@ class DataTahunanController extends Controller
         'tahunDipilih', 'kabupatenDipilih', 'dataGrafik'
     ));
 }
+
 }
