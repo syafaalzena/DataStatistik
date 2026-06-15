@@ -4,80 +4,295 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rekap Tahunan</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body{
-            background-color: #f8f9fa;
+        :root {
+            --clr-sea:    #0d1b2a;
+            --clr-sea-lt: #E8F5F6;
+            --clr-salt:   #F7F5F0;
+            --clr-stone:  #3D3D3A;
+            --clr-mist:   #8A8A85;
+            --clr-border: #E2DED6;
+            --clr-white:  #FFFFFF;
+            --clr-gold:   #C68B2F;
+            --radius-card: 14px;
+            --shadow-card: 0 2px 16px rgba(26,107,114,.08);
+            --font-base:  'Plus Jakarta Sans', sans-serif;
+            --font-mono:  'DM Mono', monospace;
         }
 
-        .table-container{
-            background: #fff;
-            padding: 20px;
+        body { background: var(--clr-salt); font-family: var(--font-base); color: var(--clr-stone); }
+
+        .page-header {
+            background: linear-gradient(135deg, var(--clr-sea) 0%, #0F4A50 100%);
+            border-radius: 0 0 28px 28px;
+            padding: 2rem 0 2.4rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .page-header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(105deg, transparent, transparent 38px, rgba(255,255,255,.04) 38px, rgba(255,255,255,.04) 39px);
+            pointer-events: none;
+        }
+        .page-header h2 { color: #fff; font-size: 1.75rem; font-weight: 700; margin: .75rem 0 .25rem; }
+        .page-header .subtitle { color: rgba(255,255,255,.65); font-size: .88rem; margin: 0; }
+        .btn-back {
+            background: rgba(255,255,255,.12);
+            border: 1px solid rgba(255,255,255,.22);
+            color: #fff; border-radius: 8px; font-size: .85rem;
+            padding: .4rem .9rem; text-decoration: none;
+            display: inline-flex; align-items: center; gap: .35rem;
+        }
+        .btn-back:hover { background: rgba(255,255,255,.22); color: #fff; }
+
+        .data-card {
+            background: var(--clr-white);
+            border-radius: var(--radius-card);
+            box-shadow: var(--shadow-card);
+            border: 1px solid var(--clr-border);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+        .data-card-header {
+            padding: 1.25rem 1.5rem 1rem;
+            border-bottom: 1px solid var(--clr-border);
+            display: flex; align-items: center; gap: .6rem;
+        }
+        .card-icon {
+            width: 36px; height: 36px; border-radius: 9px;
+            background: var(--clr-sea-lt);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; flex-shrink: 0;
+        }
+        .data-card-header h5 { font-size: 1rem; font-weight: 700; margin: 0; }
+        .data-card-body { padding: 1.25rem 1.5rem 1.5rem; }
+
+        .table { font-size: .875rem; margin-bottom: 0; }
+        .table thead th {
+            background: var(--clr-sea); color: #fff;
+            font-weight: 600; font-size: .78rem;
+            text-transform: uppercase; letter-spacing: .6px;
+            padding: .75rem 1rem; border: none; white-space: nowrap;
+        }
+        .table thead th:first-child { border-radius: 8px 0 0 0; }
+        .table thead th:last-child  { border-radius: 0 8px 0 0; }
+        .table tbody tr { border-bottom: 1px solid var(--clr-border); transition: background .15s; }
+        .table tbody tr:last-child { border-bottom: none; }
+        .table tbody tr:hover { background: var(--clr-sea-lt); }
+        .table tbody td { padding: .7rem 1rem; vertical-align: middle; border: none; }
+
+        .badge-tahun {
+            display: inline-block; background: var(--clr-sea-lt); color: var(--clr-sea);
+            border-radius: 6px; padding: .2rem .55rem;
+            font-family: var(--font-mono); font-size: .8rem; font-weight: 500;
+        }
+
+        .filter-card {
+            background: var(--clr-white);
+            border-radius: var(--radius-card);
+            box-shadow: var(--shadow-card);
+            border: 1px solid var(--clr-border);
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .filter-label { font-weight: 600; font-size: .85rem; color: var(--clr-mist); white-space: nowrap; }
+        .filter-select {
+            border: 1px solid var(--clr-border);
             border-radius: 8px;
-            border: 1px solid #dee2e6;
+            font-size: .88rem;
+            padding: .45rem .85rem;
+            font-family: var(--font-base);
+            color: var(--clr-stone);
+            background: var(--clr-salt);
         }
+        .filter-select:focus { outline: none; border-color: var(--clr-sea); }
+        .filter-btn {
+            background: var(--clr-sea); color: #fff; border: none;
+            border-radius: 8px; font-size: .85rem; font-weight: 600;
+            padding: .48rem 1.2rem; cursor: pointer; transition: opacity .2s;
+        }
+        .filter-btn:hover { opacity: .85; }
 
-        h3{
-            font-size: 22px;
-            font-weight: 600;
-            color: #343a40;
+        .empty-state {
+            text-align: center; padding: 2.5rem 1rem; color: var(--clr-mist);
         }
-
-        .table th{
-            background-color: #f1f3f5;
-            color: #212529;
-            text-align: center;
-            vertical-align: middle;
-        }
-
-        .table td{
-            text-align: center;
-            vertical-align: middle;
-        }
-
-        .table tbody tr:hover{
-            background-color: #f8f9fa;
-        }
+        .empty-state .empty-icon { font-size: 2rem; margin-bottom: .5rem; opacity: .5; }
+        .empty-state p { font-size: .9rem; margin: 0; }
     </style>
 </head>
 <body>
 
-<div class="container mt-4">
+<div class="page-header">
+    <div class="container">
+        <a href="{{ route('kabupaten.index') }}" class="btn-back">← Kembali</a>
+        <h2>Rekap Tahunan Provinsi</h2>
+        <p class="subtitle">Data statistik garam tahunan seluruh kabupaten</p>
+    </div>
+</div>
 
-    <div class="table-container">
+<div class="container pb-5">
 
-        <h3 class="mb-3">Rekap Tahunan</h3>
+    {{-- FILTER --}}
+    <form method="GET">
+        <div class="filter-card">
+            <span class="filter-label">Filter:</span>
 
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th width="60">No</th>
-                    <th>Kabupaten</th>
-                    <th>Jumlah Petani</th>
-                    <th>Luas Lahan Rebus (Ha)</th>
-                    <th>Jumlah Unit Lahan</th>
-                </tr>
-            </thead>
+            <datalist id="tahun-list">
+    @foreach($tahunList as $t)
+        <option value="{{ $t }}">
+    @endforeach
+</datalist>
 
-            <tbody>
-                @foreach($data as $index => $row)
-                <tr>
-                    <td>{{ $index + 1 }}</td>
-                    <td class="text-start">{{ $row->nama_kabupaten }}</td>
-                    <td>{{ number_format($row->jumlah_petani) }}</td>
-                    <td>{{ number_format($row->luas_lahan_rebus, 2) }}</td>
-                    <td>{{ number_format($row->jumlah_lahan_unit) }}</td>
-                </tr>
+<input type="text" 
+    name="tahun" 
+    list="tahun-list"
+    value="{{ $tahunDipilih }}"
+    class="filter-select"
+    placeholder="tahun">
+
+            <select name="kabupaten_id" class="filter-select">
+                <option value="">-- Semua Kabupaten --</option>
+                @foreach($kabupatenList as $kab)
+                    <option value="{{ $kab->id }}" {{ $kab->id == $kabupatenDipilih ? 'selected' : '' }}>
+                        {{ $kab->nama_kabupaten }}
+                    </option>
                 @endforeach
-            </tbody>
+            </select>
 
-        </table>
+            <button type="submit" class="filter-btn">Tampilkan</button>
+        </div>
+    </form>
 
+    {{-- GRAFIK --}}
+    <div class="data-card">
+        <div class="data-card-header">
+            <div class="card-icon">📊</div>
+            <h5>Grafik Jumlah Petani per Kabupaten — {{ $tahunDipilih }}</h5>
+        </div>
+        <div class="data-card-body">
+            @if($dataGrafik->isEmpty())
+                <div class="empty-state">
+                    <div class="empty-icon">📭</div>
+                    <p>Belum ada data untuk ditampilkan.</p>
+                </div>
+            @else
+                <canvas id="grafikTahunan" height="90"></canvas>
+            @endif
+        </div>
+    </div>
+
+    {{-- TABEL --}}
+    <div class="data-card">
+        <div class="data-card-header">
+            <div class="card-icon">📋</div>
+            <h5>
+                Data Tahunan {{ $tahunDipilih }}
+                @if($kabupatenDipilih)
+                    — {{ $kabupatenList->find($kabupatenDipilih)->nama_kabupaten }}
+                @else
+                    — Semua Kabupaten
+                @endif
+            </h5>
+        </div>
+        <div class="data-card-body">
+            @if($data->isEmpty())
+                <div class="empty-state">
+                    <div class="empty-icon">📭</div>
+                    <p>Belum ada data untuk filter ini.</p>
+                </div>
+            @else
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Kabupaten</th>
+                            <th>Tahun</th>
+                            <th>Jumlah Petani</th>
+                            <th>Lahan Rebus (ha)</th>
+                            <th>Lahan Jemur (ha)</th>
+                            <th>Jumlah Unit</th>
+                            <th>Lokasi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($data as $d)
+                        <tr>
+                            <td>{{ $d->kabupaten->nama_kabupaten }}</td>
+                            <td><span class="badge-tahun">{{ $d->tahun }}</span></td>
+                            <td>{{ $d->jumlah_petani }}</td>
+                            <td>{{ $d->luas_lahan_rebus }}</td>
+                            <td>{{ $d->luas_lahan_jemur }}</td>
+                            <td>{{ $d->jumlah_lahan_unit }}</td>
+                            <td>{{ $d->lokasi }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            @endif
+        </div>
     </div>
 
 </div>
 
+@if($dataGrafik->isNotEmpty())
+<script>
+    const dataGrafik = @json($dataGrafik);
+
+    const labels     = dataGrafik.map(d => d.kabupaten.nama_kabupaten);
+    const petani     = dataGrafik.map(d => d.jumlah_petani);
+    const lahanRebus = dataGrafik.map(d => d.luas_lahan_rebus);
+    const lahanJemur = dataGrafik.map(d => d.luas_lahan_jemur);
+
+    new Chart(document.getElementById('grafikTahunan'), {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Jumlah Petani',
+                    data: petani,
+                    backgroundColor: 'rgba(13, 27, 42, 0.8)',
+                    borderRadius: 6,
+                },
+                {
+                    label: 'Lahan Rebus (ha)',
+                    data: lahanRebus,
+                    backgroundColor: 'rgba(198, 139, 47, 0.8)',
+                    borderRadius: 6,
+                },
+                {
+                    label: 'Lahan Jemur (ha)',
+                    data: lahanJemur,
+                    backgroundColor: 'rgba(15, 74, 80, 0.8)',
+                    borderRadius: 6,
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'top' }
+            },
+            scales: {
+                y: { beginAtZero: true, grid: { color: '#E2DED6' } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+</script>
+@endif
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

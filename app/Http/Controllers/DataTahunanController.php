@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DataTahunan;
+use App\Models\DataBulanan;
 use Illuminate\Http\Request;
 
 class DataTahunanController extends Controller
@@ -95,9 +96,43 @@ class DataTahunanController extends Controller
             ->with('success', 'Data tahunan deleted successfully.');
     }
 
-    public function rekapTahunan()
-    {
-        $data = DataTahunan::with('kabupaten')->orderBy('tahun', 'desc')->get();
-        return view('garam.rekap_tahunan', compact('data'));
+    public function rekapTahunan(Request $request)
+{
+    // Ambil semua tahun dari data bulanan
+    $tahunList = DataBulanan::select('tahun')
+                    ->distinct()
+                    ->orderBy('tahun', 'desc')
+                    ->pluck('tahun');
+
+    $kabupatenList    = \App\Models\Kabupaten::all();
+    $tahunDipilih     = $request->tahun ?? $tahunList->first();
+    $kabupatenDipilih = $request->kabupaten_id ?? null;
+
+    // Query data bulanan berdasarkan tahun
+    $query = DataBulanan::with('kabupaten')
+                ->where('tahun', $tahunDipilih);
+
+    if ($kabupatenDipilih) {
+        $query->where('kabupaten_id', $kabupatenDipilih);
     }
+
+    $data = $query->orderBy('kabupaten_id')->orderBy('bulan')->get();
+
+    // Grafik — total produksi per kabupaten di tahun dipilih
+    $grafikQuery = DataBulanan::with('kabupaten')
+                    ->where('tahun', $tahunDipilih)
+                    ->selectRaw('kabupaten_id, SUM(produksi) as total_produksi')
+                    ->groupBy('kabupaten_id');
+
+    if ($kabupatenDipilih) {
+        $grafikQuery->where('kabupaten_id', $kabupatenDipilih);
+    }
+
+    $dataGrafik = $grafikQuery->with('kabupaten')->get();
+
+    return view('garam.rekap_tahunan', compact(
+        'data', 'tahunList', 'kabupatenList',
+        'tahunDipilih', 'kabupatenDipilih', 'dataGrafik'
+    ));
+}
 }
