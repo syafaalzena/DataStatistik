@@ -242,7 +242,7 @@
     style="background:white; color:#black; border-radius:8px; font-size:.99rem; font-weight:600;"
     data-bs-toggle="modal"
     data-bs-target="#modalTambahBulanan">
-    + Tambah Data
+    + Tambah Data Produksi
 </button>
 </div>
 </div>
