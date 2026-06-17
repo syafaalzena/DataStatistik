@@ -158,7 +158,7 @@
                 list="tahun-list"
                 value="{{ $tahunDipilih }}"
                 class="filter-select"
-                placeholder="Pilih/ketik tahun">
+                placeholder="Pilih/ketik tahun"
                 onchange="this.form.submit()">
 
             <select name="kabupaten_id" class="filter-select" onchange="this.form.submit()">
