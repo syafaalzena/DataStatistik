@@ -87,11 +87,12 @@
         .table tbody tr:hover { background: var(--clr-sea-lt); }
         .table tbody td { padding: .7rem 1rem; vertical-align: middle; border: none; }
 
-        .badge-tahun {
+        .badge-bulan {
             display: inline-block; background: var(--clr-sea-lt); color: var(--clr-sea);
             border-radius: 6px; padding: .2rem .55rem;
             font-family: var(--font-mono); font-size: .8rem; font-weight: 500;
         }
+        .cell-harga { font-family: var(--font-mono); font-weight: 500; color: var(--clr-gold); }
 
         .filter-card {
             background: var(--clr-white);
@@ -136,7 +137,7 @@
     <div class="container">
         <a href="{{ route('kabupaten.index') }}" class="btn-back">← Kembali</a>
         <h2>Rekap Tahunan Provinsi</h2>
-        <p class="subtitle">Data statistik garam tahunan seluruh kabupaten</p>
+        <p class="subtitle">Total produksi garam seluruh kabupaten per tahun</p>
     </div>
 </div>
 
@@ -148,17 +149,16 @@
             <span class="filter-label">Filter:</span>
 
             <datalist id="tahun-list">
-    @foreach($tahunList as $t)
-        <option value="{{ $t }}">
-    @endforeach
-</datalist>
-
-<input type="text" 
-    name="tahun" 
-    list="tahun-list"
-    value="{{ $tahunDipilih }}"
-    class="filter-select"
-    placeholder="tahun">
+                @foreach($tahunList as $t)
+                    <option value="{{ $t }}">
+                @endforeach
+            </datalist>
+            <input type="text"
+                name="tahun"
+                list="tahun-list"
+                value="{{ $tahunDipilih }}"
+                class="filter-select"
+                placeholder="Pilih/ketik tahun">
 
             <select name="kabupaten_id" class="filter-select">
                 <option value="">-- Semua Kabupaten --</option>
@@ -177,7 +177,7 @@
     <div class="data-card">
         <div class="data-card-header">
             <div class="card-icon">📊</div>
-            <h5>Grafik Jumlah Petani per Kabupaten — {{ $tahunDipilih }}</h5>
+            <h5>Grafik Total Produksi per Kabupaten — {{ $tahunDipilih }}</h5>
         </div>
         <div class="data-card-body">
             @if($dataGrafik->isEmpty())
@@ -186,7 +186,7 @@
                     <p>Belum ada data untuk ditampilkan.</p>
                 </div>
             @else
-                <canvas id="grafikTahunan" height="90"></canvas>
+                <canvas id="grafikTahunan"></canvas>
             @endif
         </div>
     </div>
@@ -196,9 +196,9 @@
         <div class="data-card-header">
             <div class="card-icon">📋</div>
             <h5>
-                Data Tahunan {{ $tahunDipilih }}
+                Detail Data Tahun {{ $tahunDipilih }}
                 @if($kabupatenDipilih)
-                    — {{ $kabupatenList->find($kabupatenDipilih)->nama_kabupaten }}
+                    — {{ $kabupatenList->find($kabupatenDipilih)?->nama_kabupaten }}
                 @else
                     — Semua Kabupaten
                 @endif
@@ -212,28 +212,27 @@
                 </div>
             @else
             <div class="table-responsive">
+                @php
+                    $namaBulan = ['','Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+                @endphp
                 <table class="table">
                     <thead>
                         <tr>
                             <th>Kabupaten</th>
-                            <th>Tahun</th>
-                            <th>Jumlah Petani</th>
-                            <th>Lahan Rebus (ha)</th>
-                            <th>Lahan Jemur (ha)</th>
-                            <th>Jumlah Unit</th>
-                            <th>Lokasi</th>
+                            <th>Bulan</th>
+                            <th>Jenis Produksi</th>
+                            <th>Produksi (Ton)</th>
+                            <th>Harga</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($data as $d)
                         <tr>
                             <td>{{ $d->kabupaten->nama_kabupaten }}</td>
-                            <td><span class="badge-tahun">{{ $d->tahun }}</span></td>
-                            <td>{{ $d->jumlah_petani }}</td>
-                            <td>{{ $d->luas_lahan_rebus }}</td>
-                            <td>{{ $d->luas_lahan_jemur }}</td>
-                            <td>{{ $d->jumlah_lahan_unit }}</td>
-                            <td>{{ $d->lokasi }}</td>
+                            <td><span class="badge-bulan">{{ $namaBulan[$d->bulan] }}</span></td>
+                            <td>{{ $d->jenis_produksi }}</td>
+                            <td>{{ $d->produksi }}</td>
+                            <td class="cell-harga">Rp {{ number_format($d->harga, 0, ',', '.') }}</td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -248,41 +247,31 @@
 @if($dataGrafik->isNotEmpty())
 <script>
     const dataGrafik = @json($dataGrafik);
-
     const labels     = dataGrafik.map(d => d.kabupaten.nama_kabupaten);
-    const petani     = dataGrafik.map(d => d.jumlah_petani);
-    const lahanRebus = dataGrafik.map(d => d.luas_lahan_rebus);
-    const lahanJemur = dataGrafik.map(d => d.luas_lahan_jemur);
+    const produksi   = dataGrafik.map(d => d.total_produksi);
 
     new Chart(document.getElementById('grafikTahunan'), {
         type: 'bar',
         data: {
             labels: labels,
-            datasets: [
-                {
-                    label: 'Jumlah Petani',
-                    data: petani,
-                    backgroundColor: 'rgba(13, 27, 42, 0.8)',
-                    borderRadius: 6,
-                },
-                {
-                    label: 'Lahan Rebus (ha)',
-                    data: lahanRebus,
-                    backgroundColor: 'rgba(198, 139, 47, 0.8)',
-                    borderRadius: 6,
-                },
-                {
-                    label: 'Lahan Jemur (ha)',
-                    data: lahanJemur,
-                    backgroundColor: 'rgba(15, 74, 80, 0.8)',
-                    borderRadius: 6,
-                }
-            ]
+            datasets: [{
+                label: 'Total Produksi (Ton)',
+                data: produksi,
+                backgroundColor: 'rgba(13, 27, 42, 0.7)',
+                borderRadius: 6,
+                maxBarThickness: 80,
+            }]
         },
         options: {
             responsive: true,
+            maintainAspectRatio: true,
             plugins: {
-                legend: { position: 'top' }
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: ctx => ` ${ctx.parsed.y} Ton`
+                    }
+                }
             },
             scales: {
                 y: { beginAtZero: true, grid: { color: '#E2DED6' } },

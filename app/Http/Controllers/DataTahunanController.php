@@ -98,39 +98,41 @@ class DataTahunanController extends Controller
 
     public function rekapTahunan(Request $request)
 {
-    $tahunList = DataTahunan::select('tahun')
+    // Ambil tahun dari data bulanan
+    $tahunList = DataBulanan::select('tahun')
                     ->distinct()
                     ->orderBy('tahun', 'desc')
                     ->pluck('tahun');
 
-    $kabupatenList = \App\Models\Kabupaten::all();
-
+    $kabupatenList    = \App\Models\Kabupaten::all();
     $tahunDipilih     = $request->tahun ?? $tahunList->first();
     $kabupatenDipilih = $request->kabupaten_id ?? null;
 
-    // Query dasar
-    $query = DataTahunan::with('kabupaten')
+    // Data tabel
+    $query = DataBulanan::with('kabupaten')
                 ->where('tahun', $tahunDipilih);
 
-    // Filter kabupaten kalau dipilih
     if ($kabupatenDipilih) {
         $query->where('kabupaten_id', $kabupatenDipilih);
     }
 
-    $data = $query->orderBy('kabupaten_id')->get();
+    $data = $query->orderBy('kabupaten_id')->orderBy('bulan')->get();
 
-    // Data grafik — jumlah petani per kabupaten di tahun dipilih
-    $grafikQuery = DataTahunan::with('kabupaten')
-                    ->where('tahun', $tahunDipilih);
+    // Data grafik — total produksi per kabupaten
+    $grafikQuery = DataBulanan::with('kabupaten')
+                    ->where('tahun', $tahunDipilih)
+                    ->selectRaw('kabupaten_id, SUM(produksi) as total_produksi')
+                    ->groupBy('kabupaten_id');
+
     if ($kabupatenDipilih) {
         $grafikQuery->where('kabupaten_id', $kabupatenDipilih);
     }
-    $dataGrafik = $grafikQuery->get();
+
+    $dataGrafik = $grafikQuery->with('kabupaten')->get();
 
     return view('garam.rekap_tahunan', compact(
         'data', 'tahunList', 'kabupatenList',
         'tahunDipilih', 'kabupatenDipilih', 'dataGrafik'
     ));
 }
-
 }
