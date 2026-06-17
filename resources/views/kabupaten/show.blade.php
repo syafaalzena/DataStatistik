@@ -361,16 +361,10 @@
                             <th>Tahun</th>
                             <th>Bulan</th>
                             <th>Jenis Produksi</th>
-<<<<<<< HEAD
-                            <th>Produksi</th>
-                            <th>Harga</th>
-                            <th>Aksi</th>
-=======
                             <th>Produksi (Ton)</th>
                             <th>Harga (Rp)</th>
                             <th>Aksi<th>
                            
->>>>>>> a155950ffcfad6ac397876a56fb192ecc597fc12
                         </tr>
                     </thead>
                     <tbody>
