@@ -348,8 +348,8 @@ a {
                             <th>Tahun</th>
                             <th>Bulan</th>
                             <th>Jenis Produksi</th>
-                            <th>Produksi</th>
-                            <th>Harga</th>
+                            <th>Produksi (Ton)</th>
+                            <th>Harga (Rp)</th>
                             <th>Aksi<th>
                            
                         </tr>

@@ -227,7 +227,7 @@
                             <th>Kabupaten</th>
                             <th>Jenis Produksi</th>
                             <th>Produksi (Ton)</th>
-                            <th>Harga</th>
+                            <th>Harga (Rp)</th>
                         </tr>
                     </thead>
                     <tbody>
