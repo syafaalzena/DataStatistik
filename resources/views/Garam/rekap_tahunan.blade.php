@@ -159,8 +159,9 @@
                 value="{{ $tahunDipilih }}"
                 class="filter-select"
                 placeholder="Pilih/ketik tahun">
+                onchange="this.form.submit()">
 
-            <select name="kabupaten_id" class="filter-select">
+            <select name="kabupaten_id" class="filter-select" onchange="this.form.submit()">
                 <option value="">-- Semua Kabupaten --</option>
                 @foreach($kabupatenList as $kab)
                     <option value="{{ $kab->id }}" {{ $kab->id == $kabupatenDipilih ? 'selected' : '' }}>
@@ -169,7 +170,7 @@
                 @endforeach
             </select>
 
-            <button type="submit" class="filter-btn">Tampilkan</button>
+            
         </div>
     </form>
 

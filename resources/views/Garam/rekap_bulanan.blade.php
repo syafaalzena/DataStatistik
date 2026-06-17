@@ -149,19 +149,19 @@
         <div class="filter-card">
             <span class="filter-label">Filter:</span>
 
-            <select name="tahun" class="filter-select">
+            <select name="tahun" class="filter-select" onchange="this.form.submit()">
                 @foreach($tahunList as $t)
                     <option value="{{ $t }}" {{ $t == $tahunDipilih ? 'selected' : '' }}>{{ $t }}</option>
                 @endforeach
             </select>
 
-            <select name="bulan" class="filter-select">
+            <select name="bulan" class="filter-select" onchange="this.form.submit()">
                 @foreach($bulanList as $num => $nama)
                     <option value="{{ $num }}" {{ $num == $bulanDipilih ? 'selected' : '' }}>{{ $nama }}</option>
                 @endforeach
             </select>
 
-            <button type="submit" class="filter-btn">Tampilkan</button>
+            
         </div>
     </form>
 
