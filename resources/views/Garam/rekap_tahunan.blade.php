@@ -173,6 +173,37 @@
         </div>
     </form>
 
+    <div class="row mb-4">
+    <div class="col-md-4">
+        <div class="data-card">
+            <div class="data-card-body text-center">
+                <h6 class="text-muted">Total Data</h6>
+                <h3 class="fw-bold">{{ $data->count() }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="data-card">
+            <div class="data-card-body text-center">
+                <h6 class="text-muted">Total Produksi</h6>
+                <h3 class="fw-bold">{{ $data->sum('produksi') }} Ton</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="data-card">
+            <div class="data-card-body text-center">
+                <h6 class="text-muted">Total Harga</h6>
+                <h3 class="fw-bold">
+                    Rp {{ number_format($data->sum('harga'), 0, ',', '.') }}
+                </h3>
+            </div>
+        </div>
+    </div>
+</div>
+
     {{-- GRAFIK --}}
     <div class="data-card">
         <div class="data-card-header">
