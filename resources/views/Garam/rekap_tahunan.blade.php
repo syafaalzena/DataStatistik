@@ -40,16 +40,20 @@
             background: repeating-linear-gradient(105deg, transparent, transparent 38px, rgba(255,255,255,.04) 38px, rgba(255,255,255,.04) 39px);
             pointer-events: none;
         }
-        .page-header h2 { color: #fff; font-size: 1.75rem; font-weight: 700; margin: .75rem 0 .25rem; }
+        
+        /* Modifikasi spacing judul agar sejajar tombol */
+        .page-header h2 { color: #fff; font-size: 1.75rem; font-weight: 700; margin: 0; }
         .page-header .subtitle { color: rgba(255,255,255,.65); font-size: .88rem; margin: 0; }
+        
         .btn-back {
             background: rgba(255,255,255,.12);
             border: 1px solid rgba(255,255,255,.22);
             color: #fff; border-radius: 8px; font-size: .85rem;
-            padding: .4rem .9rem; text-decoration: none;
+            padding: .5rem 1rem; text-decoration: none;
             display: inline-flex; align-items: center; gap: .35rem;
+            transition: all 0.2s ease;
         }
-        .btn-back:hover { background: rgba(255,255,255,.22); color: #fff; }
+        .btn-back:hover { background: rgba(255,255,255,.22); color: #fff; transform: translateX(-2px); }
 
         .data-card {
             background: var(--clr-white);
@@ -129,15 +133,48 @@
         }
         .empty-state .empty-icon { font-size: 2rem; margin-bottom: .5rem; opacity: .5; }
         .empty-state p { font-size: .9rem; margin: 0; }
+
+        .btn-back {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff; /* Background putih polos */
+            border: 1px solid #e2e8f0; /* Border abu-abu tipis */
+            border-radius: 30px; /* Bulat sempurna */
+            text-decoration: none;
+            transition: all .2s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,.05);
+            flex-shrink: 0;
+        }
+
+        .btn-back:hover {
+            transform: translateY(-2px);
+            background: #0f172a; /* Berubah jadi navy gelap saat di-hover */
+            border-color: #0f172a;
+        }
+
+        /* Efek membalik warna gambar back.png jadi putih saat di-hover */
+        .btn-back:hover img {
+            filter: brightness(0) invert(1);
+        }
     </style>
 </head>
 <body>
 
 <div class="page-header">
     <div class="container">
-        <a href="{{ route('kabupaten.index') }}" class="btn-back">← Kembali</a>
-        <h2>Rekap Tahunan Provinsi</h2>
-        <p class="subtitle">Total produksi garam seluruh kabupaten per tahun</p>
+        <div class="d-flex align-items-center gap-3">
+            <a href="{{ route('kabupaten.index') }}" class="btn-back">
+                <img src="{{ asset('images/back.png') }}" alt="Kembali" width="20" height="20" style="transition: filter 0.2s;">
+            </a>
+            
+            <div>
+                <h2 class="m-0">Rekap Tahunan Provinsi</h2>
+                <p class="subtitle mt-1">Total produksi garam seluruh kabupaten per tahun</p>
+            </div>
+        </div>
     </div>
 </div>
 

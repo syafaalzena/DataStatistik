@@ -57,28 +57,38 @@
             pointer-events: none;
         }
 
-        .page-header .btn-back {
-            background: rgba(255,255,255,.12);
-            border: 1px solid rgba(255,255,255,.22);
-            color: #fff;
-            border-radius: 8px;
-            font-size: .85rem;
-            padding: .4rem .9rem;
-            transition: background .2s;
-            text-decoration: none;
-            display: inline-flex;
+        /* Style Tombol Back disamakan persis dengan halaman utama */
+        .btn-back {
+            width: 48px;
+            height: 48px;
+            display: flex;
             align-items: center;
-            gap: .35rem;
+            justify-content: center;
+            background: #ffffff; /* Background putih polos */
+            border: 1px solid #e2e8f0; /* Border abu-abu tipis */
+            border-radius: 30px; /* Bulat sempurna */
+            text-decoration: none;
+            transition: all .2s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,.05);
+            flex-shrink: 0;
         }
-        .page-header .btn-back:hover {
-            background: rgba(255,255,255,.22);
+
+        .btn-back:hover {
+            transform: translateY(-2px);
+            background: #0f172a; /* Berubah jadi navy gelap saat di-hover */
+            border-color: #0f172a;
+        }
+
+        /* Efek membalik warna gambar back.png jadi putih saat di-hover */
+        .btn-back:hover img {
+            filter: brightness(0) invert(1);
         }
 
         .page-header h2 {
             color: #fff;
             font-size: 1.75rem;
             font-weight: 700;
-            margin: .75rem 0 .25rem;
+            margin: 0;
             letter-spacing: -.3px;
         }
 
@@ -215,20 +225,19 @@
         }
 
         .btn-simpan {
-    background: var(--clr-sea);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: .88rem;
-    padding: .55rem 1.4rem;
-}
-.btn-simpan:hover { opacity: .85; color: #fff; }
+            background: var(--clr-sea);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: .88rem;
+            padding: .55rem 1.4rem;
+        }
+        .btn-simpan:hover { opacity: .85; color: #fff; }
 
-a {
-    text-decoration: none;
-}
-
+        a {
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
@@ -236,51 +245,56 @@ a {
 {{-- HEADER --}}
 <div class="page-header">
     <div class="container">
-        <a href="{{ route('kabupaten.index') }}" class="btn-back">Kembali</a>
-        <h2>{{ $kabupaten->nama_kabupaten }}</h2>
-        <p class="subtitle">Data statistik garam wilayah ini</p>
+        <div class="d-flex align-items-center gap-3">
+            <a href="{{ route('kabupaten.index') }}" class="btn-back">
+                <img src="{{ asset('images/back.png') }}" alt="Kembali" width="24" height="24">
+            </a>
+            
+            <div>
+                <h2 class="m-0">{{ $kabupaten->nama_kabupaten }}</h2>
+                <p class="subtitle mt-1">Data statistik garam wilayah ini</p>
+            </div>
+        </div>
     </div>
-<div style="margin-left:60px; margin-top:14px;">
-    <a href="{{ route('data-bulanan.create', $kabupaten->id) }}"
-       class="btn btn-sm"
-       style="background:white; color:black; border-radius:8px; font-size:.99rem; font-weight:600;">
-        + Tambah Data Produksi
-    </a>
-</div>
+    <div style="margin-left:60px; margin-top:14px;">
+        <a href="{{ route('data-bulanan.create', $kabupaten->id) }}"
+           class="btn btn-sm"
+           style="background:white; color:black; border-radius:8px; font-size:.99rem; font-weight:600;">
+             + Tambah Data Produksi
+        </a>
+    </div>
 </div>
 
 <div class="container pb-5">
 
-<div class="container pb-5">
+    @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show"
+         role="alert"
+         style="
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            min-width: 300px;
+            box-shadow: 0 4px 15px rgba(0,0,0,.15);
+         ">
+         {{ session('success') }}
 
-@if(session('success'))
-<div class="alert alert-success alert-dismissible fade show"
-     role="alert"
-     style="
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        z-index: 9999;
-        min-width: 300px;
-        box-shadow: 0 4px 15px rgba(0,0,0,.15);
-     ">
-     {{ session('success') }}
-
-    <button type="button"
-            class="btn-close"
-            data-bs-dismiss="alert"></button>
-</div>
-@endif
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"></button>
+    </div>
+    @endif
 
     {{-- DATA TAHUNAN --}}
     <div class="data-card">
         <div class="data-card-header">
            <div class="card-icon">
-    <img src="{{ asset('images/statistik.png') }}"
-         alt="Statistik"
-         width="20"
-         height="20">
-</div>
+                <img src="{{ asset('images/statistik.png') }}"
+                     alt="Statistik"
+                     width="20"
+                     height="20">
+            </div>
             <h5>Data Tahunan</h5>
         </div>
         <div class="data-card-body">
@@ -323,17 +337,16 @@ a {
     {{-- DATA BULANAN --}}
     <div class="data-card">
         <div class="data-card-header" style="display:flex; justify-content:space-between; align-items:center;">
-    <div style="display:flex; align-items:center; gap:.6rem;">
-        <div class="card-icon">
-    <img src="{{ asset('images/kalender.png') }}"
-         alt="Kalender"
-         width="20"
-         height="20">
-</div>
-        <h5>Data Bulanan</h5>
-    </div>
-    
-</div>
+            <div style="display:flex; align-items:center; gap:.6rem;">
+                <div class="card-icon">
+                    <img src="{{ asset('images/kalender.png') }}"
+                         alt="Kalender"
+                         width="20"
+                         height="20">
+                </div>
+                <h5>Data Bulanan</h5>
+            </div>
+        </div>
         <div class="data-card-body">
             @if($dataBulanan->isEmpty())
                 <div class="empty-state">
@@ -350,8 +363,7 @@ a {
                             <th>Jenis Produksi</th>
                             <th>Produksi</th>
                             <th>Harga</th>
-                            <th>Aksi<th>
-                           
+                            <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -361,42 +373,33 @@ a {
                             <td>{{ $db->bulan }}</td>
                             <td>{{ $db->jenis_produksi }}</td>
                             <td>{{ $db->produksi }}</td>
-                            <td class="cell-harga">Rp {{ number_format($db->harga, 0, ',', '.') }}
+                            <td class="cell-harga">Rp {{ number_format($db->harga, 0, ',', '.') }}</td>
+                            <td>
+                                <div style="display:flex; align-items:center; gap:10px;">
+                                    <a href="{{ route('data-bulanan.edit', $db->id) }}"
+                                       style="text-decoration:none; display:flex; align-items:center;">
+                                        <img src="{{ asset('images/pencil.png') }}"
+                                             alt="Edit"
+                                             width="20"
+                                             height="20">
+                                    </a>
+
+                                    <form action="{{ route('data-bulanan.destroy', $db->id) }}"
+                                          method="POST"
+                                          onsubmit="return confirm('Yakin ingin menghapus data ini?')"
+                                          style="margin:0;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                                style="background:none; border:none; padding:0; display:flex; align-items:center;">
+                                            <img src="{{ asset('images/delete.png') }}"
+                                                 alt="Hapus"
+                                                 width="20"
+                                                 height="20">
+                                        </button>
+                                    </form>
+                                </div>
                             </td>
-                        
-
-   <td>
-    <div style="display:flex; align-items:center; gap:10px;">
-
-        <a href="{{ route('data-bulanan.edit', $db->id) }}"
-           style="text-decoration:none; display:flex; align-items:center;">
-            <img src="{{ asset('images/pencil.png') }}"
-                 alt="Edit"
-                 width="20"
-                 height="20">
-        </a>
-
-        <form action="{{ route('data-bulanan.destroy', $db->id) }}"
-              method="POST"
-              onsubmit="return confirm('Yakin ingin menghapus data ini?')"
-              style="margin:0;">
-
-            @csrf
-            @method('DELETE')
-
-            <button type="submit"
-                    style="background:none; border:none; padding:0; display:flex; align-items:center;">
-                <img src="{{ asset('images/delete.png') }}"
-                     alt="Hapus"
-                     width="20"
-                     height="20">
-            </button>
-
-        </form>
-
-    </div>
-</td>
-                            
                         </tr>
                         @endforeach
                     </tbody>
@@ -407,8 +410,6 @@ a {
     </div>
 
 </div>
-
-
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
