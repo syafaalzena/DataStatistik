@@ -90,9 +90,9 @@
         .badge-bulan {
             display: inline-block; background: var(--clr-sea-lt); color: var(--clr-sea);
             border-radius: 6px; padding: .2rem .55rem;
-            font-family: var(--font-mono); font-size: .8rem; font-weight: 500;
+            font-family: var(--font-base); font-size: .8rem; font-weight: 500;
         }
-        .cell-harga { font-family: var(--font-mono); font-weight: 500; color: var(--clr-gold); }
+        .cell-harga { font-family: var(--font-base); font-weight: 500; color: var(--clr-gold); }
 
         .filter-card {
             background: var(--clr-white);
