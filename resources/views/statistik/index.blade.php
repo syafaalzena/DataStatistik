@@ -4,175 +4,131 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Statistik Garam Aceh</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
-
-     :root {
-            --clr-sea:    #0d1b2a;
-            --clr-sea-lt: #E8F5F6;
-            --clr-salt:   #F7F5F0;
-            --clr-stone:  #3D3D3A;
-            --clr-mist:   #8A8A85;
-            --clr-border: #E2DED6;
-            --clr-white:  #FFFFFF;
-            --clr-gold:   #C68B2F;
-            --radius-card: 14px;
-            --shadow-card: 0 2px 16px rgba(26,107,114,.08);
-            --font-base:  'Plus Jakarta Sans', sans-serif;
-            --font-mono:  'DM Mono', monospace;
+        :root {
+            --clr-bg: #F7F5F0;
+            --clr-dark: #0f172a;
+            --clr-text-muted: #64748b;
+            --clr-border: #e2e8f0;
         }
 
-        body { background: var(--clr-salt); font-family: var(--font-base); color: var(--clr-stone); }
+        body { 
+            background: var(--clr-bg); 
+            font-family: 'Inter', sans-serif; 
+            color: var(--clr-dark);
+        }
 
-        *{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Inter, sans-serif;
-}
+        /* Navbar Modern */
+        .navbar {
+            background: var(--clr-dark);
+            color: white;
+            padding: 18px 0;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+        }
 
+        /* Card Custom Styling */
+        .custom-card {
+            background: #ffffff;
+            border: 1px solid var(--clr-border);
+            border-radius: 16px;
+            padding: 35px;
+            transition: all 0.3s ease;
+        }
 
+        .custom-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(15, 23, 42, 0.08) !important;
+        }
 
-/* Navbar */
-.navbar{
-    background:#0f172a;
-    color:white;
-    padding:18px 40px;
-}
+        /* Button Modern */
+        .btn-custom-dark {
+            background: var(--clr-dark);
+            color: #ffffff;
+            padding: 12px 28px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            border: none;
+            text-decoration: none;
+            display: inline-block;
+        }
 
-.navbar h2{
-    font-size:22px;
-    font-weight:700;
-}
+        .btn-custom-dark:hover {
+            background: #1e293b;
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
 
-/* Container */
-.container{
-    max-width:1200px;
-    margin:auto;
-    padding:50px 20px;
-}
-
-/* Welcome */
-.welcome{
-    margin-bottom:40px;
-}
-
-.welcome h1{
-    font-size:42px;
-    font-weight:800;
-    margin-bottom:8px;
-}
-
-.welcome p{
-    color:#64748b;
-    font-size:16px;
-}
-
-/* Card Container */
-.card-container{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(350px,1fr));
-    gap:24px;
-}
-
-/* Card */
-.card{
-    background:#ffffff;
-    border:1px solid #e2e8f0;
-    border-radius:20px;
-    padding:35px;
-    transition:all .3s ease;
-}
-
-.card:hover{
-    transform:translateY(-4px);
-    box-shadow:0 10px 25px rgba(15,23,42,.08);
-}
-
-.card h2{
-    font-size:28px;
-    margin-bottom:15px;
-    font-weight:700;
-}
-
-.card p{
-    color:#64748b;
-    line-height:1.7;
-    margin-bottom:25px;
-}
-
-/* Button */
-.btn{
-    display:inline-block;
-    text-decoration:none;
-    background:#202529;
-    color:white;
-    padding:12px 28px;
-    border-radius:12px;
-    font-weight:600;
-    transition:.3s;
-}
-
-.btn:hover{
-    background:#3f4346;
-}
-
-/* Responsive */
-@media(max-width:768px){
-
-    .welcome h1{
-        font-size:30px;
-    }
-
-    .card-container{
-        grid-template-columns:1fr;
-    }
-}
+        /* Icon Wrapper di Judul */
+        .card-icon {
+            object-fit: contain;
+            vertical-align: middle;
+        }
     </style>
-
 </head>
 <body>
 
-    <div class="navbar">
-        <h2>Sistem Data Statistik Garam Aceh</h2>
-    </div>
+    <nav class="navbar mb-5">
+        <div class="container">
+            <span class="navbar-brand mb-0 h2 fw-bold text-white fs-4">Data Statistik Kelautan dan Perikanan Provinsi Aceh</span>
+        </div>
+    </nav>
 
-    <div class="container">
+    <div class="container mb-5">
 
-        <div class="welcome">
-            <h1>Selamat Datang </h1>
-            <p>Silakan pilih menu yang ingin Anda kelola.</p>
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="fw-extrabold display-5 mb-2" style="font-weight: 600; color: var(--clr-dark);">Selamat Datang, {{ Auth::user()->name ?? 'Admin' }}</h1>
+                <p class="fs-6" style="color: var(--clr-text-muted);">Silakan pilih menu yang ingin Anda kelola.</p>
+            </div>
         </div>
 
-        <div class="card-container">
-
-            <div class="card">
-                <h2>📊 Data Garam</h2>
-                <p>
-                    Kelola data produksi garam dan statistik garam Aceh
-                    berdasarkan kabupaten/kota.
-                </p>
-
-                <a href="{{ route('kabupaten.index') }}" class="btn">
-                    Masuk
-                </a>
+        <div class="row g-4">
+            
+            <div class="col-md-6">
+                <div class="custom-card h-100 d-flex flex-column justify-content-between shadow-sm">
+                    <div>
+                        <h2 class="fw-bold fs-3 mb-3 d-flex align-items-center gap-2">
+                            <img src="{{ asset('images/salt.png') }}" alt="Garam" width="32" height="32" class="card-icon">
+                            Data Garam
+                        </h2>
+                        <p style="color: var(--clr-text-muted); line-height: 1.7; font-size: 15px;">
+                            Kelola data produksi garam dan statistik garam Aceh berdasarkan kabupaten/kota.
+                        </p>
+                    </div>
+                    <div class="mt-4">
+                        <a href="{{ route('kabupaten.index') }}" class="btn-custom-dark">
+                            Masuk
+                        </a>
+                    </div>
+                </div>
             </div>
 
-            <div class="card">
-                <h2>🐟 Data Budidaya Ikan</h2>
-                <p>
-                    Kelola data budidaya garam dan informasi pendukung
-                    untuk kebutuhan pelaporan.
-                </p>
-
-                <a href="{{ route('dashboard') }}" class="btn">
-                    Masuk
-                </a>
+            <div class="col-md-6">
+                <div class="custom-card h-100 d-flex flex-column justify-content-between shadow-sm">
+                    <div>
+                        <h2 class="fw-bold fs-3 mb-3 d-flex align-items-center gap-2">
+                            <img src="{{ asset('images/fish.png') }}" alt="Ikan" width="32" height="32" class="card-icon">
+                            Data Budidaya Ikan
+                        </h2>
+                        <p style="color: var(--clr-text-muted); line-height: 1.7; font-size: 15px;">
+                            Kelola data budidaya garam dan informasi pendukung untuk kebutuhan pelaporan.
+                        </p>
+                    </div>
+                    <div class="mt-4">
+                        <a href="{{ route('dashboard') }}" class="btn-custom-dark">
+                            Masuk
+                        </a>
+                    </div>
+                </div>
             </div>
 
         </div>
 
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

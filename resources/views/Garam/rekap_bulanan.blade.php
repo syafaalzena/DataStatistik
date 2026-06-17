@@ -136,7 +136,7 @@
 
 <div class="page-header">
     <div class="container">
-        <a href="{{ route('kabupaten.index') }}" class="btn-back">← Kembali</a>
+        <a href="{{ route('kabupaten.index') }}" class="btn-back">Kembali</a>
         <h2>Rekap Bulanan Provinsi</h2>
         <p class="subtitle">Total produksi garam seluruh kabupaten per bulan</p>
     </div>
