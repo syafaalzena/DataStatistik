@@ -41,20 +41,18 @@
             pointer-events: none;
         }
         
-        /* Modifikasi spacing judul agar sejajar tombol */
         .page-header h2 { color: #fff; font-size: 1.75rem; font-weight: 700; margin: 0; }
         .page-header .subtitle { color: rgba(255,255,255,.65); font-size: .88rem; margin: 0; }
         
-        /* Style Tombol Back disamakan persis dengan halaman utama */
         .btn-back {
             width: 48px;
             height: 48px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #ffffff; /* Background putih polos */
-            border: 1px solid #e2e8f0; /* Border abu-abu tipis */
-            border-radius: 30px; /* Bulat sempurna */
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 30px;
             text-decoration: none;
             transition: all .2s ease;
             box-shadow: 0 2px 6px rgba(0,0,0,.05);
@@ -63,11 +61,10 @@
 
         .btn-back:hover {
             transform: translateY(-2px);
-            background: #0f172a; /* Berubah jadi navy gelap saat di-hover */
+            background: #0f172a;
             border-color: #0f172a;
         }
 
-        /* Efek membalik warna gambar back.png jadi putih saat di-hover */
         .btn-back:hover img {
             filter: brightness(0) invert(1);
         }
@@ -115,7 +112,6 @@
         }
         .cell-harga { font-weight: 500; color: var(--clr-gold); }
 
-        /* Filter */
         .filter-card {
             background: var(--clr-white);
             border-radius: var(--radius-card);
@@ -139,12 +135,6 @@
             background: var(--clr-salt);
         }
         .filter-select:focus { outline: none; border-color: var(--clr-sea); }
-        .filter-btn {
-            background: var(--clr-sea); color: #fff; border: none;
-            border-radius: 8px; font-size: .85rem; font-weight: 600;
-            padding: .48rem 1.2rem; cursor: pointer; transition: opacity .2s;
-        }
-        .filter-btn:hover { opacity: .85; }
 
         .empty-state {
             text-align: center; padding: 2.5rem 1rem; color: var(--clr-mist);
@@ -188,8 +178,6 @@
                     <option value="{{ $num }}" {{ $num == $bulanDipilih ? 'selected' : '' }}>{{ $nama }}</option>
                 @endforeach
             </select>
-
-            
         </div>
     </form>
 
@@ -227,7 +215,9 @@
     {{-- GRAFIK --}}
     <div class="data-card">
         <div class="data-card-header">
-            <div class="card-icon">📈</div>
+            <div class="card-icon">
+                <img src="{{ asset('images/statistik.png') }}" alt="Statistik" width="20" height="20">
+            </div>
             <h5>Tren Produksi Bulanan {{ $tahunDipilih }}</h5>
         </div>
         <div class="data-card-body">
@@ -238,7 +228,9 @@
     {{-- TABEL --}}
     <div class="data-card">
         <div class="data-card-header">
-            <div class="card-icon">📅</div>
+            <div class="card-icon">
+                <img src="{{ asset('images/kalender.png') }}" alt="Kalender" width="20" height="20">
+            </div>
             <h5>Data {{ $bulanList[$bulanDipilih] }} {{ $tahunDipilih }} — Semua Kabupaten</h5>
         </div>
         <div class="data-card-body">

@@ -41,20 +41,9 @@
             pointer-events: none;
         }
         
-        /* Modifikasi spacing judul agar sejajar tombol */
         .page-header h2 { color: #fff; font-size: 1.75rem; font-weight: 700; margin: 0; }
         .page-header .subtitle { color: rgba(255,255,255,.65); font-size: .88rem; margin: 0; }
         
-        .btn-back {
-            background: rgba(255,255,255,.12);
-            border: 1px solid rgba(255,255,255,.22);
-            color: #fff; border-radius: 8px; font-size: .85rem;
-            padding: .5rem 1rem; text-decoration: none;
-            display: inline-flex; align-items: center; gap: .35rem;
-            transition: all 0.2s ease;
-        }
-        .btn-back:hover { background: rgba(255,255,255,.22); color: #fff; transform: translateX(-2px); }
-
         .data-card {
             background: var(--clr-white);
             border-radius: var(--radius-card);
@@ -121,12 +110,6 @@
             background: var(--clr-salt);
         }
         .filter-select:focus { outline: none; border-color: var(--clr-sea); }
-        .filter-btn {
-            background: var(--clr-sea); color: #fff; border: none;
-            border-radius: 8px; font-size: .85rem; font-weight: 600;
-            padding: .48rem 1.2rem; cursor: pointer; transition: opacity .2s;
-        }
-        .filter-btn:hover { opacity: .85; }
 
         .empty-state {
             text-align: center; padding: 2.5rem 1rem; color: var(--clr-mist);
@@ -140,9 +123,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #ffffff; /* Background putih polos */
-            border: 1px solid #e2e8f0; /* Border abu-abu tipis */
-            border-radius: 30px; /* Bulat sempurna */
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 30px;
             text-decoration: none;
             transition: all .2s ease;
             box-shadow: 0 2px 6px rgba(0,0,0,.05);
@@ -151,11 +134,10 @@
 
         .btn-back:hover {
             transform: translateY(-2px);
-            background: #0f172a; /* Berubah jadi navy gelap saat di-hover */
+            background: #0f172a;
             border-color: #0f172a;
         }
 
-        /* Efek membalik warna gambar back.png jadi putih saat di-hover */
         .btn-back:hover img {
             filter: brightness(0) invert(1);
         }
@@ -206,46 +188,46 @@
                     </option>
                 @endforeach
             </select>
-
-            
         </div>
     </form>
 
     <div class="row mb-4">
-    <div class="col-md-4">
-        <div class="data-card">
-            <div class="data-card-body text-center">
-                <h6 class="text-muted">Total Data</h6>
-                <h3 class="fw-bold">{{ $data->count() }}</h3>
+        <div class="col-md-4">
+            <div class="data-card">
+                <div class="data-card-body text-center">
+                    <h6 class="text-muted">Total Data</h6>
+                    <h3 class="fw-bold">{{ $data->count() }}</h3>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-md-4">
-        <div class="data-card">
-            <div class="data-card-body text-center">
-                <h6 class="text-muted">Total Produksi</h6>
-                <h3 class="fw-bold">{{ $data->sum('produksi') }} Ton</h3>
+        <div class="col-md-4">
+            <div class="data-card">
+                <div class="data-card-body text-center">
+                    <h6 class="text-muted">Total Production</h6>
+                    <h3 class="fw-bold">{{ $data->sum('produksi') }} Ton</h3>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-md-4">
-        <div class="data-card">
-            <div class="data-card-body text-center">
-                <h6 class="text-muted">Total Harga</h6>
-                <h3 class="fw-bold">
-                    Rp {{ number_format($data->sum('harga'), 0, ',', '.') }}
-                </h3>
+        <div class="col-md-4">
+            <div class="data-card">
+                <div class="data-card-body text-center">
+                    <h6 class="text-muted">Total Harga</h6>
+                    <h3 class="fw-bold">
+                        Rp {{ number_format($data->sum('harga'), 0, ',', '.') }}
+                    </h3>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
     {{-- GRAFIK --}}
     <div class="data-card">
         <div class="data-card-header">
-            <div class="card-icon">📊</div>
+            <div class="card-icon">
+                <img src="{{ asset('images/statistik.png') }}" alt="Statistik" width="20" height="20">
+            </div>
             <h5>Grafik Total Produksi per Kabupaten — {{ $tahunDipilih }}</h5>
         </div>
         <div class="data-card-body">
@@ -263,7 +245,9 @@
     {{-- TABEL --}}
     <div class="data-card">
         <div class="data-card-header">
-            <div class="card-icon">📋</div>
+            <div class="card-icon">
+                <img src="{{ asset('images/kalender.png') }}" alt="Kalender" width="20" height="20">
+            </div>
             <h5>
                 Detail Data Tahun {{ $tahunDipilih }}
                 @if($kabupatenDipilih)
