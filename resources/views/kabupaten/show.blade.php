@@ -286,53 +286,6 @@
     </div>
     @endif
 
-    {{-- DATA TAHUNAN --}}
-    <div class="data-card">
-        <div class="data-card-header">
-           <div class="card-icon">
-                <img src="{{ asset('images/statistik.png') }}"
-                     alt="Statistik"
-                     width="20"
-                     height="20">
-            </div>
-            <h5>Data Tahunan</h5>
-        </div>
-        <div class="data-card-body">
-            @if($dataTahunan->isEmpty())
-                <div class="empty-state">
-                    <div class="empty-icon">📭</div>
-                    <p>Belum ada data tahunan untuk wilayah ini.</p>
-                </div>
-            @else
-            <div class="table-responsive">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Tahun</th>
-                            <th>Jumlah Petani</th>
-                            <th>Lahan Rebus (ha)</th>
-                            <th>Lahan Jemur (ha)</th>
-                            <th>Jumlah Unit</th>
-                            <th>Lokasi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($dataTahunan as $dt)
-                        <tr>
-                            <td><span class="badge-tahun">{{ $dt->tahun }}</span></td>
-                            <td>{{ $dt->jumlah_petani }}</td>
-                            <td>{{ $dt->luas_lahan_rebus }}</td>
-                            <td>{{ $dt->luas_lahan_jemur }}</td>
-                            <td>{{ $dt->jumlah_lahan_unit }}</td>
-                            <td>{{ $dt->lokasi }}</td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-            @endif
-        </div>
-    </div>
 
     {{-- DATA BULANAN --}}
     <div class="data-card">
