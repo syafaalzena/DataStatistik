@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class DataBulanan extends Model
 {
     
-     use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes;
     protected $fillable = [
         'kabupaten_id',
         'bulan',
@@ -18,6 +18,7 @@ class DataBulanan extends Model
         'lokasi',
         'jumlah_petani',
         'nama_kelompok',
+        'nama_pemilik',
         'harga',
     ];
         

@@ -41,6 +41,7 @@ class DataBulananController extends Controller
             'lokasi' => 'required|string|max:255',
             'jumlah_petani' => 'required|integer|min:0',
             'nama_kelompok' => 'required|string|max:255',
+            'nama_pemilik' => 'nullable|string|max:255',
             'harga' => 'required|numeric',
         ]);
 
@@ -80,6 +81,7 @@ class DataBulananController extends Controller
             'lokasi' => 'required|string|max:255',
             'jumlah_petani' => 'required|integer|min:0',
             'nama_kelompok' => 'required|string|max:255',
+            'nama_pemilik' => 'nullable|string|max:255',
             'harga' => 'required|numeric',
         ]);
 

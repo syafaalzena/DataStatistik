@@ -212,6 +212,41 @@
                                required>
                     </div>
 
+                        <div class="mb-3">
+                            <label class="form-label">Lokasi</label>
+                            <input type="text"
+                                   name="lokasi"
+                                   class="form-control"
+                                   placeholder="kecamatan dan desa"
+                                   required>
+                        </div>
+
+                    <div class="mb-3">      
+                        <label class="form-label">Jumlah Petani</label>
+                        <input type="number"
+                               name="jumlah_petani"
+                               class="form-control"
+                               placeholder="0"
+                               required>
+                    </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Nama Kelompok</label>
+                            <input type="text"
+                                   name="nama_kelompok"
+                                   class="form-control"
+                                   placeholder="Nama kelompok petani garam"
+                                   required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Nama Pemilik</label>
+                            <input type="text"
+                                   name="nama_pemilik"
+                                   class="form-control"
+                                   placeholder="Nama pemilik lahan">
+                        </div>
+
                     <div class="mb-4">
                         <label class="form-label">Harga (Rp)</label>
                         <input type="number"

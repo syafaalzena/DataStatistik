@@ -315,9 +315,12 @@
                             <th>Bulan</th>
                             <th>Jenis Produksi</th>
                             <th>Produksi (Ton)</th>
+                            <th>Lokasi</th>
+                            <th>Jumlah Petani</th>
+                            <th>Nama Kelompok</th>
+                            <th>Nama Pemilik</th>
                             <th>Harga (Rp)</th>
-                            <th>Aksi<th>
-                           
+                            <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -327,6 +330,10 @@
                             <td>{{ $db->bulan }}</td>
                             <td>{{ $db->jenis_produksi }}</td>
                             <td>{{ $db->produksi }}</td>
+                            <td>{{ $db->lokasi }}</td>
+                            <td>{{ $db->jumlah_petani }}</td>
+                            <td>{{ $db->nama_kelompok }}</td>
+                            <td>{{ $db->nama_pemilik }}</td>
                             <td class="cell-harga">Rp {{ number_format($db->harga, 0, ',', '.') }}</td>
                             <td>
                                 <div style="display:flex; align-items:center; gap:10px;">
