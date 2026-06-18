@@ -13,13 +13,14 @@
 
     <style>
         :root {
-            --clr-bg: #F7F5F0;
+            --clr-bg: #fffcf3ff;
             --clr-dark: #0f172a;
             --clr-blue-brand: #38bdf8;
             --clr-text-muted: #64748b;
             --clr-border: #e2e8f0;
         }
 
+      
         * { 
             margin: 0; 
             padding: 0; 
@@ -263,12 +264,12 @@
         .bar {
             flex: 1;
             border-radius: 4px 4px 0 0;
-            background: var(--clr-border);
+           background: #7dd3fc;
             transition: all 0.3s ease;
         }
         
         .bar.active { 
-            background: var(--clr-dark); 
+            background: #4294baff;
             box-shadow: 0 4px 10px rgba(15, 23, 42, 0.2);
         }
 
@@ -309,6 +310,122 @@
             .hero-left h1 { font-size: 2.5rem; }
             .text-switcher-container { min-height: auto; }
         }
+    
+        .ocean-wave{
+    position:absolute;
+    bottom:0;
+    left:0;
+    width:100%;
+    height:28%;
+    z-index:0;
+}
+
+.ocean-wave svg{
+    width:100%;
+    height:100%;
+    display:block;
+}
+
+.ocean-wave path{
+    fill:#7dd3fc;
+}
+
+.hero .container{
+    position:relative;
+    z-index:2;
+}
+
+
+
+.ocean-wave path{
+    fill:#6dd3ff;
+}
+
+.hero{
+    position:relative;
+    overflow:hidden;
+    background: #fffcf3ff;
+}
+
+.hero .container{
+    position:relative;
+    z-index:2;
+}
+
+.ocean{
+    position:absolute;
+    bottom:0;
+    left:0;
+    width:100%;
+    height:30%;
+    z-index:1;
+}
+
+.ocean{
+    position:absolute;
+    bottom:0;
+    left:0;
+    width:100%;
+    height:30%;
+    overflow:hidden;
+    z-index:1;
+}
+
+
+.wave-track svg{
+    width:50.1%;
+    height:100%;
+    flex-shrink:0;
+    display:block;
+}
+
+.ocean{
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:100%;
+    height:32%;
+    overflow:hidden;
+    z-index:1;
+}
+
+.wave{
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:200%;
+    height:100%;
+}
+
+.wave-back{
+    fill:#7dd3fc;
+    opacity:.6;
+    animation: waveMoveBack 18s linear infinite;
+}
+
+.wave-front{
+    fill:#38bdf8;
+    animation: waveMoveFront 10s linear infinite;
+}
+
+@keyframes waveMoveFront{
+    from{
+        transform:translateX(0);
+    }
+    to{
+        transform:translateX(-50%);
+    }
+}
+
+@keyframes waveMoveBack{
+    from{
+        transform:translateX(-50%);
+    }
+    to{
+        transform:translateX(0);
+    }
+}
+
     </style>
 </head>
 <body>
@@ -335,6 +452,35 @@
 </nav>
 
 <section class="hero">
+
+   <div class="ocean">
+
+    <svg class="wave wave-back" viewBox="0 0 1200 120" preserveAspectRatio="none">
+        <path d="
+        M0,60
+        C150,20 300,100 450,60
+        C600,20 750,100 900,60
+        C1050,20 1200,100 1350,60
+        L1350,120
+        L0,120
+        Z"/>
+    </svg>
+
+    <svg class="wave wave-front" viewBox="0 0 1200 120" preserveAspectRatio="none">
+        <path d="
+        M0,70
+        C150,30 300,110 450,70
+        C600,30 750,110 900,70
+        C1050,30 1200,110 1350,70
+        L1350,120
+        L0,120
+        Z"/>
+    </svg>
+
+</div>
+
+</div>
+
     <div class="container">
         <div class="row align-items-center">
 
@@ -353,7 +499,7 @@
 
             <div class="col-lg-6">
                 <div class="hero-card">
-                    <p class="card-title">📊 Statistik Produksi Garam</p>
+                    <p class="card-title"> Statistik Hasil Laut</p>
 
                     <div class="stat-row">
                         <div class="stat-box">
@@ -402,7 +548,7 @@
 <script>
     const textElement = document.getElementById('changing-text');
     
-    // List teks yang bakal bergantian
+    
     const textList = [
         "Kelola dan pantau data produksi garam, perikanan, dan budidaya laut seluruh kabupaten di Provinsi Aceh dalam satu sistem terintegrasi.",
         "Nama MINA adalah Filosofi Istilah klasik Indonesia/Sansekerta yang berarti Ikan atau Hasil Laut !"
@@ -411,19 +557,17 @@
     let currentIndex = 0;
 
     setInterval(() => {
-        // 1. Kasih class fade-out (teks menghilang perlahan selama 0.5 detik)
+    
         textElement.classList.add('fade-out');
         
         setTimeout(() => {
-            // 2. Ganti indeks text setelah teks benar-benar tidak terlihat
             currentIndex = (currentIndex + 1) % textList.length;
             textElement.innerText = textList[currentIndex];
             
-            // 3. Munculkan kembali teks barunya (hapus class fade-out)
             textElement.classList.remove('fade-out');
-        }, 500); // Waktu hilangnya pas dengan durasi CSS transition (0.5s)
+        }, 500); 
 
-    }, 7000); // Jalankan loop bergantian setiap 15000ms (15 Detik)
+    }, 7000); 
 </script>
 
 </body>
