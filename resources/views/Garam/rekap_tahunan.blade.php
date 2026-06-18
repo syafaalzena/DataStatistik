@@ -275,6 +275,9 @@
                             <th>Bulan</th>
                             <th>Jenis Produksi</th>
                             <th>Produksi (Ton)</th>
+                            <th>Lokasi</th>
+                            <th>Jumlah Petani</th>
+                            <th>Nama Kelompok</th>
                             <th>Harga (Rp)</th>
                         </tr>
                     </thead>
@@ -285,6 +288,9 @@
                             <td><span class="badge-bulan">{{ $namaBulan[$d->bulan] }}</span></td>
                             <td>{{ $d->jenis_produksi }}</td>
                             <td>{{ $d->produksi }}</td>
+                            <td>{{ $d->lokasi }}</td>
+                            <td>{{ $d->jumlah_petani }}</td>
+                            <td>{{ $d->nama_kelompok }}</td>
                             <td class="cell-harga">Rp {{ number_format($d->harga, 0, ',', '.') }}</td>
                         </tr>
                         @endforeach
