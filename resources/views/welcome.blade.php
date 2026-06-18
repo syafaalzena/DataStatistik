@@ -20,7 +20,7 @@
             --clr-border: #e2e8f0;
         }
 
-      
+    
         * { 
             margin: 0; 
             padding: 0; 
@@ -264,7 +264,7 @@
         .bar {
             flex: 1;
             border-radius: 4px 4px 0 0;
-           background: #7dd3fc;
+            background: #7dd3fc;
             transition: all 0.3s ease;
         }
         

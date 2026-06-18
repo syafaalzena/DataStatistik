@@ -15,6 +15,9 @@ class DataBulanan extends Model
         'tahun',
         'jenis_produksi',
         'produksi',
+        'lokasi',
+        'jumlah_petani',
+        'nama_kelompok',
         'harga',
     ];
         

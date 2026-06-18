@@ -38,6 +38,9 @@ class DataBulananController extends Controller
             'tahun' => 'required|integer',
             'jenis_produksi' => 'required|string|max:255',
             'produksi' => 'required|numeric',
+            'lokasi' => 'required|string|max:255',
+            'jumlah_petani' => 'required|integer|min:0',
+            'nama_kelompok' => 'required|string|max:255',
             'harga' => 'required|numeric',
         ]);
 
@@ -74,6 +77,9 @@ class DataBulananController extends Controller
             'tahun' => 'required|integer',
             'jenis_produksi' => 'required|string|max:255',
             'produksi' => 'required|numeric',
+            'lokasi' => 'required|string|max:255',
+            'jumlah_petani' => 'required|integer|min:0',
+            'nama_kelompok' => 'required|string|max:255',
             'harga' => 'required|numeric',
         ]);
 
