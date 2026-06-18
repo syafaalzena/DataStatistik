@@ -197,7 +197,7 @@
                         <label class="form-label">Jenis Produksi</label>
                         <select name="jenis_produksi" class="form-select" required>
                             <option value="">-- Pilih Jenis --</option>
-                            <option value="Rebus">Rebus</option>
+                            <option value="Rebus">Rebus (Tunnel)</option>
                             <option value="Jemur">Jemur</option>
                         </select>
                     </div>

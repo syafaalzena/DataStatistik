@@ -85,7 +85,7 @@
             background: transparent;
         }
         .horizontal-scroll-row::-webkit-scrollbar-thumb {
-            background: #0f172aad;
+            background: #a5a5a56a;
             border-radius: 20px;
         }
 
@@ -175,6 +175,16 @@
         .img-flip-horizontal {
             transform: scaleX(-1);
         }
+
+        /* Footer Style */
+        .footer {
+            padding: 2rem 0;
+            border-top: 1px solid #e2e8f0;
+            background: #fff;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #64748b;
+        }
     </style>
 </head>
 <body>
@@ -182,7 +192,7 @@
     <nav class="navbar mb-5">
         <div class="container">
             <a href="#" class="brand-wrapper">
-                <span class="brand-text">Mina</span>
+                <span class="brand-text">AIS-KP</span>
                 <svg class="brand-logo-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M2,12C2,12 5,7 12,7C15.5,7 18.5,8.5 20.5,10.5L22,9V15L20.5,13.5C18.5,15.5 15.5,17 12,17C5,17 2,12 2,12M12,9C10.34,9 9,10.34 9,12C9,13.66 10.34,15 12,15C13.66,15 15,13.66 15,12C15,10.34 13.66,9 12,9M12,10.5A1.5,1.5 0 0,1 13.5,12A1.5,1.5 0 0,1 12,13.5A1.5,1.5 0 0,1 10.5,12A1.5,1.5 0 0,1 12,10.5M19,12A1,1 0 1,1 18,11A1,1 0 0,1 19,12Z"/>
                 </svg>
@@ -274,6 +284,14 @@
         </div>
 
     </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p class="mb-0 fw-semibold">Dinas Kelautan Dan Perikanan Aceh</p>
+            <p class="small mb-0 opacity-75">© 2026 Sistem Informasi Kelautan & Perikanan</p>
+        </div>
+    </footer>
 
     <script>
         function scrollSlide(direction) {
