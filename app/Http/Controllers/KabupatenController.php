@@ -46,9 +46,30 @@ class KabupatenController extends Controller
     {
         $dataTahunan = $kabupaten->dataTahunan()->orderBy('tahun', 'desc')->get();
         $dataBulanan = $kabupaten->dataBulanan()->orderBy('tahun', 'desc')->orderBy('bulan', 'desc')->get();
-        return view('kabupaten.show', compact('kabupaten', 'dataTahunan', 'dataBulanan'));
+        $dataTahunan = $kabupaten->dataTahunan()->orderBy('tahun', 'desc')->get();
+
+    $tahunList = $kabupaten->dataBulanan()
+                    ->select('tahun')
+                    ->distinct()
+                    ->orderBy('tahun', 'desc')
+                    ->pluck('tahun');
+
+    $query = $kabupaten->dataBulanan()
+                ->orderBy('tahun', 'desc')
+                ->orderBy('bulan', 'desc');
+
+    if (request('bulan')) {
+        $query->where('bulan', request('bulan'));
     }
 
+    if (request('tahun')) {
+        $query->where('tahun', request('tahun'));
+    }
+
+    $dataBulanan = $query->get();
+
+    return view('kabupaten.show', compact('kabupaten', 'dataTahunan', 'dataBulanan', 'tahunList'));
+    }
     /**
      * Show the form for editing the specified resource.
      */

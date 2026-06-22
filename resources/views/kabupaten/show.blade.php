@@ -260,7 +260,7 @@
         <a href="{{ route('data-bulanan.create', $kabupaten->id) }}"
            class="btn btn-sm"
            style="background:white; color:black; border-radius:8px; font-size:.99rem; font-weight:600;">
-             + Tambah Data Produksi
+            + Tambah Data Produksi
         </a>
     </div>
 </div>
@@ -269,16 +269,16 @@
 
     @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show"
-         role="alert"
-         style="
+        role="alert"
+        style="
             position: fixed;
             top: 20px;
             right: 20px;
             z-index: 9999;
             min-width: 300px;
             box-shadow: 0 4px 15px rgba(0,0,0,.15);
-         ">
-         {{ session('success') }}
+        ">
+        {{ session('success') }}
 
         <button type="button"
                 class="btn-close"
@@ -293,14 +293,41 @@
             <div style="display:flex; align-items:center; gap:.6rem;">
                 <div class="card-icon">
                     <img src="{{ asset('images/kalender.png') }}"
-                         alt="Kalender"
-                         width="20"
-                         height="20">
+                        alt="Kalender"
+                        width="20"
+                        height="20">
                 </div>
                 <h5>Data Bulanan</h5>
             </div>
         </div>
         <div class="data-card-body">
+
+        <form method="GET" action="{{ route('kabupaten.show', $kabupaten->id) }}" id="filterForm" class="mb-3 d-flex gap-2 align-items-center flex-wrap">
+            <select name="tahun" class="form-select form-select-sm" style="width:auto;" onchange="document.getElementById('filterForm').submit()">
+                <option value="">Semua Tahun</option>
+                @foreach($tahunList as $t)
+                    <option value="{{ $t }}" {{ request('tahun') == $t ? 'selected' : '' }}>{{ $t }}</option>
+                @endforeach
+            </select>
+
+            <select name="bulan" class="form-select form-select-sm" style="width:auto;" onchange="document.getElementById('filterForm').submit()">
+                <option value="">Semua Bulan</option>
+                @foreach([1=>'Januari',2=>'Februari',3=>'Maret',4=>'April',5=>'Mei',6=>'Juni',7=>'Juli',8=>'Agustus',9=>'September',10=>'Oktober',11=>'November',12=>'Desember'] as $num => $nama)
+                    <option value="{{ $num }}" {{ request('bulan') == $num ? 'selected' : '' }}>{{ $nama }}</option>
+                @endforeach
+            </select>
+
+            <a href="{{ route('kabupaten.show', $kabupaten->id) }}" 
+            class="btn btn-sm" 
+            style="border:1px solid var(--clr-border); font-size:.85rem;">
+                Reset
+            </a>
+
+            <a href="{{ route('export.bulanan', ['kabupaten_id' => $kabupaten->id, 'bulan' => request('bulan'), 'tahun' => request('tahun')]) }}"
+            class="btn btn-success mb-3">
+                Download 
+            </a>
+        </form>
             @if($dataBulanan->isEmpty())
                 <div class="empty-state">
                     <div class="empty-icon">📭</div>
@@ -338,25 +365,25 @@
                             <td>
                                 <div style="display:flex; align-items:center; gap:10px;">
                                     <a href="{{ route('data-bulanan.edit', $db->id) }}"
-                                       style="text-decoration:none; display:flex; align-items:center;">
+                                        style="text-decoration:none; display:flex; align-items:center;">
                                         <img src="{{ asset('images/pencil.png') }}"
-                                             alt="Edit"
-                                             width="20"
-                                             height="20">
+                                            alt="Edit"
+                                            width="20"
+                                            height="20">
                                     </a>
 
                                     <form action="{{ route('data-bulanan.destroy', $db->id) }}"
-                                          method="POST"
-                                          onsubmit="return confirm('Yakin ingin menghapus data ini?')"
-                                          style="margin:0;">
+                                        method="POST"
+                                        onsubmit="return confirm('Yakin ingin menghapus data ini?')"
+                                        style="margin:0;">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
                                                 style="background:none; border:none; padding:0; display:flex; align-items:center;">
                                             <img src="{{ asset('images/delete.png') }}"
-                                                 alt="Hapus"
-                                                 width="20"
-                                                 height="20">
+                                                alt="Hapus"
+                                                width="20"
+                                                height="20">
                                         </button>
                                     </form>
                                 </div>
