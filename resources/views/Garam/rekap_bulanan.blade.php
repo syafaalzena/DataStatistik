@@ -242,7 +242,7 @@
             @else
             <div class="table-responsive">
                 <a href="{{ route('export.bulanan', ['tahun' => $tahunDipilih, 'bulan' => $bulanDipilih]) }}" 
-                    class="btn btn-success">
+                    class="btn btn-success mb-3">
                         Download Rekap Bulanan
                     </a>
                 <table class="table">
