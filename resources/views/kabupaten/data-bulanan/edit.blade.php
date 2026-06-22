@@ -167,6 +167,26 @@
                         <input type="number" name="produksi" class="form-control" value="{{ $dataBulanan->produksi }}" step="any" required>
                     </div>
 
+                    <div class="mb-3">
+                        <label class="form-label">Lokasi</label>
+                        <input type="text" name="lokasi" class="form-control" value="{{ $dataBulanan->lokasi }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Jumlah Petani</label>
+                        <input type="number" name="jumlah_petani" class="form-control" value="{{ $dataBulanan->jumlah_petani }}" required>
+                    </div>  
+
+                    <div class="mb-3">
+                        <label class="form-label">Nama Kelompok</label>
+                        <input type="text" name="nama_kelompok" class="form-control" value="{{ $dataBulanan->nama_kelompok }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Nama Pemilik</label>
+                        <input type="text" name="nama_pemilik" class="form-control" value="{{ $dataBulanan->nama_pemilik }}" >
+                    </div>
+
                     <div class="mb-4">
                         <label class="form-label">Harga (Rp)</label>
                         <input type="number" name="harga" class="form-control" value="{{ $dataBulanan->harga }}" required>

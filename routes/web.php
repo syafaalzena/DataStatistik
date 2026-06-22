@@ -22,6 +22,7 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+<<<<<<< HEAD
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -46,3 +47,10 @@ Route::post('/logout', [AuthController::class, 'logout'])
 
 
 require __DIR__.'/auth.php';
+=======
+Route::put('/data-bulanan/{dataBulanan}', [DataBulananController::class, 'update'])
+    ->name('data-bulanan.update');
+
+Route::get('/export/bulanan', [DataBulananController::class, 'exportBulanan'])->name('export.bulanan');
+Route::get('/export/tahunan', [DataBulananController::class, 'exportTahunan'])->name('export.tahunan');
+>>>>>>> b70827400ba4044aa5c85c844547978a311e93d7

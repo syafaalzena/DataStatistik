@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\DataBulanan;
 use Illuminate\Http\Request;
 use App\Models\Kabupaten;
+use App\Exports\DetailProduksiExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DataBulananController extends Controller
 {
@@ -41,6 +43,7 @@ class DataBulananController extends Controller
             'lokasi' => 'required|string|max:255',
             'jumlah_petani' => 'required|integer|min:0',
             'nama_kelompok' => 'required|string|max:255',
+            'nama_pemilik' => 'nullable|string|max:255',
             'harga' => 'required|numeric',
         ]);
 
@@ -80,6 +83,7 @@ class DataBulananController extends Controller
             'lokasi' => 'required|string|max:255',
             'jumlah_petani' => 'required|integer|min:0',
             'nama_kelompok' => 'required|string|max:255',
+            'nama_pemilik' => 'nullable|string|max:255',
             'harga' => 'required|numeric',
         ]);
 
@@ -136,5 +140,20 @@ class DataBulananController extends Controller
         'data', 'tahunList', 'bulanList',
         'tahunDipilih', 'bulanDipilih', 'dataGrafik'
     ));
+}
+
+public function exportBulanan(Request $request)
+{
+    $tahun = $request->tahun;
+    $bulan = $request->bulan;
+
+    return Excel::download(new DetailProduksiExport('bulanan', $tahun, $bulan), 'rekap-bulanan.xlsx');
+}
+
+public function exportTahunan(Request $request)
+{
+    $tahun = $request->tahun;
+
+    return Excel::download(new DetailProduksiExport('tahunan', $tahun), 'rekap-tahunan.xlsx');
 }
 }

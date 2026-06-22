@@ -241,6 +241,10 @@
                 </div>
             @else
             <div class="table-responsive">
+                <a href="{{ route('export.bulanan', ['tahun' => $tahunDipilih, 'bulan' => $bulanDipilih]) }}" 
+                    class="btn btn-success mb-3">
+                        Download Rekap Bulanan
+                    </a>
                 <table class="table">
                     <thead>
                         <tr>
@@ -250,6 +254,7 @@
                             <th>Lokasi</th>
                             <th>Jumlah Petani</th>
                             <th>Nama Kelompok</th>
+                            <th>Nama Pemilik</th>
                             <th>Harga (Rp)</th>
                         </tr>
                     </thead>
@@ -262,6 +267,7 @@
                             <td>{{ $d->lokasi }}</td>
                             <td>{{ $d->jumlah_petani }}</td>
                             <td>{{ $d->nama_kelompok }}</td>
+                            <td>{{ $d->nama_pemilik }}</td>
                             <td class="cell-harga">Rp {{ number_format($d->harga, 0, ',', '.') }}</td>
                         </tr>
                         @endforeach
