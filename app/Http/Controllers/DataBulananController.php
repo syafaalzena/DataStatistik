@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\DataBulanan;
 use Illuminate\Http\Request;
 use App\Models\Kabupaten;
+use App\Exports\DetailProduksiExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DataBulananController extends Controller
 {
@@ -138,5 +140,20 @@ class DataBulananController extends Controller
         'data', 'tahunList', 'bulanList',
         'tahunDipilih', 'bulanDipilih', 'dataGrafik'
     ));
+}
+
+public function exportBulanan(Request $request)
+{
+    $tahun = $request->tahun;
+    $bulan = $request->bulan;
+
+    return Excel::download(new DetailProduksiExport('bulanan', $tahun, $bulan), 'rekap-bulanan.xlsx');
+}
+
+public function exportTahunan(Request $request)
+{
+    $tahun = $request->tahun;
+
+    return Excel::download(new DetailProduksiExport('tahunan', $tahun), 'rekap-tahunan.xlsx');
 }
 }

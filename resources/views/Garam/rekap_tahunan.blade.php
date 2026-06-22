@@ -268,6 +268,11 @@
                 @php
                     $namaBulan = ['','Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
                 @endphp
+
+                <a href="{{ route('export.tahunan', ['tahun' => $tahunDipilih]) }}" 
+   class="btn btn-primary">
+    Download Rekap Tahunan
+</a>
                 <table class="table">
                     <thead>
                         <tr>

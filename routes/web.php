@@ -36,3 +36,6 @@ Route::get('/data-bulanan/{dataBulanan}/edit', [DataBulananController::class, 'e
 
 Route::put('/data-bulanan/{dataBulanan}', [DataBulananController::class, 'update'])
     ->name('data-bulanan.update');
+
+Route::get('/export/bulanan', [DataBulananController::class, 'exportBulanan'])->name('export.bulanan');
+Route::get('/export/tahunan', [DataBulananController::class, 'exportTahunan'])->name('export.tahunan');
