@@ -278,6 +278,7 @@
                             <th>Lokasi</th>
                             <th>Jumlah Petani</th>
                             <th>Nama Kelompok</th>
+                            <th>Nama Pemilik</th>
                             <th>Harga (Rp)</th>
                         </tr>
                     </thead>
@@ -291,6 +292,7 @@
                             <td>{{ $d->lokasi }}</td>
                             <td>{{ $d->jumlah_petani }}</td>
                             <td>{{ $d->nama_kelompok }}</td>
+                            <td>{{ $d->nama_pemilik }}</td>
                             <td class="cell-harga">Rp {{ number_format($d->harga, 0, ',', '.') }}</td>
                         </tr>
                         @endforeach
