@@ -53,11 +53,12 @@
         }
 
         .brand-text {
-            font-family: 'Croissant One', serif;
+            
             font-size: 26px;
             color: #ffffff;
             line-height: 1;
             padding-top: 2px;
+            font-weight: 700;
         }
 
         .brand-logo-svg {
@@ -426,6 +427,23 @@
     }
 }
 
+.login-modal-overlay {
+            position: fixed;
+            top: 0; right: -50%; /* Awalnya di luar layar kanan */
+            width: 50%; height: 100%;
+            background: #fffcf3ff;
+            z-index: 1000;
+            box-shadow: -5px 0 20px rgba(0,0,0,0.1);
+            transition: right 0.5s ease-in-out;
+            padding: 50px;
+            display: flex;
+            align-items: center;
+
+        }
+        .login-modal-overlay.active { right: 0; } /* Muncul saat di klik */
+        
+        .hero { min-height: calc(100vh - 68px); display: flex; align-items: center; position: relative; overflow: hidden; padding: 1.5rem 0 4rem 0; }
+
     </style>
 </head>
 <body>
@@ -433,14 +451,63 @@
 <nav class="navbar">
     <div class="container d-flex align-items-center justify-content-between">
         <a href="#" class="brand-wrapper">
-            <span class="brand-text">AIS-KP</span>
+            <span class="brand-text">DSKPA</span>
             <svg class="brand-logo-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M2,12C2,12 5,7 12,7C15.5,7 18.5,8.5 20.5,10.5L22,9V15L20.5,13.5C18.5,15.5 15.5,17 12,17C5,17 2,12 2,12M12,9C10.34,9 9,10.34 9,12C9,13.66 10.34,15 12,15C13.66,15 15,13.66 15,12C15,10.34 13.66,9 12,9M12,10.5A1.5,1.5 0 0,1 13.5,12A1.5,1.5 0 0,1 12,13.5A1.5,1.5 0 0,1 10.5,12A1.5,1.5 0 0,1 12,10.5M19,12A1,1 0 1,1 18,11A1,1 0 0,1 19,12Z"/>
             </svg>
         </a>
         
         <div class="nav-right">
-            <a href="{{ route('kabupaten.index') }}" class="btn-started">Masuk</a>
+            <button id="loginBtn" class="btn btn-light rounded-pill px-4" style="font-weight: 600;">Login</button>
+        </div>
+    </div>
+</nav>
+
+<div id="loginModal" class="login-modal-overlay">
+    <div class="w-100">
+        <h2 class="mb-4">Selamat Datang!</h2>
+        <h5 class="mb-4">Silahkan Login</h5>
+        <form method="POST" action="{{ route('login') }}">
+            @csrf
+            <div class="mb-3">
+                <label>Username</label>
+                <input type="text" name="username" class="form-control" placeholder="Username">
+            </div>
+            <div class="mb-3">
+                <label>Password</label>
+                <input type="password" name="password" class="form-control" placeholder="Password">
+            </div>
+            <button type="submit" class="btn w-100 mb-3" style="background-color: #0f1b35ff; color: white;">Masuk</button>
+            <div class="text-center mt-3">
+            <p style="color: #64748b; font-size: 0.9rem;">Belum mempunyai akun?</p>
+            <a href="{{ route('register') }}" style="color: #0f172a; text-decoration: underline; font-weight: 600;">Register</a>
+            <br>
+            <br>
+            <button type="button" id="closeLogin" style="color: #64748b; text-decoration: none; border: none; background-color: transparent;">Tutup</button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<section class="hero">
+    </section>
+
+<script>
+    const loginBtn = document.getElementById('loginBtn');
+    const closeLogin = document.getElementById('closeLogin');
+    const loginModal = document.getElementById('loginModal');
+
+    // Buka Modal
+    loginBtn.addEventListener('click', () => {
+        loginModal.classList.add('active');
+    });
+
+    // Tutup Modal
+    closeLogin.addEventListener('click', () => {
+        loginModal.classList.remove('active');
+    });
+</script>
 
             <a href="#" class="user-profile-link" title="Profil Pengguna">
                 <svg class="avatar-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -485,7 +552,7 @@
         <div class="row align-items-center">
 
             <div class="col-lg-6 hero-left">
-                <p class="label">AIS-KP Data Platform</p>
+                <p class="label">DSKPA Data Platform</p>
                 <h1>Sistem Informasi Statistik Kelautan Aceh</h1>
                 
                 <div class="text-switcher-container">
@@ -493,7 +560,7 @@
                 </div>
 
                 <div class="hero-buttons">
-                    <a href="{{ route('statistik.index') }}" class="btn-primary-hero">Lihat Data</a>
+<a>-</a>
                 </div>
             </div>
 
@@ -551,7 +618,7 @@
     
     const textList = [
         "Kelola dan pantau data produksi garam, perikanan, dan budidaya laut seluruh kabupaten di Provinsi Aceh dalam satu sistem terintegrasi.",
-        "Nama MINA adalah Filosofi Istilah klasik Indonesia/Sansekerta yang berarti Ikan atau Hasil Laut !"
+        "DSKPA adalah Singkatan Dari Data Statistik Kelautan Perikanan Aceh !"
     ];
     
     let currentIndex = 0;
