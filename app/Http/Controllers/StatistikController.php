@@ -87,4 +87,9 @@ class StatistikController extends Controller
         $data = Statistik::all();
         return view('statistik.StatistikKab', compact('data'));
     }
+
+    public function dashboard()
+    {
+        return view('dashboard');
+    }
 }
