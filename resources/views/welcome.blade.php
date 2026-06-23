@@ -490,8 +490,6 @@
     </div>
 </div>
 
-<section class="hero">
-    </section>
 
 <script>
     const loginBtn = document.getElementById('loginBtn');
@@ -509,16 +507,6 @@
     });
 </script>
 
-            <a href="#" class="user-profile-link" title="Profil Pengguna">
-                <svg class="avatar-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,16.5C14.7,16.5 17.4,17.4 18.9,19C17.3,20.6 14.8,21.5 12,21.5C9.2,21.5 6.7,20.6 5.1,19C6.6,17.4 9.3,16.5 12,16.5Z"/>
-                </svg>
-            </a>
-        </div>
-    </div>
-</nav>
-
-<section class="hero">
 
    <div class="ocean">
 
