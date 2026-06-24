@@ -12,7 +12,7 @@ class AuthController extends Controller
 {
     public function showLogin()
     {
-        return view('auth.login');
+        return view('welcome');
     }
 
     public function login(Request $request)
@@ -34,7 +34,7 @@ class AuthController extends Controller
 
     public function showRegister()
     {
-        return view('auth.register');
+        return view('welcome');
     }
 
     public function register(Request $request)
@@ -47,17 +47,15 @@ class AuthController extends Controller
             'password' => ['required', 'confirmed', Password::min(8)],
         ]);
 
-        $user = User::create([
-        'name'     => $validated['name'],
-        'username' => $validated['username'],
-        'nip'      => $validated['nip'],
-        'email'    => $validated['email'],
-        'password' => Hash::make($validated['password']),
-    ]);
+        User::create([
+            'name'     => $validated['name'],
+            'username' => $validated['username'],
+            'nip'      => $validated['nip'],
+            'email'    => $validated['email'],
+            'password' => Hash::make($validated['password']),
+        ]);
 
-    // Auth::login($user); ← hapus baris ini
-
-    return redirect()->route('statistik.index')->with('success', 'Registrasi berhasil. Silakan login dengan akun Anda.');
+        return redirect('/')->with('success', 'Registrasi berhasil. Silakan login dengan akun Anda.');
     }
 
     public function logout(Request $request)
@@ -66,6 +64,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('welcome');
+        return redirect('/');
     }
 }

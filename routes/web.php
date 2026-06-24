@@ -5,59 +5,39 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\StatistikController;
 use App\Http\Controllers\KabupatenController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\AuthController;
-
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('/welcome', function () {
-    return view('welcome');
-});
-
-
+use App\Http\Controllers\DataTahunanController;
+use App\Http\Controllers\DataBulananController;
 
 /*
 |--------------------------------------------------------------------------
-| Halaman Utama (Landing Page)
+| Halaman Utama & Auth (Guest)
 |--------------------------------------------------------------------------
 */
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-/*
-|--------------------------------------------------------------------------
-| Auth Routes (hanya untuk tamu / belum login)
-|--------------------------------------------------------------------------
-*/
 Route::middleware('guest')->group(function () {
-
-    // GET /login → tampilkan welcome.blade.php (bukan halaman login terpisah)
     Route::get('/login', function () {
         return view('welcome');
     })->name('login');
 
-    // POST /login → proses login
     Route::post('/login', [AuthController::class, 'login'])->name('login.post');
-
-    // POST /register → proses register
     Route::post('/register', [AuthController::class, 'register'])->name('register');
 });
 
-// Logout
 Route::post('/logout', [AuthController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');
 
 /*
 |--------------------------------------------------------------------------
-| Route yang butuh login (middleware auth)
+| Route Protected (butuh login)
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
 
-    // Dashboard utama
+    // Dashboard
     Route::get('/dashboard', [StatistikController::class, 'dashboard'])->name('dashboard');
 
     // Profile
