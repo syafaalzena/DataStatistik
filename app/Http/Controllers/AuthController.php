@@ -57,7 +57,7 @@ class AuthController extends Controller
 
     // Auth::login($user); ← hapus baris ini
 
-    return redirect()->route('login')->with('success', 'Registrasi berhasil. Silakan login dengan akun Anda.');
+    return redirect()->route('statistik.index')->with('success', 'Registrasi berhasil. Silakan login dengan akun Anda.');
     }
 
     public function logout(Request $request)
@@ -66,6 +66,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/login');
+        return redirect('welcome');
     }
 }

@@ -83,6 +83,24 @@
         }
         .back-btn:hover { transform: translateY(-2px); background: #0f172a; border-color: #0f172a; }
         .back-btn:hover img { filter: brightness(0) invert(1); }
+
+        .btn-custom-dark {
+            background: var(--clr-dark);
+            color: #f5f6e7ff;
+            padding: 12px 40px; 
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            border: none;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-custom-dark:hover {
+            background: #1e293b;
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
     </style>
 </head>
 <body>
@@ -96,6 +114,10 @@
                 </svg>
             </a>
         </div>
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" class="btn-custom-dark">Logout</button>
+        </form>
     </nav>
 
     <div class="container pb-5">

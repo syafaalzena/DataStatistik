@@ -5,8 +5,17 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\StatistikController;
 use App\Http\Controllers\KabupatenController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\DataTahunanController;
-use App\Http\Controllers\DataBulananController;
+use App\Http\Controllers\AuthController;
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::get('/welcome', function () {
+    return view('welcome');
+});
+
+
 
 /*
 |--------------------------------------------------------------------------

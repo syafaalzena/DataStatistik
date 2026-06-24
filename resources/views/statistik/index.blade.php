@@ -198,6 +198,11 @@
                 </svg>
             </a>
         </div>
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" class="btn-custom-dark">Logout</button>
+        </form>
+        
     </nav>
 
     <div class="container mb-5">
