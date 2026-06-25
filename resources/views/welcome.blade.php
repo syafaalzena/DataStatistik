@@ -392,14 +392,15 @@
 {{-- ── MODAL LOGIN ─────────────────────────────────────────────── --}}
 <div id="loginModal" class="login-modal-overlay">
     <div class="w-100">
-        <h2 class="mb-4">Selamat Datang!</h2>
+        <h2 class="mb-4"><b>Selamat Datang!</b></h2>
         <h5 class="mb-4">Silahkan Login</h5>
 
         <form method="POST" action="{{ route('login') }}">
             @csrf
             <div class="mb-3">
                 <label class="form-label">Username</label>
-                <input type="text" name="username" class="form-control @error('username') is-invalid @enderror"
+                <input type="text" name="username"
+                    class="form-control @error('username') is-invalid @enderror"
                     placeholder="Username" value="{{ old('username') }}" required>
                 @error('username')
                     <div class="invalid-feedback">{{ $message }}</div>
@@ -410,32 +411,35 @@
                 <label class="form-label">Password</label>
                 <div class="password-wrapper">
                     <input type="password" name="password" id="passwordLogin"
-                        class="form-control" placeholder="Password" required>
+                        class="form-control @error('password') is-invalid @enderror"
+                        placeholder="Password" required>
                     <img src="{{ asset('images/view.png') }}" class="toggle-password"
                         onclick="togglePassword('passwordLogin', this)">
                 </div>
+                @error('password')
+                    <div class="text-danger mt-1" style="font-size:0.85rem;">{{ $message }}</div>
+                @enderror
             </div>
-            <div class="text-center mt-4 px-4 ">
-            <button type="submit" class="btn mb-3 px-4"
-            style="background-color: #0f1b35ff; color: white; border-radius: 20px; font-size: 0.9rem;">
-            Masuk
-            </button>
-    </div>
 
-           <div class="text-center mt-2 px-4">
-    <span style="color: #64748b; font-size: 0.9rem;">Belum mempunyai akun? </span>
-    <button type="button" id="openRegister"
-        style="color: #0f172a; text-decoration: underline; font-weight: 600; border: none; background: none; font-size: 0.9rem;">
-        Register
-    </button>
+            <div class="text-center mt-4 px-4">
+                <button type="submit" class="btn mb-3 px-4"
+                    style="background-color: #0f1b35ff; color: white; border-radius: 20px; font-size: 0.9rem;">
+                    Masuk
+                </button>
+            </div>
 
+            <div class="text-center mt-2 px-4">
+                <span style="color: #64748b; font-size: 0.9rem;">Belum mempunyai akun? </span>
+                <button type="button" id="openRegister"
+                    style="color: #0f172a; text-decoration: underline; font-weight: 600; border: none; background: none; font-size: 0.9rem;">
+                    Register
+                </button>
                 <br>
                 <button type="button" id="closeLogin"
                     style="color: #64748b; border: none; background: transparent; margin-top: 8px;">
                     Tutup
                 </button>
-    </div>
-    </div>
+            </div>
         </form>
     </div>
 </div>
@@ -443,7 +447,7 @@
 {{-- ── MODAL REGISTER ──────────────────────────────────────────── --}}
 <div id="registerModal" class="login-modal-overlay">
     <div class="w-100">
-        <h2 class="mb-4">Buat Akun</h2>
+        <h2 class="mb-4"><b>Buat Akun</b></h2>
 
         <form method="POST" action="{{ route('register') }}">
             @csrf
@@ -502,7 +506,6 @@
                 @enderror
             </div>
 
-            {{-- WAJIB ADA: karena controller pakai 'confirmed' --}}
             <div class="mb-3">
                 <label class="form-label">Konfirmasi Password</label>
                 <div class="password-wrapper">
@@ -514,23 +517,23 @@
             </div>
 
             <div class="text-center">
-    <button type="submit" class="btn mb-3 px-4"
-        style="background-color: #0f1b35ff; color: white; border-radius: 20px; font-size: 0.9rem;">
-        Daftar
-    </button>
-</div>
+                <button type="submit" class="btn mb-3 px-4"
+                    style="background-color: #0f1b35ff; color: white; border-radius: 20px; font-size: 0.9rem;">
+                    Daftar
+                </button>
+            </div>
 
-<div class="text-center mt-2">
-    <button type="button" id="closeRegister" 
-        style="color: #64748b; border: none; background: none; font-size: 0.9rem;">
-        Tutup
-    </button>
-    <span style="color: #64748b; font-size: 0.9rem;"> | </span>
-    <button type="button" id="switchToLogin"
-        style="background: none; border: none; color: #0f172a; font-weight: 600; text-decoration: underline; font-size: 0.9rem;">
-        Sudah punya akun? Login
-    </button>
-</div>
+            <div class="text-center mt-2">
+                <button type="button" id="closeRegister"
+                    style="color: #64748b; border: none; background: none; font-size: 0.9rem;">
+                    Tutup
+                </button>
+                <span style="color: #64748b; font-size: 0.9rem;"> | </span>
+                <button type="button" id="switchToLogin"
+                    style="background: none; border: none; color: #0f172a; font-weight: 600; text-decoration: underline; font-size: 0.9rem;">
+                    Sudah punya akun? Login
+                </button>
+            </div>
         </form>
     </div>
 </div>
@@ -611,13 +614,13 @@
 
 <script>
     // ── MODAL LOGIC ──────────────────────────────────────────────
-    const loginBtn     = document.getElementById('loginBtn');
-    const openRegister = document.getElementById('openRegister');
-    const loginModal   = document.getElementById('loginModal');
-    const registerModal= document.getElementById('registerModal');
-    const closeLogin   = document.getElementById('closeLogin');
-    const closeRegister= document.getElementById('closeRegister');
-    const switchToLogin= document.getElementById('switchToLogin');
+    const loginBtn      = document.getElementById('loginBtn');
+    const openRegister  = document.getElementById('openRegister');
+    const loginModal    = document.getElementById('loginModal');
+    const registerModal = document.getElementById('registerModal');
+    const closeLogin    = document.getElementById('closeLogin');
+    const closeRegister = document.getElementById('closeRegister');
+    const switchToLogin = document.getElementById('switchToLogin');
 
     loginBtn.addEventListener('click',      () => loginModal.classList.add('active'));
     openRegister.addEventListener('click',  () => { loginModal.classList.remove('active'); registerModal.classList.add('active'); });
@@ -626,15 +629,22 @@
     switchToLogin.addEventListener('click', () => { registerModal.classList.remove('active'); loginModal.classList.add('active'); });
 
     // ── AUTO-BUKA MODAL SETELAH REDIRECT ─────────────────────────
+    // Error login → field username atau password
+    // Error register → field name, nip, email, atau konfirmasi password
     @if ($errors->any())
-        // Ada error validasi → buka modal register kembali
         document.addEventListener('DOMContentLoaded', () => {
-            registerModal.classList.add('active');
+            @if ($errors->has('username') || $errors->has('password'))
+                {{-- Error dari form login → buka modal login --}}
+                loginModal.classList.add('active');
+            @else
+                {{-- Error dari form register (name/nip/email/password) → buka modal register --}}
+                registerModal.classList.add('active');
+            @endif
         });
     @endif
 
     @if (session('success'))
-        // Register berhasil → buka modal login
+        {{-- Register berhasil → buka modal login --}}
         document.addEventListener('DOMContentLoaded', () => {
             loginModal.classList.add('active');
         });

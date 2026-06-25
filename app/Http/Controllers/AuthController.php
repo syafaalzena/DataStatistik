@@ -22,14 +22,24 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt(['username' => $request->username, 'password' => $request->password], $request->boolean('remember'))) {
-            $request->session()->regenerate();
-            return redirect()->route('statistik.index');
+        // Cek apakah username terdaftar
+        $user = User::where('username', $request->username)->first();
+
+        if (!$user) {
+            return back()
+                ->withErrors(['username' => 'Akun tidak terdaftar. Silakan daftar terlebih dahulu.'])
+                ->withInput();
         }
 
-        return back()->withErrors([
-            'username' => 'Username atau password salah.',
-        ])->onlyInput('username');
+        // Username ada tapi password salah
+        if (!Auth::attempt(['username' => $request->username, 'password' => $request->password], $request->boolean('remember'))) {
+            return back()
+                ->withErrors(['password' => 'Password yang Anda masukkan salah.'])
+                ->withInput();
+        }
+
+        $request->session()->regenerate();
+        return redirect()->route('statistik.index');
     }
 
     public function showRegister()
@@ -39,20 +49,26 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'name'     => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:255', 'unique:users'],
             'nip'      => ['required', 'string', 'max:18', 'unique:users'],
             'email'    => ['required', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Password::min(8)],
+        ], [
+            'username.unique' => 'Username sudah digunakan, coba username lain.',
+            'nip.unique'      => 'NIP ini sudah terdaftar, gunakan NIP lain.',
+            'email.unique'    => 'Email sudah terdaftar dengan akun lain.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+            'password.min'    => 'Password minimal 8 karakter.',
         ]);
 
         User::create([
-            'name'     => $validated['name'],
-            'username' => $validated['username'],
-            'nip'      => $validated['nip'],
-            'email'    => $validated['email'],
-            'password' => Hash::make($validated['password']),
+            'name'     => $request->name,
+            'username' => $request->username,
+            'nip'      => $request->nip,
+            'email'    => $request->email,
+            'password' => Hash::make($request->password),
         ]);
 
         return redirect('/')->with('success', 'Registrasi berhasil. Silakan login dengan akun Anda.');

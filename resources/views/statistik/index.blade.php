@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mina - Dashboard Statistik Kelautan & Perikanan</title>
+    <title>SIDKP - Sistem Informasi Dinas Kelautan dan Perikanan</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -192,15 +192,16 @@
     <nav class="navbar mb-5">
         <div class="container">
             <a href="#" class="brand-wrapper">
-                <span class="brand-text">DSKPA</span>
+                <span class="brand-text">SIDKP</span>
                 <svg class="brand-logo-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M2,12C2,12 5,7 12,7C15.5,7 18.5,8.5 20.5,10.5L22,9V15L20.5,13.5C18.5,15.5 15.5,17 12,17C5,17 2,12 2,12M12,9C10.34,9 9,10.34 9,12C9,13.66 10.34,15 12,15C13.66,15 15,13.66 15,12C15,10.34 13.66,9 12,9M12,10.5A1.5,1.5 0 0,1 13.5,12A1.5,1.5 0 0,1 12,13.5A1.5,1.5 0 0,1 10.5,12A1.5,1.5 0 0,1 12,10.5M19,12A1,1 0 1,1 18,11A1,1 0 0,1 19,12Z"/>
                 </svg>
             </a>
-        </div>
+        
         <form method="POST" action="{{ route('logout') }}">
             @csrf
             <button type="submit" class="btn-custom-dark">Logout</button>
+            </div>
         </form>
         
     </nav>
@@ -210,7 +211,7 @@
         <div class="row mb-4">
             <div class="col-12">
                 <h3 class="fw-semibold mb-2" style="color: var(--clr-dark);">
-                    Selamat Datang, {{ Auth::user()->name ?? 'Admin' }}
+                    Selamat Datang, {{ auth()->user()->name }}
                 </h3>
                 <p class="fs-6" style="color: var(--clr-text-muted);">Silakan pilih menu yang ingin Anda kelola.</p>
             </div>
