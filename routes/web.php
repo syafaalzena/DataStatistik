@@ -7,6 +7,8 @@ use App\Http\Controllers\KabupatenController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DataTahunanController;
 use App\Http\Controllers\DataBulananController;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Auth\NewPasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +26,18 @@ Route::middleware('guest')->group(function () {
 
     Route::post('/login', [AuthController::class, 'login'])->name('login.post');
     Route::post('/register', [AuthController::class, 'register'])->name('register');
+
+    Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
+                ->name('password.request');
+
+    Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
+                ->name('password.email');
+
+    Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
+                ->name('password.reset');
+
+    Route::post('reset-password', [NewPasswordController::class, 'store'])
+                ->name('password.store');
 });
 
 Route::post('/logout', [AuthController::class, 'logout'])
@@ -37,26 +51,20 @@ Route::post('/logout', [AuthController::class, 'logout'])
 */
 Route::middleware('auth')->group(function () {
 
-    // Dashboard
     Route::get('/dashboard', [StatistikController::class, 'dashboard'])->name('dashboard');
 
-    // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Kabupaten
     Route::resource('kabupaten', KabupatenController::class);
 
-    // Statistik
     Route::get('/statistik/StatistikKab', [StatistikController::class, 'statistikKab'])->name('statistik.kab');
     Route::resource('statistik', StatistikController::class);
 
-    // Data Garam Tahunan
     Route::get('/garam', [DataTahunanController::class, 'index'])->name('garam.index');
     Route::get('/garam/rekap_tahunan', [DataTahunanController::class, 'rekapTahunan'])->name('garam.rekapTahunan');
 
-    // Data Bulanan
     Route::get('/garam/rekap_bulanan', [DataBulananController::class, 'rekapBulanan'])->name('garam.rekapBulanan');
     Route::get('/data-bulanan/create/{kabupaten_id}', [DataBulananController::class, 'create'])->name('data-bulanan.create');
     Route::post('/data-bulanan', [DataBulananController::class, 'store'])->name('data-bulanan.store');
@@ -64,7 +72,6 @@ Route::middleware('auth')->group(function () {
     Route::put('/data-bulanan/{dataBulanan}', [DataBulananController::class, 'update'])->name('data-bulanan.update');
     Route::delete('/data-bulanan/{dataBulanan}', [DataBulananController::class, 'destroy'])->name('data-bulanan.destroy');
 
-    // Export
     Route::get('/export/bulanan', [DataBulananController::class, 'exportBulanan'])->name('export.bulanan');
     Route::get('/export/tahunan', [DataBulananController::class, 'exportTahunan'])->name('export.tahunan');
 });

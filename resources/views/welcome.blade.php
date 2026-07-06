@@ -421,6 +421,12 @@
                 @enderror
             </div>
 
+            <div class="text-end mt-2" style="font-weight: 600;">
+                <a href="{{ route('password.request') }}" style="color:#0f172a;font-size:0.85rem;text-decoration:underline;">
+                    Lupa Password?
+                </a>
+            </div>
+
             <div class="text-center mt-4 px-4">
                 <button type="submit" class="btn mb-3 px-4"
                     style="background-color: #0f1b35ff; color: white; border-radius: 20px; font-size: 0.9rem;">
