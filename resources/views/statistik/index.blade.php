@@ -176,35 +176,81 @@
             transform: scaleX(-1);
         }
 
-        /* Footer Style */
-        .footer {
-            padding: 2rem 0;
-            border-top: 1px solid #e2e8f0;
-            background: #fff;
-            text-align: center;
-            font-size: 0.9rem;
-            color: #64748b;
-        }
+       /* Footer Style - senada dengan navbar */
+.footer {
+    padding: 2.5rem 0;
+    background: var(--clr-dark);
+    text-align: center;
+    font-size: 0.9rem;
+    color: rgba(248, 250, 252, 0.65);
+    border-top: none;
+}
+
+.footer p.fw-semibold {
+    color: #f8fafc;
+    font-size: 1rem;
+    letter-spacing: 0.3px;
+}
+
+.footer .opacity-75 {
+    color: rgba(248, 250, 252, 0.5);
+}
+
+.footer {
+    border-top: 1px solid rgba(56, 189, 248, 0.2);
+}
+
+        .btn-logout-icon {
+    background: transparent;
+    border: 1.5px solid rgba(248, 250, 252, 0.25);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.btn-logout-icon img {
+    width: 20px;
+    height: 20px;
+    /* jika logout.png hitam, ubah jadi putih agar kontras di navbar gelap */
+    filter: brightness(0) invert(1);
+    transition: transform 0.25s ease;
+}
+
+.btn-logout-icon:hover {
+    background: var(--clr-blue-brand);
+    border-color: var(--clr-blue-brand);
+}
+
+.btn-logout-icon:hover img {
+    transform: translateX(2px);
+    filter: none; /* biar warna asli logout.png muncul saat hover di background terang */
+}
     </style>
 </head>
 <body>
 
     <nav class="navbar mb-5">
-        <div class="container">
-            <a href="#" class="brand-wrapper">
-                <span class="brand-text">SIDKP</span>
-                <svg class="brand-logo-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M2,12C2,12 5,7 12,7C15.5,7 18.5,8.5 20.5,10.5L22,9V15L20.5,13.5C18.5,15.5 15.5,17 12,17C5,17 2,12 2,12M12,9C10.34,9 9,10.34 9,12C9,13.66 10.34,15 12,15C13.66,15 15,13.66 15,12C15,10.34 13.66,9 12,9M12,10.5A1.5,1.5 0 0,1 13.5,12A1.5,1.5 0 0,1 12,13.5A1.5,1.5 0 0,1 10.5,12A1.5,1.5 0 0,1 12,10.5M19,12A1,1 0 1,1 18,11A1,1 0 0,1 19,12Z"/>
-                </svg>
-            </a>
-        
-        <form method="POST" action="{{ route('logout') }}">
+    <div class="container d-flex justify-content-between align-items-center">
+        <a href="#" class="brand-wrapper">
+            <span class="brand-text">SISTEM INFORMASI DINAS KELAUTAN & PERIKANAN</span>
+            <svg class="brand-logo-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M2,12C2,12 5,7 12,7C15.5,7 18.5,8.5 20.5,10.5L22,9V15L20.5,13.5C18.5,15.5 15.5,17 12,17C5,17 2,12 2,12M12,9C10.34,9 9,10.34 9,12C9,13.66 10.34,15 12,15C13.66,15 15,13.66 15,12C15,10.34 13.66,9 12,9M12,10.5A1.5,1.5 0 0,1 13.5,12A1.5,1.5 0 0,1 12,13.5A1.5,1.5 0 0,1 10.5,12A1.5,1.5 0 0,1 12,10.5M19,12A1,1 0 1,1 18,11A1,1 0 0,1 19,12Z"/>
+            </svg>
+        </a>
+
+        <form method="POST" action="{{ route('logout') }}" class="mb-0">
             @csrf
-            <button type="submit" class="btn-custom-dark">Logout</button>
-            </div>
+            <button type="submit" class="btn-logout-icon" title="Logout">
+                <img src="{{ asset('images/logout.png') }}" alt="Logout" width="24" height="24">
+            </button>
         </form>
-        
-    </nav>
+    </div>
+</nav>
 
     <div class="container mb-5">
 
