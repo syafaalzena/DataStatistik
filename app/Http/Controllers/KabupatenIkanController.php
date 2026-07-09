@@ -12,7 +12,8 @@ class KabupatenIkanController extends Controller
      */
     public function index()
     {
-        //
+        $kabupatenIkans = KabupatenIkan::all();
+        return view('kabupaten_ikans.index', compact('kabupatenIkans'));
     }
 
     /**
@@ -20,7 +21,7 @@ class KabupatenIkanController extends Controller
      */
     public function create()
     {
-        //
+        return view('kabupaten_ikans.create');
     }
 
     /**
@@ -28,7 +29,14 @@ class KabupatenIkanController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nama_kabupaten' => 'required|string|max:255',
+        ]);
+
+        KabupatenIkan::create($request->all());
+
+        return redirect()->route('kabupaten_ikans.index')
+            ->with('success', 'Kabupaten Ikan created successfully.');
     }
 
     /**
@@ -36,7 +44,7 @@ class KabupatenIkanController extends Controller
      */
     public function show(KabupatenIkan $kabupatenIkan)
     {
-        //
+        return view('kabupaten_ikans.show', compact('kabupatenIkan'));
     }
 
     /**
@@ -44,7 +52,7 @@ class KabupatenIkanController extends Controller
      */
     public function edit(KabupatenIkan $kabupatenIkan)
     {
-        //
+        return view('kabupaten_ikans.edit', compact('kabupatenIkan'));
     }
 
     /**
@@ -52,7 +60,14 @@ class KabupatenIkanController extends Controller
      */
     public function update(Request $request, KabupatenIkan $kabupatenIkan)
     {
-        //
+        $request->validate([
+            'nama_kabupaten' => 'required|string|max:255',
+        ]);
+
+        $kabupatenIkan->update($request->all());
+
+        return redirect()->route('kabupaten_ikans.index')
+            ->with('success', 'Kabupaten Ikan updated successfully.');
     }
 
     /**
@@ -60,6 +75,9 @@ class KabupatenIkanController extends Controller
      */
     public function destroy(KabupatenIkan $kabupatenIkan)
     {
-        //
+        $kabupatenIkan->delete();
+
+        return redirect()->route('kabupaten_ikans.index')
+            ->with('success', 'Kabupaten Ikan deleted successfully.');
     }
 }
