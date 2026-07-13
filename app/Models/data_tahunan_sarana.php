@@ -4,26 +4,22 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class DataBulananBudidaya extends Model
+class DataTahunanSarana extends Model
 {
+    protected $table = 'data_tahunan_saranas';
+
     protected $fillable = [
         'kabupaten_ikan_id',
-        'komoditas_budidaya_id',
         'jenis_budidaya_id',
-        'bulan',
         'tahun',
-        'hasil_produksi',
-        'keterangan',
+        'jumlah_rtp',
+        'jumlah_pembudidaya',
+        'luas_lahan',
     ];
 
     public function kabupaten()
     {
         return $this->belongsTo(KabupatenIkan::class, 'kabupaten_ikan_id');
-    }
-
-    public function komoditas()
-    {
-        return $this->belongsTo(KomoditasBudidaya::class, 'komoditas_budidaya_id');
     }
 
     public function jenis()
