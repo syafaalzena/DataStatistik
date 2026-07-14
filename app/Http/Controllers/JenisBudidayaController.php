@@ -2,64 +2,48 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\jenis_budidaya;
+use App\Models\JenisBudidaya;
 use Illuminate\Http\Request;
 
 class JenisBudidayaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    // dipakai di halaman "Kelola Jenis Budidaya" per kabupaten
+    public function index($kabupatenId)
     {
-        //
+        $jenis = JenisBudidaya::where('kabupaten_ikan_id', $kabupatenId)
+            ->orderBy('nama_jenis')->get();
+
+        return view('budidaya.kelola-jenis', compact('jenis', 'kabupatenId'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function store(Request $request, $kabupatenId)
     {
-        //
+        $validated = $request->validate([
+            'nama_jenis' => 'required|string|max:255|unique:jenis_budidayas,nama_jenis,NULL,id,kabupaten_ikan_id,' . $kabupatenId,
+        ]);
+
+        JenisBudidaya::create([
+            'kabupaten_ikan_id' => $kabupatenId,
+            'nama_jenis' => $validated['nama_jenis'],
+        ]);
+
+        return back()->with('success', 'Jenis budidaya ditambahkan.');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function update(Request $request, $id)
     {
-        //
+        $jenis = JenisBudidaya::findOrFail($id);
+        $validated = $request->validate([
+            'nama_jenis' => 'required|string|max:255|unique:jenis_budidayas,nama_jenis,' . $id . ',id,kabupaten_ikan_id,' . $jenis->kabupaten_ikan_id,
+        ]);
+        $jenis->update($validated);
+
+        return back()->with('success', 'Jenis budidaya diperbarui.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(jenis_budidaya $jenis_budidaya)
+    public function destroy($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(jenis_budidaya $jenis_budidaya)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, jenis_budidaya $jenis_budidaya)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(jenis_budidaya $jenis_budidaya)
-    {
-        //
+        JenisBudidaya::findOrFail($id)->delete();
+        return back()->with('success', 'Jenis budidaya dihapus.');
     }
 }

@@ -2,106 +2,80 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DataBulananBudidaya;
 use App\Models\DataTahunanSarana;
-use App\Exports\RecapBudidayaExport;
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\DB;
 
-class RekapBudidayaController extends Controller
+class DataTahunanSaranaController extends Controller
 {
-    public function index(Request $request)
+    public function store(Request $request, $kabupatenId)
     {
-        $bulanAwal = (int) $request->input('bulan_awal', 1);
-        $tahunAwal = (int) $request->input('tahun_awal', now()->year);
-        $bulanAkhir = (int) $request->input('bulan_akhir', now()->month);
-        $tahunAkhir = (int) $request->input('tahun_akhir', now()->year);
+        $validated = $request->validate([
+            'tahun' => 'required|integer|min:2000|max:2100',
 
-        $produksi = $this->ambilProduksiRentang($bulanAwal, $tahunAwal, $bulanAkhir, $tahunAkhir);
-        $sarana = DataTahunanSarana::with(['kabupaten', 'jenis'])
-            ->whereBetween('tahun', [$tahunAwal, $tahunAkhir])
-            ->get();
+            'jenis_id'   => 'array',
+            'jenis_id.*' => 'exists:jenis_budidayas,id',
+            'rtp'        => 'array',
+            'rtp.*'      => 'nullable|integer|min:0',
+            'pembudidaya'   => 'array',
+            'pembudidaya.*' => 'nullable|integer|min:0',
+            'luas_lahan'    => 'array',
+            'luas_lahan.*'  => 'nullable|integer|min:0',
+        ]);
 
-        $rekapProduksi = $this->rekapProduksiPerKabupaten($produksi);
-        $rekapSarana = $this->rekapSaranaPerKabupaten($sarana);
-        $trenBulanan = $this->trenProduksiPerBulan($produksi);
+        $tahun = $validated['tahun'];
+        $tersimpan = 0;
 
-        return view('budidaya.rekap', compact(
-            'rekapProduksi', 'rekapSarana', 'trenBulanan',
-            'bulanAwal', 'tahunAwal', 'bulanAkhir', 'tahunAkhir'
-        ));
+        DB::transaction(function () use ($request, $kabupatenId, $tahun, &$tersimpan) {
+            $jenisIds = $request->input('jenis_id', []);
+            $rtpVals = $request->input('rtp', []);
+            $pembudidayaVals = $request->input('pembudidaya', []);
+            $luasLahanVals = $request->input('luas_lahan', []);
+
+            foreach ($jenisIds as $i => $jenisId) {
+                if (!isset($rtpVals[$i]) || $rtpVals[$i] === '' || $rtpVals[$i] === null) {
+                    continue;
+                }
+                DataTahunanSarana::updateOrCreate(
+                    [
+                        'kabupaten_ikan_id' => $kabupatenId,
+                        'jenis_budidaya_id' => $jenisId,
+                        'tahun' => $tahun,
+                    ],
+                    [
+                        'jumlah_rtp' => $rtpVals[$i],
+                        'jumlah_pembudidaya' => $pembudidayaVals[$i] ?? null,
+                        'luas_lahan' => $luasLahanVals[$i] ?? null,
+                    ]
+                );
+                $tersimpan++;
+            }
+        });
+
+        if ($tersimpan === 0) {
+            return back()->with('error', 'Isi minimal satu jenis budidaya untuk data tahunan ini.');
+        }
+
+        return back()->with('success', "Tersimpan {$tersimpan} data sarana tahunan.");
     }
 
-    public function exportExcel(Request $request)
+    public function update(Request $request, $id)
     {
-        $bulanAwal = (int) $request->input('bulan_awal', 1);
-        $tahunAwal = (int) $request->input('tahun_awal', now()->year);
-        $bulanAkhir = (int) $request->input('bulan_akhir', now()->month);
-        $tahunAkhir = (int) $request->input('tahun_akhir', now()->year);
+        $data = DataTahunanSarana::findOrFail($id);
+        $validated = $request->validate([
+            'tahun' => 'required|integer|min:2000|max:2100',
+            'jumlah_rtp' => 'required|integer|min:0',
+            'jumlah_pembudidaya' => 'nullable|integer|min:0',
+            'luas_lahan' => 'nullable|integer|min:0',
+        ]);
+        $data->update($validated);
 
-        $produksi = $this->ambilProduksiRentang($bulanAwal, $tahunAwal, $bulanAkhir, $tahunAkhir);
-        $sarana = DataTahunanSarana::with(['kabupaten', 'jenis'])
-            ->whereBetween('tahun', [$tahunAwal, $tahunAkhir])
-            ->get();
-
-        $namaFile = "Rekap-Budidaya-Aceh_{$tahunAwal}-{$bulanAwal}_sd_{$tahunAkhir}-{$bulanAkhir}.xlsx";
-
-        return Excel::download(new RecapBudidayaExport($produksi, $sarana), $namaFile);
+        return back()->with('success', 'Data sarana diperbarui.');
     }
 
-    private function ambilProduksiRentang(int $bulanAwal, int $tahunAwal, int $bulanAkhir, int $tahunAkhir)
+    public function destroy($id)
     {
-        $awal = $tahunAwal * 12 + $bulanAwal;
-        $akhir = $tahunAkhir * 12 + $bulanAkhir;
-        [$lo, $hi] = [min($awal, $akhir), max($awal, $akhir)];
-
-        return DataBulananBudidaya::with(['kabupaten', 'komoditas', 'jenis'])
-            ->get()
-            ->filter(function ($r) use ($lo, $hi) {
-                $k = $r->tahun * 12 + $r->bulan;
-                return $k >= $lo && $k <= $hi;
-            })
-            ->values();
-    }
-
-    private function rekapProduksiPerKabupaten($produksi)
-    {
-        return $produksi->groupBy('kabupaten_ikan_id')->map(function ($rows) {
-            return [
-                'kabupaten' => $rows->first()->kabupaten->nama_kabupaten,
-                'total_produksi' => $rows->sum('hasil_produksi'),
-                'jenis_komoditas' => $rows->pluck('komoditas_budidaya_id')->unique()->count(),
-                'jenis_budidaya' => $rows->pluck('jenis_budidaya_id')->unique()->count(),
-                'jumlah_entri' => $rows->count(),
-            ];
-        })->sortByDesc('total_produksi')->values();
-    }
-
-    private function rekapSaranaPerKabupaten($sarana)
-    {
-        return $sarana->groupBy('kabupaten_ikan_id')->map(function ($rows) {
-            return [
-                'kabupaten' => $rows->first()->kabupaten->nama_kabupaten,
-                'total_rtp' => $rows->sum('jumlah_rtp'),
-                'total_pembudidaya' => $rows->sum('jumlah_pembudidaya'),
-                'total_luas_lahan' => $rows->sum('luas_lahan'),
-            ];
-        })->sortByDesc('total_rtp')->values();
-    }
-
-    private function trenProduksiPerBulan($produksi)
-    {
-        $bulanNama = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-
-        return $produksi->groupBy(fn ($r) => $r->tahun * 12 + $r->bulan)
-            ->sortKeys()
-            ->map(function ($rows, $key) use ($bulanNama) {
-                $tahun = intdiv($key, 12);
-                $bulan = $key - $tahun * 12;
-                return [
-                    'label' => $bulanNama[$bulan - 1] . ' ' . $tahun,
-                    'total' => $rows->sum('hasil_produksi'),
-                ];
-            })->values();
+        DataTahunanSarana::findOrFail($id)->delete();
+        return back()->with('success', 'Data sarana dihapus.');
     }
 }
