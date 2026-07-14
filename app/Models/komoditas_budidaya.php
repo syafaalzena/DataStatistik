@@ -2,20 +2,22 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class komoditas_budidaya extends Model
+class KomoditasBudidaya extends Model
 {
-    use HasFactory;
     protected $fillable = [
+        'kabupaten_ikan_id',
         'nama_komoditas',
     ];
 
+    public function kabupaten()
+    {
+        return $this->belongsTo(KabupatenIkan::class, 'kabupaten_ikan_id');
+    }
 
-public function komoditas()
-{
-    return $this->hasMany(KomoditasBudidaya::class);
-}
-
+    public function dataBulanan()
+    {
+        return $this->hasMany(DataBulananBudidaya::class);
+    }
 }
