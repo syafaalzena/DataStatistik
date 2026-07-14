@@ -10,6 +10,10 @@ use App\Http\Controllers\DataBulananController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\NewPasswordController;
 
+use App\Http\Controllers\KabupatenIkanController;
+use App\Http\Controllers\DataBulananBudidayaController;
+use App\Http\Controllers\DataTahunanSaranaController;
+
 /*
 |--------------------------------------------------------------------------
 | Halaman Utama & Auth (Guest)
@@ -74,4 +78,36 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/export/bulanan', [DataBulananController::class, 'exportBulanan'])->name('export.bulanan');
     Route::get('/export/tahunan', [DataBulananController::class, 'exportTahunan'])->name('export.tahunan');
+
+    /*
+|--------------------------------------------------------------------------
+| Budidaya
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/budidaya', [KabupatenIkanController::class, 'index'])
+    ->name('budidaya.index');
+
+Route::get('/budidaya/{kabupaten}', [KabupatenIkanController::class, 'input'])
+    ->name('budidaya.input');
+
+
+Route::post('/budidaya/{kabupaten}/sarana', [DataTahunanSaranaController::class, 'storeSarana'])
+    ->name('budidaya.sarana.store');
+
+Route::put('/budidaya/sarana/{id}', [DataTahunanSaranaController::class, 'updateSarana'])
+    ->name('budidaya.sarana.update');
+
+Route::delete('/budidaya/sarana/{id}', [DataTahunanSaranaController::class, 'destroySarana'])
+    ->name('budidaya.sarana.destroy');
+
+Route::post('/budidaya/{kabupaten}/produksi', [DataBulananBudidayaController::class, 'storeProduksi'])
+    ->name('budidaya.produksi.store');
+
+Route::put('/budidaya/produksi/{id}', [DataBulananBudidayaController::class, 'updateProduksi'])
+    ->name('budidaya.produksi.update');
+
+Route::delete('/budidaya/produksi/{id}', [DataBulananBudidayaController::class, 'destroyProduksi'])
+    ->name('budidaya.produksi.destroy');
+
 });

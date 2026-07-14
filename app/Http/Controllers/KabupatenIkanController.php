@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\KabupatenIkan;
 use Illuminate\Http\Request;
+use App\Models\KomoditasBudidaya;
+use App\Models\JenisBudidaya;
+use App\Models\DataBulananBudidaya;
+use App\Models\DataTahunanSarana;
 
 class KabupatenIkanController extends Controller
 {
@@ -11,14 +15,45 @@ class KabupatenIkanController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
-        $kabupatenIkans = KabupatenIkan::all();
-        return view('kabupaten_ikans.index', compact('kabupatenIkans'));
+{
+    $kabupatenIkans = KabupatenIkan::orderBy('nama_kabupaten')->get();
+
+    return view('budidaya.index', compact('kabupatenIkans'));
+
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    public function input($kabupatenId)
+{
+    $kabupaten = KabupatenIkan::findOrFail($kabupatenId);
+
+    $komoditasList = KomoditasBudidaya::where('kabupaten_ikan_id', $kabupatenId)
+        ->orderBy('nama_komoditas')
+        ->get();
+
+    $jenisList = JenisBudidaya::where('kabupaten_ikan_id', $kabupatenId)
+        ->orderBy('nama_jenis')
+        ->get();
+
+    $dataProduksi = DataBulananBudidaya::with(['komoditas', 'jenis'])
+        ->where('kabupaten_ikan_id', $kabupatenId)
+        ->orderByDesc('tahun')
+        ->orderByDesc('bulan')
+        ->get();
+
+    $dataSarana = DataTahunanSarana::with('jenis')
+        ->where('kabupaten_ikan_id', $kabupatenId)
+        ->orderByDesc('tahun')
+        ->get();
+
+    return view('budidaya.input', compact(
+        'kabupaten',
+        'komoditasList',
+        'jenisList',
+        'dataProduksi',
+        'dataSarana'
+    ));
+}
+
     public function create()
     {
         return view('kabupaten_ikans.create');
