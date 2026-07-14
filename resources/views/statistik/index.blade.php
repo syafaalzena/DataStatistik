@@ -306,7 +306,7 @@
                             </p>
                         </div>
                         <div class="mt-4 text-center">
-                            <a href="{{ route('dashboard') }}" class="btn-custom-dark">
+                            <a href="{{ route('budidaya.index') }}" class="btn-custom-dark">
                                 Masuk
                             </a>
                         </div>
