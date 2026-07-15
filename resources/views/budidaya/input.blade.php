@@ -175,8 +175,8 @@
                     </select>
                 </div>
                 <div class="col-12 col-md-6">
-                    <label class="form-label fw-semibold small">Keterangan (opsional)</label>
-                    <input type="text" name="keterangan" class="form-control" placeholder="Catatan tambahan...">
+                    <label class="form-label fw-semibold small">Lokasi</label>
+                    <input type="text" name="keterangan" class="form-control" placeholder=" desa / kecamatan">
                 </div>
             </div>
 
@@ -193,9 +193,9 @@
                     </div>
                     <div class="col-md-4">
                         <select name="jenis_id[]" class="form-select">
-                            <option value="">-- Pilih Jenis Budidaya --</option>
+                            <label for="jenis_id[]">Pilih Jenis Budidaya</label>
                             @foreach($jenisList as $j)
-                                <option value="{{ $j->id }}">{{ $j->nama_jenis }}</option>
+                                <input type="checkbox" value="{{ $j->id }}" name="jenis_id[]"> {{ $j->nama_jenis }}<br>
                             @endforeach
                         </select>
                     </div>
@@ -205,6 +205,7 @@
                     <div class="col-md-1 text-end">
                         <button type="button" class="btn-remove-row" onclick="removeRow(this)">Hapus</button>
                     </div>
+                    
                 </div>
             </div>
             <button type="button" class="btn-add-row mb-3" onclick="addProduksiRow()">+ Tambah Baris</button>
