@@ -196,6 +196,9 @@
             font-size: 14px;
             display: none;
         }
+
+        .transition-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .transition-card:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.1) !important; }
     </style>
 </head>
 
@@ -262,6 +265,50 @@
     </div>
 
     <div class="kab-empty" id="kabEmpty">Tidak ada kabupaten yang cocok dengan pencarian.</div>
+
+    {{-- REKAP PROVINSI --}}
+    <div class="card border-0 shadow-sm mb-4 mt-4" style="background: linear-gradient(145deg, #1e293b, #0f172a); border-radius: 16px;">
+        <div class="card-body p-4 text-white">
+            <div class="row align-items-center">
+                <div class="col-md-8 mb-3 mb-md-0">
+                    <h4 class="fw-bold mb-2">Akumulasi Data Tingkat Provinsi</h4>
+                    <p class="text-white-50 m-0">Ringkasan total keseluruhan data budidaya dari seluruh kabupaten.</p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <div class="bg-white bg-opacity-10 p-3 rounded-3 d-inline-block text-center">
+                        <span class="small text-white-50 d-block">Total Wilayah</span>
+                        <span class="fs-3 fw-bold">{{ $kabupatenIkans->count() }} Kabupaten</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- REKAP BULANAN & TAHUNAN --}}
+    <div class="row g-3">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm transition-card" style="border-radius: 12px;">
+                <div class="card-body p-4 d-flex align-items-center justify-content-between">
+                    <div>
+                        <h5 class="fw-bold text-dark mb-1">Rekap Bulanan Provinsi</h5>
+                        <p class="text-muted small m-0">Rentang bulan bebas, per kabupaten atau semua</p>
+                    </div>
+                    <a href="{{ route('budidaya.rekapBulanan') }}" class="btn btn-dark px-4 py-2 fw-semibold" style="border-radius: 8px;">Buka Rekap</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm transition-card" style="border-radius: 12px;">
+                <div class="card-body p-4 d-flex align-items-center justify-content-between">
+                    <div>
+                        <h5 class="fw-bold text-dark mb-1">Rekap Tahunan Provinsi</h5>
+                        <p class="text-muted small m-0">Pilih 1 tahun, tampil semua kabupaten</p>
+                    </div>
+                    <a href="{{ route('budidaya.rekapTahunan') }}" class="btn btn-dark px-4 py-2 fw-semibold" style="border-radius: 8px;">Buka Rekap</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </div>
 

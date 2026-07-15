@@ -13,6 +13,9 @@ use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\KabupatenIkanController;
 use App\Http\Controllers\DataBulananBudidayaController;
 use App\Http\Controllers\DataTahunanSaranaController;
+use App\Http\Controllers\RekapBudidayaController;
+use App\Http\Controllers\KomoditasBudidayaController;
+use App\Http\Controllers\JenisBudidayaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -92,22 +95,73 @@ Route::get('/budidaya/{kabupaten}', [KabupatenIkanController::class, 'input'])
     ->name('budidaya.input');
 
 
-Route::post('/budidaya/{kabupaten}/sarana', [DataTahunanSaranaController::class, 'storeSarana'])
+Route::post('/budidaya/{kabupaten}/sarana', [DataTahunanSaranaController::class, 'store'])
     ->name('budidaya.sarana.store');
 
-Route::put('/budidaya/sarana/{id}', [DataTahunanSaranaController::class, 'updateSarana'])
+Route::put('/budidaya/sarana/{id}', [DataTahunanSaranaController::class, 'update'])
     ->name('budidaya.sarana.update');
 
-Route::delete('/budidaya/sarana/{id}', [DataTahunanSaranaController::class, 'destroySarana'])
+Route::delete('/budidaya/sarana/{id}', [DataTahunanSaranaController::class, 'destroy'])
     ->name('budidaya.sarana.destroy');
 
-Route::post('/budidaya/{kabupaten}/produksi', [DataBulananBudidayaController::class, 'storeProduksi'])
+Route::post('/budidaya/{kabupaten}/produksi', [DataBulananBudidayaController::class, 'store'])
     ->name('budidaya.produksi.store');
 
-Route::put('/budidaya/produksi/{id}', [DataBulananBudidayaController::class, 'updateProduksi'])
+Route::put('/budidaya/produksi/{id}', [DataBulananBudidayaController::class, 'update'])
     ->name('budidaya.produksi.update');
 
-Route::delete('/budidaya/produksi/{id}', [DataBulananBudidayaController::class, 'destroyProduksi'])
+Route::delete('/budidaya/produksi/{id}', [DataBulananBudidayaController::class, 'destroy'])
     ->name('budidaya.produksi.destroy');
+
+    /*
+    |----------------------------------------------------------------------
+    | Budidaya - Rekap Bulanan & Tahunan
+    |----------------------------------------------------------------------
+    */
+
+    Route::get('/budidaya/rekap-bulanan', [RekapBudidayaController::class, 'bulanan'])
+        ->name('budidaya.rekapBulanan');
+
+    Route::get('/budidaya/rekap-bulanan/export', [RekapBudidayaController::class, 'exportBulanan'])
+        ->name('budidaya.rekapBulanan.export');
+
+    Route::get('/budidaya/rekap-tahunan', [RekapBudidayaController::class, 'tahunan'])
+        ->name('budidaya.rekapTahunan');
+
+    Route::get('/budidaya/rekap-tahunan/export', [RekapBudidayaController::class, 'exportTahunan'])
+        ->name('budidaya.rekapTahunan.export');
+
+    /*
+    |----------------------------------------------------------------------
+    | Budidaya - Sibling: Kelola Komoditas (per kabupaten)
+    |----------------------------------------------------------------------
+    */
+
+    Route::get('/budidaya/{kabupatenId}/komoditas/create', [KomoditasBudidayaController::class, 'createForKabupaten'])
+        ->name('budidaya.komoditas.create');
+
+    Route::post('/budidaya/{kabupatenId}/komoditas', [KomoditasBudidayaController::class, 'storeForKabupaten'])
+        ->name('budidaya.komoditas.store');
+
+    Route::delete('/budidaya/{kabupatenId}/komoditas/{id}', [KomoditasBudidayaController::class, 'destroyForKabupaten'])
+        ->name('budidaya.komoditas.destroy');
+
+    /*
+    |----------------------------------------------------------------------
+    | Budidaya - Sibling: Kelola Jenis Budidaya (per kabupaten)
+    |----------------------------------------------------------------------
+    */
+
+    Route::get('/budidaya/{kabupatenId}/jenis', [JenisBudidayaController::class, 'index'])
+        ->name('budidaya.jenis.index');
+
+    Route::post('/budidaya/{kabupatenId}/jenis', [JenisBudidayaController::class, 'store'])
+        ->name('budidaya.jenis.store');
+
+    Route::put('/budidaya/jenis/{id}', [JenisBudidayaController::class, 'update'])
+        ->name('budidaya.jenis.update');
+
+    Route::delete('/budidaya/jenis/{id}', [JenisBudidayaController::class, 'destroy'])
+        ->name('budidaya.jenis.destroy');
 
 });

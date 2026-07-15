@@ -110,4 +110,56 @@ class KomoditasBudidayaController extends Controller
             ->route('komoditas-budidaya.index')
             ->with('success', 'Komoditas berhasil dihapus.');
     }
+
+    public function createForKabupaten($kabupatenId)
+    {
+        $kabupaten = KabupatenIkan::findOrFail($kabupatenId);
+ 
+        $komoditasList = KomoditasBudidaya::where('kabupaten_ikan_id', $kabupatenId)
+            ->orderBy('nama_komoditas')
+            ->get();
+ 
+        return view('budidaya.komoditas-create', compact('kabupaten', 'komoditasList'));
+    }
+ 
+    public function storeForKabupaten(Request $request, $kabupatenId)
+    {
+        KabupatenIkan::findOrFail($kabupatenId); // pastikan kabupaten valid
+ 
+        $validated = $request->validate([
+            'nama_komoditas' => [
+                'required',
+                'string',
+                'max:255',
+                function ($attribute, $value, $fail) use ($kabupatenId) {
+                    $exists = KomoditasBudidaya::where('kabupaten_ikan_id', $kabupatenId)
+                        ->where('nama_komoditas', $value)
+                        ->exists();
+                    if ($exists) {
+                        $fail('Komoditas ini sudah terdaftar untuk kabupaten tersebut.');
+                    }
+                },
+            ],
+        ]);
+ 
+        KomoditasBudidaya::create([
+            'kabupaten_ikan_id' => $kabupatenId,
+            'nama_komoditas' => $validated['nama_komoditas'],
+        ]);
+ 
+        return redirect()
+            ->route('budidaya.komoditas.create', $kabupatenId)
+            ->with('success', 'Komoditas berhasil ditambahkan. Sekarang sudah bisa dipilih di halaman input.');
+    }
+ 
+    public function destroyForKabupaten($kabupatenId, $id)
+    {
+        KomoditasBudidaya::where('kabupaten_ikan_id', $kabupatenId)
+            ->findOrFail($id)
+            ->delete();
+ 
+        return redirect()
+            ->route('budidaya.komoditas.create', $kabupatenId)
+            ->with('success', 'Komoditas berhasil dihapus.');
+    }
 }
