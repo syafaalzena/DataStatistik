@@ -75,6 +75,18 @@
 
         .section-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
         .section-sub { color: #64748b; font-size: 14px; margin-bottom: 16px; }
+
+        .brand-logo-img {
+    height: 30px;      /* samain sama font-size .brand-text (26px) */
+    width: auto;       /* ikut aspect ratio asli, nggak dipotong */
+    object-fit: contain;
+}
+
+.brand-logo-img {
+    height: 30px;      /* samain sama font-size .brand-text (26px) */
+    width: auto;       /* ikut aspect ratio asli, nggak dipotong */
+    object-fit: contain;
+}
     </style>
 </head>
 <body>
@@ -82,11 +94,10 @@
 <nav class="navbar">
     <div class="container d-flex justify-content-between align-items-center">
         <a href="#" class="brand-wrapper">
+            <img src="{{ asset('images/pancacita.png') }}" alt="Logo Pancacita" class="brand-logo-img">
             <span class="brand-text">SIDKP</span>
-            <svg class="brand-logo-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M2,12C2,12 5,7 12,7C15.5,7 18.5,8.5 20.5,10.5L22,9V15L20.5,13.5C18.5,15.5 15.5,17 12,17C5,17 2,12 2,12M12,9A3,3 0 1,0 12,15A3,3 0 1,0 12,9Z"/>
-            </svg>
         </a>
+
         <form method="POST" action="{{ route('logout') }}" class="mb-0">
             @csrf
             <button type="submit" class="btn-logout-icon" title="Logout">

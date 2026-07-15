@@ -62,6 +62,70 @@
             transform: rotate(10deg) scale(1.05);
         }
 
+        .brand-logo-img {
+            height: 30px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        /* Welcome Banner */
+        .welcome-banner {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 55%, #0c4a6e 100%);
+            border-radius: 20px;
+            padding: 36px 40px;
+            margin-top: 28px;
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+            color: #ffffff;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15);
+        }
+
+        .welcome-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--clr-blue-brand);
+            padding: 5px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 14px;
+        }
+
+        .welcome-banner h3 {
+            color: #ffffff;
+            font-size: 30px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .welcome-banner p {
+            color: rgba(248, 250, 252, 0.7);
+            font-size: 15px;
+            margin-bottom: 0;
+            max-width: 520px;
+        }
+
+        .welcome-banner-decor {
+            position: absolute;
+            right: -10px;
+            bottom: -30px;
+            opacity: 0.12;
+            pointer-events: none;
+        }
+
+        .welcome-banner-decor svg {
+            width: 200px;
+            height: 200px;
+        }
+
+        @media (max-width: 576px) {
+            .welcome-banner { padding: 28px 24px; }
+            .welcome-banner h3 { font-size: 24px; }
+        }
+
         /* Kontainer Scroll Horizontal Modern */
         .scroll-container-wrapper {
             position: relative;
@@ -107,26 +171,40 @@
 
         .custom-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 12px 25px rgba(15, 23, 42, 0.08) !important;
+            box-shadow: 0 12px 25px rgba(15, 23, 42, 0.31) !important;
         }
 
         /* Button Modern Tengah */
         .btn-custom-dark {
             background: var(--clr-dark);
             color: #f5f6e7ff;
-            padding: 12px 40px; 
+            padding: 12px 28px;
             border-radius: 25px;
             font-weight: 600;
-            transition: all 0.2s ease;
+            transition: all 0.25s ease;
             border: none;
             text-decoration: none;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-custom-dark svg {
+            width: 16px;
+            height: 16px;
+            transition: transform 0.25s ease;
         }
 
         .btn-custom-dark:hover {
-            background: #1e293b;
-            color: #ffffff;
+            background: rgba(186, 186, 186, 1);
+            color: var(--clr-dark);
             transform: translateY(-1px);
+            box-shadow: 0 6px 14px rgba(190, 190, 190, 0.35);
+            outline: 2px solid rgba(138, 138, 138, 1);
+        }
+
+        .btn-custom-dark:hover svg {
+            transform: translateX(4px);
         }
 
         .card-icon {
@@ -177,76 +255,74 @@
         }
 
        /* Footer Style - senada dengan navbar */
-.footer {
-    padding: 2.5rem 0;
-    background: var(--clr-dark);
-    text-align: center;
-    font-size: 0.9rem;
-    color: rgba(248, 250, 252, 0.65);
-    border-top: none;
-}
+        .footer {
+            padding: 2.5rem 0;
+            background: var(--clr-dark);
+            text-align: center;
+            font-size: 0.9rem;
+            color: rgba(248, 250, 252, 0.65);
+            border-top: none;
+        }
 
-.footer p.fw-semibold {
-    color: #f8fafc;
-    font-size: 1rem;
-    letter-spacing: 0.3px;
-}
+        .footer p.fw-semibold {
+            color: #f8fafc;
+            font-size: 1rem;
+            letter-spacing: 0.3px;
+        }
 
-.footer .opacity-75 {
-    color: rgba(248, 250, 252, 0.5);
-}
+        .footer .opacity-75 {
+            color: rgba(248, 250, 252, 0.5);
+        }
 
-.footer {
-    border-top: 1px solid rgba(56, 189, 248, 0.2);
-}
+        .footer {
+            border-top: 1px solid rgba(56, 189, 248, 0.2);
+        }
 
         .btn-logout-icon {
-    background: transparent;
-    border: 1.5px solid rgba(248, 250, 252, 0.25);
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.25s ease;
-}
+            background: transparent;
+            border: 1.5px solid rgba(248, 250, 252, 0.25);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
 
-.btn-logout-icon img {
-    width: 20px;
-    height: 20px;
-    /* jika logout.png hitam, ubah jadi putih agar kontras di navbar gelap */
-    filter: brightness(0) invert(1);
-    transition: transform 0.25s ease;
-}
+        .btn-logout-icon img {
+            width: 20px;
+            height: 20px;
+            /* jika logout.png hitam, ubah jadi putih agar kontras di navbar gelap */
+            filter: brightness(0) invert(1);
+            transition: transform 0.25s ease;
+        }
 
-.btn-logout-icon:hover {
-    background: var(--clr-blue-brand);
-    border-color: var(--clr-blue-brand);
-}
+        .btn-logout-icon:hover {
+            background: var(--clr-blue-brand);
+            border-color: var(--clr-blue-brand);
+        }
 
-.btn-logout-icon:hover img {
-    transform: translateX(2px);
-    filter: none; /* biar warna asli logout.png muncul saat hover di background terang */
-}
+        .btn-logout-icon:hover img {
+            transform: translateX(2px);
+            filter: none; /* biar warna asli logout.png muncul saat hover di background terang */
+        }
     </style>
 </head>
 <body>
 
-    <nav class="navbar mb-5">
+    <nav class="navbar">
     <div class="container d-flex justify-content-between align-items-center">
         <a href="#" class="brand-wrapper">
-            <span class="brand-text">SISTEM INFORMASI DINAS KELAUTAN & PERIKANAN</span>
-            <svg class="brand-logo-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M2,12C2,12 5,7 12,7C15.5,7 18.5,8.5 20.5,10.5L22,9V15L20.5,13.5C18.5,15.5 15.5,17 12,17C5,17 2,12 2,12M12,9C10.34,9 9,10.34 9,12C9,13.66 10.34,15 12,15C13.66,15 15,13.66 15,12C15,10.34 13.66,9 12,9M12,10.5A1.5,1.5 0 0,1 13.5,12A1.5,1.5 0 0,1 12,13.5A1.5,1.5 0 0,1 10.5,12A1.5,1.5 0 0,1 12,10.5M19,12A1,1 0 1,1 18,11A1,1 0 0,1 19,12Z"/>
-            </svg>
+            <img src="{{ asset('images/pancacita.png') }}" alt="Logo Pancacita" class="brand-logo-img">
+            <span class="brand-text">SIDKP</span>
         </a>
 
         <form method="POST" action="{{ route('logout') }}" class="mb-0">
             @csrf
             <button type="submit" class="btn-logout-icon" title="Logout">
-                <img src="{{ asset('images/logout.png') }}" alt="Logout" width="24" height="24">
+                <img src="{{ asset('images/logout.png') }}" alt="Logout" width="20" height="20">
             </button>
         </form>
     </div>
@@ -254,12 +330,15 @@
 
     <div class="container mb-5">
 
-        <div class="row mb-4">
-            <div class="col-12">
-                <h3 class="fw-semibold mb-2" style="color: var(--clr-dark);">
-                    Selamat Datang, {{ auth()->user()->name }}
-                </h3>
-                <p class="fs-6" style="color: var(--clr-text-muted);">Silakan pilih menu yang ingin Anda kelola.</p>
+        <div class="welcome-banner">
+            <span class="welcome-badge">👋 Selamat Datang Kembali</span>
+            <h3>Halo, {{ auth()->user()->name }}!</h3>
+            <p>Silahkan pilih menu di bawah ini untuk mulai mengelola data statistik kelautan dan perikanan Provinsi Aceh.</p>
+
+            <div class="welcome-banner-decor">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+                    <path d="M2,12C2,12 5,7 12,7C15.5,7 18.5,8.5 20.5,10.5L22,9V15L20.5,13.5C18.5,15.5 15.5,17 12,17C5,17 2,12 2,12M12,9C10.34,9 9,10.34 9,12C9,13.66 10.34,15 12,15C13.66,15 15,13.66 15,12C15,10.34 13.66,9 12,9Z"/>
+                </svg>
             </div>
         </div>
 
@@ -289,6 +368,7 @@
                         <div class="mt-4 text-center">
                             <a href="{{ route('kabupaten.index') }}" class="btn-custom-dark">
                                 Masuk
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8.59,16.59L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.59Z"/></svg>
                             </a>
                         </div>
                     </div>
@@ -308,6 +388,7 @@
                         <div class="mt-4 text-center">
                             <a href="{{ route('budidaya.index') }}" class="btn-custom-dark">
                                 Masuk
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8.59,16.59L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.59Z"/></svg>
                             </a>
                         </div>
                     </div>
@@ -327,6 +408,7 @@
                         <div class="mt-4 text-center">
                             <a href="#" class="btn-custom-dark">
                                 Masuk
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8.59,16.59L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.59Z"/></svg>
                             </a>
                         </div>
                     </div>
@@ -337,27 +419,16 @@
 
     </div>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <p class="mb-0 fw-semibold">Dinas Kelautan Dan Perikanan Aceh</p>
-            <p class="small mb-0 opacity-75">© 2026 Sistem Informasi Kelautan & Perikanan</p>
-        </div>
-    </footer>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         function scrollSlide(direction) {
-            const container = document.getElementById('menuScrollRow');
-            const scrollAmount = 470; // Jarak geser per klik
-            
-            if (direction === 'left') {
-                container.scrollLeft -= scrollAmount;
-            } else {
-                container.scrollLeft += scrollAmount;
-            }
+            const row = document.getElementById('menuScrollRow');
+            const scrollAmount = 470;
+            row.scrollBy({
+                left: direction === 'left' ? -scrollAmount : scrollAmount,
+                behavior: 'smooth'
+            });
         }
     </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -131,6 +131,18 @@
     transform: translateX(2px);
     filter: none;
 }
+
+         .brand-logo-img {
+    height: 30px;      /* samain sama font-size .brand-text (26px) */
+    width: auto;       /* ikut aspect ratio asli, nggak dipotong */
+    object-fit: contain;
+}
+
+.brand-logo-img {
+    height: 30px;      /* samain sama font-size .brand-text (26px) */
+    width: auto;       /* ikut aspect ratio asli, nggak dipotong */
+    object-fit: contain;
+}
     </style>
 </head>
 <body>
@@ -138,16 +150,14 @@
    <nav class="navbar">
     <div class="container d-flex justify-content-between align-items-center">
         <a href="#" class="brand-wrapper">
+            <img src="{{ asset('images/pancacita.png') }}" alt="Logo Pancacita" class="brand-logo-img">
             <span class="brand-text">SIDKP</span>
-            <svg class="brand-logo-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M2,12C2,12 5,7 12,7C15.5,7 18.5,8.5 20.5,10.5L22,9V15L20.5,13.5C18.5,15.5 15.5,17 12,17C5,17 2,12 2,12M12,9C10.34,9 9,10.34 9,12C9,13.66 10.34,15 12,15C13.66,15 15,13.66 15,12C15,10.34 13.66,9 12,9M12,10.5A1.5,1.5 0 0,1 13.5,12A1.5,1.5 0 0,1 12,13.5A1.5,1.5 0 0,1 10.5,12A1.5,1.5 0 0,1 12,10.5M19,12A1,1 0 1,1 18,11A1,1 0 0,1 19,12Z"/>
-            </svg>
         </a>
 
         <form method="POST" action="{{ route('logout') }}" class="mb-0">
             @csrf
             <button type="submit" class="btn-logout-icon" title="Logout">
-                <img src="{{ asset('images/logout.png') }}" alt="Logout" width="24" height="24">
+                <img src="{{ asset('images/logout.png') }}" alt="Logout" width="20" height="20">
             </button>
         </form>
     </div>
@@ -162,7 +172,7 @@
                     </a>
                     <div>
                         <h2 class="fw-bold text-dark mb-1">Data Statistik Garam Provinsi Aceh</h2>
-                        <p class="text-muted mb-0">Silakan pilih wilayah kabupaten untuk mengelola data atau lihat total rekapitulasi provinsi di bawah.</p>
+                        <p class="text-muted mb-0">Silahkan pilih wilayah kabupaten untuk mengelola data atau lihat total rekapitulasi provinsi di bawah.</p>
                     </div>
                 </div>
             </div>
