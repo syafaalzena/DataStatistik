@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class JenisBudidaya extends Model
 {
-    protected $fillable = ['kabupaten_ikan_id', 'nama_jenis'];
+    protected $fillable = ['kabupaten_ikan_id',
+    'nama_jenis',
+    ];
 
     public function kabupaten()
     {

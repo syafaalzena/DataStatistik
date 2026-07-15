@@ -91,6 +91,24 @@ Route::middleware('auth')->group(function () {
 Route::get('/budidaya', [KabupatenIkanController::class, 'index'])
     ->name('budidaya.index');
 
+
+    //  |----------------------------------------------------------------------
+    // | Budidaya - Rekap Bulanan & Tahunan
+    // |----------------------------------------------------------------------
+    // */
+
+    Route::get('/budidaya/rekapBulanan', [RekapBudidayaController::class, 'bulanan'])
+        ->name('budidaya.rekapBulanan');
+
+    // Route::get('/budidaya/rekapBulanan/export', [RekapBudidayaController::class, 'exportBulanan'])
+    //     ->name('budidaya.rekapBulanan.export');
+
+    Route::get('/budidaya/rekapTahunan', [RekapBudidayaController::class, 'tahunan'])
+        ->name('budidaya.rekapTahunan');
+
+    // Route::get('/budidaya/rekapTahunan/export', [RekapBudidayaController::class, 'exportTahunan'])
+    //     ->name('budidaya.rekapTahunan.export');
+
 Route::get('/budidaya/{kabupaten}', [KabupatenIkanController::class, 'input'])
     ->name('budidaya.input');
 
@@ -114,22 +132,7 @@ Route::delete('/budidaya/produksi/{id}', [DataBulananBudidayaController::class, 
     ->name('budidaya.produksi.destroy');
 
     /*
-    |----------------------------------------------------------------------
-    | Budidaya - Rekap Bulanan & Tahunan
-    |----------------------------------------------------------------------
-    */
-
-    Route::get('/budidaya/rekap-bulanan', [RekapBudidayaController::class, 'bulanan'])
-        ->name('budidaya.rekapBulanan');
-
-    Route::get('/budidaya/rekap-bulanan/export', [RekapBudidayaController::class, 'exportBulanan'])
-        ->name('budidaya.rekapBulanan.export');
-
-    Route::get('/budidaya/rekap-tahunan', [RekapBudidayaController::class, 'tahunan'])
-        ->name('budidaya.rekapTahunan');
-
-    Route::get('/budidaya/rekap-tahunan/export', [RekapBudidayaController::class, 'exportTahunan'])
-        ->name('budidaya.rekapTahunan.export');
+   
 
     /*
     |----------------------------------------------------------------------
