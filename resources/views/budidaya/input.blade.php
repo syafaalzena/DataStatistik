@@ -226,50 +226,52 @@
         @if($dataProduksi->isEmpty())
             <div class="empty-state">Belum ada data produksi.</div>
         @else
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>Bulan/Tahun</th>
-                        <th>Komoditas</th>
-                        <th>Jenis Budidaya</th>
-                        <th class="text-end">Hasil Produksi</th>
-                        <th>Lokasi</th>
-                        <th class="text-end">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($dataProduksi as $d)
-                        <tr>
-                            <td>{{ \Carbon\Carbon::create()->month($d->bulan)->translatedFormat('F') }} {{ $d->tahun }}</td>
-                            <td>{{ $d->komoditas->nama_komoditas ?? '-' }}</td>
-                            <td>{{ $d->jenis->nama_jenis ?? '-' }}</td>
-                            <td class="text-end">{{ number_format($d->hasil_produksi, 2) }}</td>
-                            <td>{{ $d->keterangan ?? '-' }}</td>
-                            <td class="text-end">
-                                <button type="button"
-                                    onclick="bukaEditProduksi(
-                                        {{ $d->id }},
-                                        {{ $d->bulan }},
-                                        {{ $d->tahun }},
-                                        {{ $d->hasil_produksi }},
-                                        '{{ addslashes($d->komoditas->nama_komoditas ?? '-') }}',
-                                        '{{ addslashes($d->jenis->nama_jenis ?? '-') }}',
-                                        '{{ addslashes($d->keterangan ?? '') }}'
-                                    )"
-                                    style="background:none; border:none; padding:0; cursor:pointer; display:flex; align-items:center;">
-                                    <img src="{{ asset('images/pencil.png') }}" alt="Edit" width="20" height="20">
-                                </button>
-                                <form method="POST" action="{{ route('budidaya.produksi.destroy', $d->id) }}"
-                                      onsubmit="return confirm('Hapus data ini?');" class="d-inline mb-0">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn-delete-sm">Hapus</button>
-                                </form>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+            <table class="table table-hover text-center align-middle">
+    <thead>
+        <tr>
+            <th>Bulan/Tahun</th>
+            <th>Komoditas</th>
+            <th>Jenis Budidaya</th>
+            <th>Hasil Produksi (Kg)</th>
+            <th>Lokasi</th>
+            <th>Aksi</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach($dataProduksi as $d)
+            <tr>
+                <td>{{ \Carbon\Carbon::create()->month($d->bulan)->translatedFormat('F') }} {{ $d->tahun }}</td>
+                <td>{{ $d->komoditas->nama_komoditas ?? '-' }}</td>
+                <td>{{ $d->jenis->nama_jenis ?? '-' }}</td>
+                <td>{{ rtrim(rtrim(number_format($d->hasil_produksi, 2, '.', ','), '0'), '.') }}</td>
+                <td>{{ $d->keterangan ?? '-' }}</td>
+                <td>
+                    <div class="d-flex justify-content-center align-items-center gap-2">
+                        <button type="button"
+                            onclick="bukaEditProduksi(
+                                {{ $d->id }},
+                                {{ $d->bulan }},
+                                {{ $d->tahun }},
+                                {{ $d->hasil_produksi }},
+                                '{{ addslashes($d->komoditas->nama_komoditas ?? '-') }}',
+                                '{{ addslashes($d->jenis->nama_jenis ?? '-') }}',
+                                '{{ addslashes($d->keterangan ?? '') }}'
+                            )"
+                            style="background:none; border:none; padding:0; cursor:pointer; display:flex; align-items:center;">
+                            <img src="{{ asset('images/pencil.png') }}" alt="Edit" width="20" height="20">
+                        </button>
+                        <form method="POST" action="{{ route('budidaya.produksi.destroy', $d->id) }}"
+                              onsubmit="return confirm('Hapus data ini?');" class="d-inline mb-0">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn-delete-sm">Hapus</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+        @endforeach
+    </tbody>
+</table>
         @endif
     </div>
 

@@ -340,7 +340,7 @@
             width: 64px;
             height: 64px;
             border-radius: 50%;
-            background: rgba(239, 68, 68, 0.1);
+            background: rgba(68, 105, 239, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -350,7 +350,7 @@
         .logout-modal-icon svg {
             width: 30px;
             height: 30px;
-            fill: #ef4444;
+            fill: #3661afff;
         }
 
         .logout-modal-box h4 {
@@ -393,12 +393,12 @@
         }
 
         .btn-logout-confirm {
-            background: #ef4444;
+            background: #2b4d8fff;
             color: #ffffff;
         }
 
         .btn-logout-confirm:hover {
-            background: #dc2626;
+            background: #103755ff;
         }
     </style>
 </head>
