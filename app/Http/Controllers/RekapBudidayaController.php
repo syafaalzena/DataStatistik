@@ -9,59 +9,70 @@ use Illuminate\Http\Request;
 
 class RekapBudidayaController extends Controller
 {
-    private $bulanNama = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-
-    // ============ REKAP BULANAN ============
-    // per kabupaten -> per komoditas -> total kg (dalam rentang bulan-tahun yang dipilih) + total per kabupaten
     public function bulanan(Request $request)
     {
         $bulanAwal = (int) $request->input('bulan_awal', 1);
         $tahunAwal = (int) $request->input('tahun_awal', now()->year);
         $bulanAkhir = (int) $request->input('bulan_akhir', now()->month);
         $tahunAkhir = (int) $request->input('tahun_akhir', now()->year);
+        $kabupatenId = $request->input('kabupaten_id');
 
         $awal = $tahunAwal * 12 + $bulanAwal;
         $akhir = $tahunAkhir * 12 + $bulanAkhir;
         [$lo, $hi] = [min($awal, $akhir), max($awal, $akhir)];
 
-        $data = DataBulananBudidaya::with(['kabupaten', 'komoditas'])
-            ->get()
-            ->filter(function ($r) use ($lo, $hi) {
-                $k = $r->tahun * 12 + $r->bulan;
-                return $k >= $lo && $k <= $hi;
-            });
+        $query = DataBulananBudidaya::with(['kabupaten', 'komoditas']);
+
+        if ($kabupatenId) {
+            $query->where('kabupaten_ikan_id', $kabupatenId);
+        }
+
+        $data = $query->get()->filter(function ($r) use ($lo, $hi) {
+            $k = $r->tahun * 12 + $r->bulan;
+            return $k >= $lo && $k <= $hi;
+        });
 
         $rekap = $this->kelompokkanProduksiPerKabupaten($data);
         $grandTotal = $data->sum('hasil_produksi');
+        $kabupatens = KabupatenIkan::orderBy('nama_kabupaten')->get();
 
         return view('budidaya.rekapBulanan', compact(
-            'rekap', 'grandTotal', 'bulanAwal', 'tahunAwal', 'bulanAkhir', 'tahunAkhir'
+            'rekap', 'grandTotal', 'bulanAwal', 'tahunAwal', 'bulanAkhir', 'tahunAkhir',
+            'kabupatens', 'kabupatenId'
         ));
     }
 
-    // ============ REKAP TAHUNAN ============
-    // per kabupaten -> per komoditas -> total kg setahun/beberapa tahun
-    // + per kabupaten -> per jenis budidaya -> jumlah pembudidaya & luas lahan
     public function tahunan(Request $request)
     {
         $tahunAwal = (int) $request->input('tahun_awal', now()->year);
         $tahunAkhir = (int) $request->input('tahun_akhir', now()->year);
         [$tLo, $tHi] = [min($tahunAwal, $tahunAkhir), max($tahunAwal, $tahunAkhir)];
+        $kabupatenId = $request->input('kabupaten_id');
 
-        $produksi = DataBulananBudidaya::with(['kabupaten', 'komoditas'])
-            ->whereBetween('tahun', [$tLo, $tHi])
-            ->get();
+        $produksiQuery = DataBulananBudidaya::with(['kabupaten', 'komoditas'])
+            ->whereBetween('tahun', [$tLo, $tHi]);
 
-        $sarana = DataTahunanSarana::with(['kabupaten', 'jenis'])
-            ->whereBetween('tahun', [$tLo, $tHi])
-            ->get();
+        $saranaQuery = DataTahunanSarana::with(['kabupaten', 'jenis'])
+            ->whereBetween('tahun', [$tLo, $tHi]);
+
+        if ($kabupatenId) {
+            $produksiQuery->where('kabupaten_ikan_id', $kabupatenId);
+            $saranaQuery->where('kabupaten_ikan_id', $kabupatenId);
+        }
+
+        $produksi = $produksiQuery->get();
+        $sarana = $saranaQuery->get();
 
         $rekapProduksi = $this->kelompokkanProduksiPerKabupaten($produksi);
         $rekapSarana = $this->kelompokkanSaranaPerKabupaten($sarana);
 
-        // gabungkan jadi satu per kabupaten, biar di blade tinggal 1x loop
         $kabupatens = KabupatenIkan::orderBy('nama_kabupaten')->get();
-        $gabungan = $kabupatens->map(function ($kab) use ($rekapProduksi, $rekapSarana) {
+
+        $daftarKabupaten = $kabupatenId
+            ? $kabupatens->where('id', $kabupatenId)
+            : $kabupatens;
+
+        $gabungan = $daftarKabupaten->map(function ($kab) use ($rekapProduksi, $rekapSarana) {
             return [
                 'kabupaten' => $kab->nama_kabupaten,
                 'produksi' => $rekapProduksi->firstWhere('kabupaten_id', $kab->id),
@@ -69,10 +80,10 @@ class RekapBudidayaController extends Controller
             ];
         })->filter(fn ($k) => $k['produksi'] || $k['sarana'])->values();
 
-        return view('budidaya.rekapTahunan', compact('gabungan', 'tahunAwal', 'tahunAkhir'));
+        return view('budidaya.rekapTahunan', compact(
+            'gabungan', 'tahunAwal', 'tahunAkhir', 'kabupatens', 'kabupatenId'
+        ));
     }
-
-    // ============ helper ============
 
     private function kelompokkanProduksiPerKabupaten($data)
     {

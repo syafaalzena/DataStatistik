@@ -232,6 +232,17 @@
 
     <form method="GET" action="{{ route('budidaya.rekapBulanan') }}" class="filter-card">
         <div class="row g-3 align-items-end">
+            <div class="col-12 col-md-3">
+                <label>Kabupaten/Kota</label>
+                <select name="kabupaten_id" class="form-select">
+                    <option value="">Semua Kabupaten/Kota</option>
+                    @foreach ($kabupatens as $kab)
+                        <option value="{{ $kab->id }}" {{ (string)$kabupatenId === (string)$kab->id ? 'selected' : '' }}>
+                            {{ $kab->nama_kabupaten }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
             <div class="col-6 col-md-2">
                 <label>Dari bulan</label>
                 <select name="bulan_awal" class="form-select">
