@@ -141,7 +141,6 @@
             -webkit-overflow-scrolling: touch;
         }
 
-        /* Menyembunyikan scrollbar bawaan browser agar UI tetap bersih */
         .horizontal-scroll-row::-webkit-scrollbar {
             height: 8px;
         }
@@ -153,14 +152,12 @@
             border-radius: 20px;
         }
 
-        /* Ukuran Lebar Tetap untuk Setiap Card di dalam Scroll */
         .scroll-card-item {
             flex: 0 0 auto;
             width: 450px; 
             max-width: 90vw;
         }
 
-        /* Card Custom Styling */
         .custom-card {
             background: #ffffff;
             border: 1px solid var(--clr-border);
@@ -174,7 +171,6 @@
             box-shadow: 0 12px 25px rgba(15, 23, 42, 0.31) !important;
         }
 
-        /* Button Modern Tengah */
         .btn-custom-dark {
             background: var(--clr-dark);
             color: #f5f6e7ff;
@@ -212,7 +208,6 @@
             vertical-align: middle;
         }
 
-        /* Tombol Navigasi Geser menggunakan Gambar back.png */
         .scroll-nav-btn {
             position: absolute;
             top: 50%;
@@ -237,10 +232,9 @@
         }
 
         .scroll-nav-btn:hover img {
-            filter: brightness(0) invert(1); /* Gambar menjadi putih saat dihover */
+            filter: brightness(0) invert(1);
         }
 
-        /* 💡 HANYA BAGIAN INI YANG DIUBAH (DIPERLEBAR KE UJUNG) */
         .scroll-btn-left { 
             left: -40px; 
         }
@@ -249,12 +243,10 @@
             right: -40px; 
         }
 
-        /* Membalik gambar panah back ke kanan secara otomatis */
         .img-flip-horizontal {
             transform: scaleX(-1);
         }
 
-       /* Footer Style - senada dengan navbar */
         .footer {
             padding: 2.5rem 0;
             background: var(--clr-dark);
@@ -294,7 +286,6 @@
         .btn-logout-icon img {
             width: 20px;
             height: 20px;
-            /* jika logout.png hitam, ubah jadi putih agar kontras di navbar gelap */
             filter: brightness(0) invert(1);
             transition: transform 0.25s ease;
         }
@@ -306,7 +297,108 @@
 
         .btn-logout-icon:hover img {
             transform: translateX(2px);
-            filter: none; /* biar warna asli logout.png muncul saat hover di background terang */
+            filter: none;
+        }
+
+        /* ── MODAL KONFIRMASI LOGOUT ─────────────────────────── */
+        .logout-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(3px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+
+        .logout-modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .logout-modal-box {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 32px 30px;
+            width: 100%;
+            max-width: 380px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(15, 23, 42, 0.25);
+            transform: translateY(20px) scale(0.96);
+            transition: transform 0.25s ease;
+        }
+
+        .logout-modal-overlay.active .logout-modal-box {
+            transform: translateY(0) scale(1);
+        }
+
+        .logout-modal-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 18px auto;
+        }
+
+        .logout-modal-icon svg {
+            width: 30px;
+            height: 30px;
+            fill: #ef4444;
+        }
+
+        .logout-modal-box h4 {
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: var(--clr-dark);
+            margin-bottom: 8px;
+        }
+
+        .logout-modal-box p {
+            color: var(--clr-text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 26px;
+        }
+
+        .logout-modal-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .logout-modal-actions button {
+            flex: 1;
+            padding: 11px 0;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-logout-cancel {
+            background: var(--clr-bg);
+            color: var(--clr-dark);
+            border: 1px solid var(--clr-border) !important;
+        }
+
+        .btn-logout-cancel:hover {
+            background: #ececec;
+        }
+
+        .btn-logout-confirm {
+            background: #ef4444;
+            color: #ffffff;
+        }
+
+        .btn-logout-confirm:hover {
+            background: #dc2626;
         }
     </style>
 </head>
@@ -319,14 +411,32 @@
             <span class="brand-text">SIDKP</span>
         </a>
 
-        <form method="POST" action="{{ route('logout') }}" class="mb-0">
-            @csrf
-            <button type="submit" class="btn-logout-icon" title="Logout">
-                <img src="{{ asset('images/logout.png') }}" alt="Logout" width="20" height="20">
-            </button>
-        </form>
+        <button type="button" class="btn-logout-icon" title="Logout" id="openLogoutModal">
+            <img src="{{ asset('images/logout.png') }}" alt="Logout" width="20" height="20">
+        </button>
     </div>
 </nav>
+
+{{-- ── MODAL KONFIRMASI LOGOUT ─────────────────────────────── --}}
+<div class="logout-modal-overlay" id="logoutModal">
+    <div class="logout-modal-box">
+        <div class="logout-modal-icon">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M16,17V14H9V10H16V7L21,12L16,17M14,2A2,2 0 0,1 16,4V6H14V4H5V20H14V18H16V20A2,2 0 0,1 14,22H5A2,2 0 0,1 3,20V4A2,2 0 0,1 5,2H14Z"/>
+            </svg>
+        </div>
+        <h4>Yakin ingin logout?</h4>
+        <p>Anda akan keluar dari sesi ini dan perlu login kembali untuk mengakses sistem.</p>
+
+        <div class="logout-modal-actions">
+            <button type="button" class="btn-logout-cancel" id="cancelLogout">Batal</button>
+            <form method="POST" action="{{ route('logout') }}" class="mb-0" style="flex:1;">
+                @csrf
+                <button type="submit" class="btn-logout-confirm w-100">Ya, Logout</button>
+            </form>
+        </div>
+    </div>
+</div>
 
     <div class="container mb-5">
 
@@ -429,6 +539,33 @@
                 behavior: 'smooth'
             });
         }
+
+        // ── LOGIKA MODAL KONFIRMASI LOGOUT ──────────────────────
+        const logoutModal      = document.getElementById('logoutModal');
+        const openLogoutModal  = document.getElementById('openLogoutModal');
+        const cancelLogout     = document.getElementById('cancelLogout');
+
+        openLogoutModal.addEventListener('click', () => {
+            logoutModal.classList.add('active');
+        });
+
+        cancelLogout.addEventListener('click', () => {
+            logoutModal.classList.remove('active');
+        });
+
+        // Tutup modal kalau klik di luar box
+        logoutModal.addEventListener('click', (e) => {
+            if (e.target === logoutModal) {
+                logoutModal.classList.remove('active');
+            }
+        });
+
+        // Tutup modal dengan tombol Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                logoutModal.classList.remove('active');
+            }
+        });
     </script>
 </body>
 </html>
