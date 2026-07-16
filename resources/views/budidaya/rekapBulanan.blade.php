@@ -225,7 +225,7 @@
             </a>
             <div>
                 <div class="page-title">Rekap Produksi Bulanan</div>
-                <div class="page-sub">Rentang bulan bebas, seluruh kabupaten.</div>
+                <div class="page-sub">Rentang bulan bebas.</div>
             </div>
         </div>
     </div>
@@ -274,9 +274,15 @@
     </form>
 
     <div class="grand-total-card">
-        <div class="label">Total Produksi Seluruh Provinsi (kg)</div>
+        <div class="label">Total Produksi Provinsi (kg)</div>
         <div class="value">{{ number_format($grandTotal) }}</div>
     </div>
+
+    <div class="d-flex justify-content-end mb-3">
+    <a href="{{ route('budidaya.rekapBulanan.export', request()->query()) }}" class="btn-dark-custom">
+        Download Excel
+    </a>
+</div>
 
     @forelse ($rekap as $kab)
         <div class="kab-card">

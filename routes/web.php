@@ -17,6 +17,7 @@ use App\Http\Controllers\RekapBudidayaController;
 use App\Http\Controllers\KomoditasBudidayaController;
 use App\Http\Controllers\JenisBudidayaController;
 
+
 /*
 |--------------------------------------------------------------------------
 | Halaman Utama & Auth (Guest)
@@ -83,25 +84,27 @@ Route::middleware('auth')->group(function () {
     Route::get('/export/tahunan', [DataBulananController::class, 'exportTahunan'])->name('export.tahunan');
 
     /*
-|--------------------------------------------------------------------------
-| Budidaya
-|--------------------------------------------------------------------------
-*/
+    |--------------------------------------------------------------------------
+    | Budidaya
+    |--------------------------------------------------------------------------
+    */
 
-Route::get('/budidaya', [KabupatenIkanController::class, 'index'])
-    ->name('budidaya.index');
+    Route::get('/budidaya', [KabupatenIkanController::class, 'index'])
+        ->name('budidaya.index');
 
-
-    //  |----------------------------------------------------------------------
-    // | Budidaya - Rekap Bulanan & Tahunan
-    // |----------------------------------------------------------------------
-    // */
+    /*
+    |----------------------------------------------------------------------
+    | Budidaya - Rekap Bulanan & Tahunan
+    | PENTING: route ini HARUS di atas '/budidaya/{kabupaten}' supaya
+    | tidak "ketangkep" oleh wildcard di bawahnya.
+    |----------------------------------------------------------------------
+    */
 
     Route::get('/budidaya/rekapBulanan', [RekapBudidayaController::class, 'bulanan'])
         ->name('budidaya.rekapBulanan');
 
-    // Route::get('/budidaya/rekapBulanan/export', [RekapBudidayaController::class, 'exportBulanan'])
-    //     ->name('budidaya.rekapBulanan.export');
+    Route::get('/budidaya/rekapBulanan/export', [RekapBudidayaController::class, 'exportRekapBulanan'])
+        ->name('budidaya.rekapBulanan.export');
 
     Route::get('/budidaya/rekapTahunan', [RekapBudidayaController::class, 'tahunan'])
         ->name('budidaya.rekapTahunan');
@@ -109,30 +112,33 @@ Route::get('/budidaya', [KabupatenIkanController::class, 'index'])
     // Route::get('/budidaya/rekapTahunan/export', [RekapBudidayaController::class, 'exportTahunan'])
     //     ->name('budidaya.rekapTahunan.export');
 
-Route::get('/budidaya/{kabupaten}', [KabupatenIkanController::class, 'input'])
-    ->name('budidaya.input');
-
-
-Route::post('/budidaya/{kabupaten}/sarana', [DataTahunanSaranaController::class, 'store'])
-    ->name('budidaya.sarana.store');
-
-Route::put('/budidaya/sarana/{id}', [DataTahunanSaranaController::class, 'update'])
-    ->name('budidaya.sarana.update');
-
-Route::delete('/budidaya/sarana/{id}', [DataTahunanSaranaController::class, 'destroy'])
-    ->name('budidaya.sarana.destroy');
-
-Route::post('/budidaya/{kabupaten}/produksi', [DataBulananBudidayaController::class, 'store'])
-    ->name('budidaya.produksi.store');
-
-Route::put('/budidaya/produksi/{id}', [DataBulananBudidayaController::class, 'update'])
-    ->name('budidaya.produksi.update');
-
-Route::delete('/budidaya/produksi/{id}', [DataBulananBudidayaController::class, 'destroy'])
-    ->name('budidaya.produksi.destroy');
-
     /*
-   
+    |----------------------------------------------------------------------
+    | Budidaya - Input per kabupaten (WILDCARD, harus di bawah route di atas)
+    |----------------------------------------------------------------------
+    */
+
+    Route::get('/budidaya/{kabupaten}', [KabupatenIkanController::class, 'input'])
+        ->name('budidaya.input');
+
+
+    Route::post('/budidaya/{kabupaten}/sarana', [DataTahunanSaranaController::class, 'store'])
+        ->name('budidaya.sarana.store');
+
+    Route::put('/budidaya/sarana/{id}', [DataTahunanSaranaController::class, 'update'])
+        ->name('budidaya.sarana.update');
+
+    Route::delete('/budidaya/sarana/{id}', [DataTahunanSaranaController::class, 'destroy'])
+        ->name('budidaya.sarana.destroy');
+
+    Route::post('/budidaya/{kabupaten}/produksi', [DataBulananBudidayaController::class, 'store'])
+        ->name('budidaya.produksi.store');
+
+    Route::put('/budidaya/produksi/{id}', [DataBulananBudidayaController::class, 'update'])
+        ->name('budidaya.produksi.update');
+
+    Route::delete('/budidaya/produksi/{id}', [DataBulananBudidayaController::class, 'destroy'])
+        ->name('budidaya.produksi.destroy');
 
     /*
     |----------------------------------------------------------------------

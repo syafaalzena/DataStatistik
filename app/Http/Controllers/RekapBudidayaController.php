@@ -125,4 +125,47 @@ class RekapBudidayaController extends Controller
             ];
         })->sortBy('kabupaten')->values();
     }
+
+    public function exportRekapBulanan(Request $request)
+{
+    $bulanAwal = (int) $request->input('bulan_awal', 1);
+    $tahunAwal = (int) $request->input('tahun_awal', now()->year);
+    $bulanAkhir = (int) $request->input('bulan_akhir', now()->month);
+    $tahunAkhir = (int) $request->input('tahun_akhir', now()->year);
+    $kabupatenId = $request->input('kabupaten_id');
+
+    $awal = $tahunAwal * 12 + $bulanAwal;
+    $akhir = $tahunAkhir * 12 + $bulanAkhir;
+    [$lo, $hi] = [min($awal, $akhir), max($awal, $akhir)];
+
+    $query = DataBulananBudidaya::with(['kabupaten', 'komoditas']);
+
+    if ($kabupatenId) {
+        $query->where('kabupaten_ikan_id', $kabupatenId);
+    }
+
+    $data = $query->get()->filter(function ($r) use ($lo, $hi) {
+        $k = $r->tahun * 12 + $r->bulan;
+        return $k >= $lo && $k <= $hi;
+    });
+
+    $rekap = $this->kelompokkanProduksiPerKabupaten($data);
+    $grandTotal = $data->sum('hasil_produksi');
+
+    $namaBulan = ['','Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    $periode = ($namaBulan[$bulanAwal] ?? $bulanAwal) . " $tahunAwal - " . ($namaBulan[$bulanAkhir] ?? $bulanAkhir) . " $tahunAkhir";
+
+    $namaFile = "rekap-produksi-bulanan.xls";
+
+    $headers = [
+        "Content-Type" => "application/vnd.ms-excel",
+        "Content-Disposition" => "attachment; filename=\"$namaFile\"",
+    ];
+
+    return response()->view('exports.rekap_produksi', [
+        'rekap' => $rekap,
+        'grandTotal' => $grandTotal,
+        'periode' => $periode,
+    ], 200, $headers);
+}
 }
