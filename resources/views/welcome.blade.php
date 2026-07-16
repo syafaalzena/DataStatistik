@@ -351,6 +351,18 @@
             from { opacity: 0; transform: translateX(40px); }
             to   { opacity: 1; transform: translateX(0); }
         }
+
+          .brand-logo-img {
+    height: 30px;      /* samain sama font-size .brand-text (26px) */
+    width: auto;       /* ikut aspect ratio asli, nggak dipotong */
+    object-fit: contain;
+}
+
+.brand-logo-img {
+    height: 30px;      /* samain sama font-size .brand-text (26px) */
+    width: auto;       /* ikut aspect ratio asli, nggak dipotong */
+    object-fit: contain;
+}
     </style>
 </head>
 <body>
@@ -375,12 +387,10 @@
 
 {{-- ── NAVBAR ──────────────────────────────────────────────────── --}}
 <nav class="navbar">
-    <div class="container d-flex align-items-center justify-content-between">
+    <div class="container d-flex justify-content-between align-items-center">
         <a href="#" class="brand-wrapper">
+            <img src="{{ asset('images/pancacita.png') }}" alt="Logo Pancacita" class="brand-logo-img">
             <span class="brand-text">SIDKP</span>
-            <svg class="brand-logo-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M2,12C2,12 5,7 12,7C15.5,7 18.5,8.5 20.5,10.5L22,9V15L20.5,13.5C18.5,15.5 15.5,17 12,17C5,17 2,12 2,12M12,9C10.34,9 9,10.34 9,12C9,13.66 10.34,15 12,15C13.66,15 15,13.66 15,12C15,10.34 13.66,9 12,9M12,10.5A1.5,1.5 0 0,1 13.5,12A1.5,1.5 0 0,1 12,13.5A1.5,1.5 0 0,1 10.5,12A1.5,1.5 0 0,1 12,10.5M19,12A1,1 0 1,1 18,11A1,1 0 0,1 19,12Z"/>
-            </svg>
         </a>
         
         <div class="nav-right">
@@ -398,11 +408,11 @@
         <form method="POST" action="{{ route('login') }}">
             @csrf
             <div class="mb-3">
-                <label class="form-label">Username</label>
-                <input type="text" name="username"
-                    class="form-control @error('username') is-invalid @enderror"
-                    placeholder="Username" value="{{ old('username') }}" required>
-                @error('username')
+                <label class="form-label">Email</label>
+                <input type="email" name="email"
+                    class="form-control @error('email') is-invalid @enderror"
+                    placeholder="example@gmail.com" value="{{ old('email') }}" required autofocus>
+                @error('email')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
@@ -474,16 +484,6 @@
                     class="form-control @error('nip') is-invalid @enderror"
                     placeholder="Nomor Induk Pegawai" value="{{ old('nip') }}" required>
                 @error('nip')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Username</label>
-                <input type="text" name="username"
-                    class="form-control @error('username') is-invalid @enderror"
-                    placeholder="Username" value="{{ old('username') }}" required>
-                @error('username')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
@@ -635,12 +635,14 @@
     switchToLogin.addEventListener('click', () => { registerModal.classList.remove('active'); loginModal.classList.add('active'); });
 
     // ── AUTO-BUKA MODAL SETELAH REDIRECT ─────────────────────────
-    // Error login → field username atau password
+    // Error login → field email atau password
     // Error register → field name, nip, email, atau konfirmasi password
     @if ($errors->any())
         document.addEventListener('DOMContentLoaded', () => {
-            @if ($errors->has('username') || $errors->has('password'))
-                {{-- Error dari form login → buka modal login --}}
+            @if ($errors->has('email') && !$errors->has('name') && !$errors->has('nip'))
+                {{-- Error dari form login (email/password saja, tanpa name/nip) → buka modal login --}}
+                loginModal.classList.add('active');
+            @elseif ($errors->has('password') && !$errors->has('name') && !$errors->has('nip'))
                 loginModal.classList.add('active');
             @else
                 {{-- Error dari form register (name/nip/email/password) → buka modal register --}}
