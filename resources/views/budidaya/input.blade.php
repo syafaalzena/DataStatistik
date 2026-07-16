@@ -215,7 +215,14 @@
     </div>
 
     {{-- RIWAYAT PRODUKSI --}}
-    <div class="riwayat-table mb-4">
+    <div class="mb-3">
+    <input
+        type="text"
+        id="searchInput"
+        class="form-control"
+        placeholder="🔍 Cari komoditas, jenis budidaya, bulan, tahun...">
+</div>
+    <div id="riwayatProduksi" class="riwayat-table mb-4">
         @if($dataProduksi->isEmpty())
             <div class="empty-state">Belum ada data produksi.</div>
         @else
@@ -316,7 +323,14 @@
     </div>
 
     {{-- RIWAYAT SARANA --}}
-    <div class="riwayat-table">
+    <div class="mb-3">
+    <input
+        type="text"
+        id="searchSarana"
+        class="form-control"
+        placeholder="🔍 Cari jenis budidaya atau tahun...">
+</div>
+    <div id="riwayatSarana" class="riwayat-table">
         @if($dataSarana->isEmpty())
             <div class="empty-state">Belum ada data sarana tahunan.</div>
         @else
@@ -436,6 +450,40 @@ function tutupEditSarana() {
 }
 </script>   
 
+<!-- SCRIPT PENCARIAN -->
+<script>
+const searchInput = document.getElementById('searchInput');
+
+searchInput.addEventListener('keyup', function () {
+    const keyword = this.value.toLowerCase();
+
+    const rows = document.querySelectorAll('#riwayatProduksi tbody tr');
+
+    rows.forEach(function(row) {
+        if (row.textContent.toLowerCase().includes(keyword)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+});
+</script>
+
+<script>
+const searchSarana = document.getElementById('searchSarana');
+
+searchSarana.addEventListener('keyup', function () {
+    const keyword = this.value.toLowerCase();
+
+    const rows = document.querySelectorAll('#riwayatSarana tbody tr');
+
+    rows.forEach(function(row) {
+        row.style.display = row.textContent.toLowerCase().includes(keyword)
+            ? ''
+            : 'none';
+    });
+});
+</script>
 
 <!-- edit databulanan -->
 <div id="modalEditProduksi" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center;">

@@ -263,7 +263,7 @@
                         <tr>
                             <td>{{ $d->kabupaten->nama_kabupaten }}</td>
                             <td><span class="badge-bulan">{{ $d->jenis_produksi }}</span></td>
-                            <td>{{ $d->produksi }}</td>
+                            <td>{{ $d->produksi }}</td> 
                             <td>{{ $d->lokasi }}</td>
                             <td>{{ $d->jumlah_petani }}</td>
                             <td>{{ $d->nama_kelompok }}</td>
