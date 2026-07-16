@@ -220,7 +220,7 @@
         type="text"
         id="searchInput"
         class="form-control"
-        placeholder="🔍 Cari komoditas, jenis budidaya, bulan, tahun...">
+        placeholder=" Cari komoditas, jenis budidaya, bulan, tahun...">
 </div>
     <div id="riwayatProduksi" class="riwayat-table mb-4">
         @if($dataProduksi->isEmpty())
@@ -330,7 +330,7 @@
         type="text"
         id="searchSarana"
         class="form-control"
-        placeholder="🔍 Cari jenis budidaya atau tahun...">
+        placeholder=" Cari jenis budidaya atau tahun...">
 </div>
     <div id="riwayatSarana" class="riwayat-table">
         @if($dataSarana->isEmpty())
