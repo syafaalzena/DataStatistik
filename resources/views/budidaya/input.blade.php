@@ -226,7 +226,7 @@
                         <th>Komoditas</th>
                         <th>Jenis Budidaya</th>
                         <th class="text-end">Hasil Produksi</th>
-                        <th>Keterangan</th>
+                        <th>Lokasi</th>
                         <th class="text-end">Aksi</th>
                     </tr>
                 </thead>
@@ -476,7 +476,7 @@ function tutupEditSarana() {
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Keterangan</label>
+                <label class="form-label">Lokasi</label>
                 <input type="text" name="keterangan" id="editKeterangan" class="form-control">
             </div>
 

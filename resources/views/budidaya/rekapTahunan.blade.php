@@ -7,7 +7,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -16,12 +16,17 @@
             --clr-bg: #F7F5F0;
             --clr-dark: #0f172a;
             --clr-blue-brand: #38bdf8;
+            --clr-teal: #0d9488;
+            --clr-teal-light: #ecfdf5;
+            --clr-amber: #b45309;
+            --clr-amber-light: #fffbeb;
         }
 
         body {
             background: var(--clr-bg);
             font-family: 'Inter', sans-serif;
             color: var(--clr-dark);
+            font-size: 16px;
         }
 
         .navbar {
@@ -34,7 +39,6 @@
 
         .brand-wrapper { display: flex; align-items: center; gap: 12px; text-decoration: none; }
         .brand-text { font-weight: bold; font-size: 26px; color: #ffffff; }
-        .brand-logo-svg { width: 32px; height: 32px; fill: var(--clr-blue-brand); }
         .brand-logo-img { height: 30px; width: auto; object-fit: contain; }
 
         .back-btn {
@@ -58,26 +62,28 @@
         .btn-logout-icon:hover { background: var(--clr-blue-brand); border-color: var(--clr-blue-brand); }
         .btn-logout-icon:hover img { transform: translateX(2px); filter: none; }
 
-        .page-title { font-size: 26px; font-weight: 700; margin-bottom: 2px; }
-        .page-sub { color: #64748b; font-size: 14px; }
+        .page-title { font-size: 30px; font-weight: 800; margin-bottom: 4px; }
+        .page-sub { color: #64748b; font-size: 15px; }
 
         .filter-card {
             background: #ffffff;
             border-radius: 14px;
             box-shadow: 0 2px 8px rgba(0,0,0,.04);
-            padding: 20px;
-            margin-bottom: 1.5rem;
+            padding: 22px;
+            margin-bottom: 1.75rem;
         }
 
-        .filter-card label { font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 4px; }
+        .filter-card label { font-size: 14px; font-weight: 600; color: #475569; margin-bottom: 5px; }
         .filter-card .form-control, .filter-card .form-select {
             border-radius: 8px;
             border: 1px solid #e2e8f0;
+            font-size: 15px;
+            padding: 9px 12px;
         }
         .filter-card .form-text-hint {
-            font-size: 12.5px;
+            font-size: 13px;
             color: #94a3b8;
-            margin-top: 8px;
+            margin-top: 10px;
             margin-bottom: 0;
         }
 
@@ -85,61 +91,101 @@
             background: var(--clr-dark);
             color: #fff;
             border-radius: 8px;
-            font-weight: 600;
+            font-weight: 700;
+            font-size: 15px;
             border: none;
-            padding: 9px 22px;
+            padding: 10px 22px;
         }
         .btn-dark-custom:hover { background: #1e293b; color: #fff; }
 
         .kab-card {
             background: #ffffff;
-            border-radius: 14px;
-            box-shadow: 0 2px 8px rgba(0,0,0,.04);
-            padding: 20px 22px;
-            margin-bottom: 18px;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,.05);
+            padding: 24px 26px;
+            margin-bottom: 20px;
         }
 
         .kab-card h5 {
-            font-weight: 700;
-            font-size: 17px;
-            margin-bottom: 14px;
-            padding-bottom: 10px;
+            font-weight: 800;
+            font-size: 19px;
+            margin-bottom: 18px;
+            padding-bottom: 14px;
             border-bottom: 2px solid #f1f5f9;
         }
 
         .sub-title {
-            font-size: 12.5px;
+            font-size: 13px;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.4px;
             color: #94a3b8;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .rekap-table {
-            border-radius: 10px;
+            border-radius: 12px;
             overflow: hidden;
             border: 1px solid #eef0e8;
         }
         .rekap-table table { margin-bottom: 0; }
         .rekap-table thead th {
-            background: #f8fafc;
-            color: #475569;
-            font-weight: 600;
+            background: var(--clr-dark);
+            color: #f8fafc;
+            font-weight: 700;
             font-size: 12.5px;
-            border-bottom: 1px solid #eef0e8;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+            padding: 11px 14px;
+            border-bottom: none;
         }
+        .rekap-table tbody td {
+            padding: 11px 14px;
+            font-size: 14.5px;
+            vertical-align: middle;
+        }
+        .rekap-table tbody tr:nth-child(odd) { background: #fafbfc; }
+        .rekap-table tbody tr:hover { background: #f0fdfa; }
         .rekap-table tbody tr:not(:last-child) td { border-bottom: 1px solid #f1f5f9; }
-        .rekap-table td { font-size: 14px; vertical-align: middle; }
+
+        .badge-produksi {
+            display: inline-block;
+            background: #ecfeff;
+            color: #0e7490;
+            font-weight: 700;
+            font-size: 13.5px;
+            padding: 3px 11px;
+            border-radius: 8px;
+        }
+        .badge-sarana {
+            display: inline-block;
+            background: var(--clr-amber-light);
+            color: var(--clr-amber);
+            font-weight: 700;
+            font-size: 13.5px;
+            padding: 3px 11px;
+            border-radius: 8px;
+        }
+
         .rekap-table .row-total td {
             background: #f1f5f9;
-            font-weight: 700;
+            font-weight: 800;
+            font-size: 14.5px;
+        }
+        .rekap-table .row-total .badge-produksi {
+            background: var(--clr-dark);
+            color: #fff;
+        }
+        .rekap-table .row-total .badge-sarana {
+            background: var(--clr-dark);
+            color: #fff;
         }
 
         .empty-state {
             text-align: center;
-            padding: 40px 20px;
+            padding: 48px 20px;
             color: #94a3b8;
+            font-size: 16px;
             background: #ffffff;
             border-radius: 14px;
             box-shadow: 0 2px 8px rgba(0,0,0,.04);
@@ -147,7 +193,7 @@
 
         .empty-inline {
             color: #94a3b8;
-            font-size: 13px;
+            font-size: 14px;
         }
     </style>
 </head>
@@ -208,16 +254,22 @@
                     @if ($kab['produksi'])
                         <div class="rekap-table">
                             <table class="table table-sm mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Jenis Ikan</th>
+                                        <th class="text-end">Produksi (kg)</th>
+                                    </tr>
+                                </thead>
                                 <tbody>
                                     @foreach ($kab['produksi']['per_komoditas'] as $k)
                                         <tr>
                                             <td>{{ $k['komoditas'] }}</td>
-                                            <td class="text-end">{{ number_format($k['total']) }}</td>
+                                            <td class="text-end"><span class="badge-produksi">{{ number_format($k['total']) }}</span></td>
                                         </tr>
                                     @endforeach
                                     <tr class="row-total">
                                         <td>Total</td>
-                                        <td class="text-end">{{ number_format($kab['produksi']['total_kabupaten']) }}</td>
+                                        <td class="text-end"><span class="badge-produksi">{{ number_format($kab['produksi']['total_kabupaten']) }}</span></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -242,14 +294,14 @@
                                     @foreach ($kab['sarana']['per_jenis'] as $j)
                                         <tr>
                                             <td>{{ $j['jenis'] }}</td>
-                                            <td class="text-end">{{ number_format($j['pembudidaya']) }}</td>
-                                            <td class="text-end">{{ number_format($j['luas_lahan']) }}</td>
+                                            <td class="text-end"><span class="badge-sarana">{{ number_format($j['pembudidaya']) }}</span></td>
+                                            <td class="text-end"><span class="badge-sarana">{{ number_format($j['luas_lahan']) }}</span></td>
                                         </tr>
                                     @endforeach
                                     <tr class="row-total">
                                         <td>Total</td>
-                                        <td class="text-end">{{ number_format($kab['sarana']['total_pembudidaya']) }}</td>
-                                        <td class="text-end">{{ number_format($kab['sarana']['total_luas_lahan']) }}</td>
+                                        <td class="text-end"><span class="badge-sarana">{{ number_format($kab['sarana']['total_pembudidaya']) }}</span></td>
+                                        <td class="text-end"><span class="badge-sarana">{{ number_format($kab['sarana']['total_luas_lahan']) }}</span></td>
                                     </tr>
                                 </tbody>
                             </table>
