@@ -168,12 +168,16 @@
                 </div>
                 <div class="col-6 col-md-3">
                     <label class="form-label fw-semibold small">Tahun</label>
-                    <select name="tahun" class="form-select" required>
-                        @foreach(range(now()->year - 3, now()->year + 1) as $y)
-                            <option value="{{ $y }}" {{ now()->year == $y ? 'selected' : '' }}>{{ $y }}</option>
-                        @endforeach
-                    </select>
-                </div>
+                        <input
+                            type="number"
+                            name="tahun"
+                            class="form-control"
+                            value="{{ now()->year }}"
+                            min="1900"
+                            max="2100"
+                            placeholder="Masukkan tahun"
+                            required>
+</div>
                 <div class="col-12 col-md-6">
                     <label class="form-label fw-semibold small">Lokasi</label>
                     <input type="text" name="keterangan" class="form-control" placeholder=" desa / kecamatan">
