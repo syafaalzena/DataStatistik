@@ -7,7 +7,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -16,12 +16,15 @@
             --clr-bg: #F7F5F0;
             --clr-dark: #0f172a;
             --clr-blue-brand: #38bdf8;
+            --clr-teal: #0d9488;
+            --clr-teal-light: #ecfdf5;
         }
 
         body {
             background: var(--clr-bg);
             font-family: 'Inter', sans-serif;
             color: var(--clr-dark);
+            font-size: 16px;
         }
 
         .navbar {
@@ -34,7 +37,6 @@
 
         .brand-wrapper { display: flex; align-items: center; gap: 12px; text-decoration: none; }
         .brand-text { font-weight: bold; font-size: 26px; color: #ffffff; }
-        .brand-logo-svg { width: 32px; height: 32px; fill: var(--clr-blue-brand); }
         .brand-logo-img { height: 30px; width: auto; object-fit: contain; }
 
         .back-btn {
@@ -58,91 +60,139 @@
         .btn-logout-icon:hover { background: var(--clr-blue-brand); border-color: var(--clr-blue-brand); }
         .btn-logout-icon:hover img { transform: translateX(2px); filter: none; }
 
-        .page-title { font-size: 26px; font-weight: 700; margin-bottom: 2px; }
-        .page-sub { color: #64748b; font-size: 14px; }
+        .page-title { font-size: 30px; font-weight: 800; margin-bottom: 4px; }
+        .page-sub { color: #64748b; font-size: 15px; }
 
         .filter-card {
             background: #ffffff;
             border-radius: 14px;
             box-shadow: 0 2px 8px rgba(0,0,0,.04);
-            padding: 20px;
-            margin-bottom: 1.5rem;
+            padding: 22px;
+            margin-bottom: 1.75rem;
         }
 
-        .filter-card label { font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 4px; }
+        .filter-card label { font-size: 14px; font-weight: 600; color: #475569; margin-bottom: 5px; }
         .filter-card .form-control, .filter-card .form-select {
             border-radius: 8px;
             border: 1px solid #e2e8f0;
+            font-size: 15px;
+            padding: 9px 12px;
         }
 
         .btn-dark-custom {
             background: var(--clr-dark);
             color: #fff;
             border-radius: 8px;
-            font-weight: 600;
+            font-weight: 700;
+            font-size: 15px;
             border: none;
-            padding: 9px 22px;
+            padding: 10px 22px;
         }
         .btn-dark-custom:hover { background: #1e293b; color: #fff; }
 
         .grand-total-card {
             background: linear-gradient(145deg, #1e293b, #0f172a);
             border-radius: 16px;
-            padding: 24px;
+            padding: 28px;
             text-align: center;
             color: #ffffff;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.75rem;
         }
         .grand-total-card .label {
-            font-size: 13px;
-            color: rgba(248, 250, 252, 0.6);
-            margin-bottom: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: .03em;
+            text-transform: uppercase;
+            color: rgba(248, 250, 252, 0.65);
+            margin-bottom: 8px;
         }
         .grand-total-card .value {
-            font-size: 30px;
-            font-weight: 700;
+            font-size: 38px;
+            font-weight: 800;
         }
 
         .kab-card {
             background: #ffffff;
-            border-radius: 14px;
-            box-shadow: 0 2px 8px rgba(0,0,0,.04);
-            padding: 20px 22px;
-            margin-bottom: 16px;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,.05);
+            padding: 24px 26px;
+            margin-bottom: 20px;
         }
 
-        .kab-card h5 {
-            font-weight: 700;
-            font-size: 17px;
-            margin-bottom: 14px;
-            padding-bottom: 10px;
+        .kab-card-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 14px;
+            margin-bottom: 16px;
             border-bottom: 2px solid #f1f5f9;
         }
 
+        .kab-card-head h5 {
+            font-weight: 800;
+            font-size: 19px;
+            margin: 0;
+            color: var(--clr-dark);
+        }
+
+        .kab-total-pill {
+            background: var(--clr-teal-light);
+            color: var(--clr-teal);
+            font-weight: 700;
+            font-size: 14px;
+            padding: 6px 14px;
+            border-radius: 999px;
+        }
+
         .rekap-table {
-            border-radius: 10px;
+            border-radius: 12px;
             overflow: hidden;
             border: 1px solid #eef0e8;
         }
         .rekap-table table { margin-bottom: 0; }
         .rekap-table thead th {
-            background: #f8fafc;
-            color: #475569;
-            font-weight: 600;
-            font-size: 12.5px;
-            border-bottom: 1px solid #eef0e8;
+            background: var(--clr-dark);
+            color: #f8fafc;
+            font-weight: 700;
+            font-size: 13.5px;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+            padding: 12px 16px;
+            border-bottom: none;
         }
+        .rekap-table tbody td {
+            padding: 12px 16px;
+            font-size: 15.5px;
+        }
+        .rekap-table tbody tr:nth-child(odd) { background: #fafbfc; }
+        .rekap-table tbody tr:hover { background: #f0fdfa; }
         .rekap-table tbody tr:not(:last-child) td { border-bottom: 1px solid #f1f5f9; }
-        .rekap-table td { font-size: 14px; vertical-align: middle; }
+
+        .produksi-badge {
+            display: inline-block;
+            background: #ecfeff;
+            color: #0e7490;
+            font-weight: 700;
+            font-size: 14.5px;
+            padding: 4px 12px;
+            border-radius: 8px;
+        }
+
         .rekap-table .row-total td {
             background: #f1f5f9;
-            font-weight: 700;
+            font-weight: 800;
+            font-size: 15.5px;
+        }
+        .rekap-table .row-total .produksi-badge {
+            background: var(--clr-dark);
+            color: #fff;
         }
 
         .empty-state {
             text-align: center;
-            padding: 40px 20px;
+            padding: 48px 20px;
             color: #94a3b8;
+            font-size: 16px;
             background: #ffffff;
             border-radius: 14px;
             box-shadow: 0 2px 8px rgba(0,0,0,.04);
@@ -219,7 +269,10 @@
 
     @forelse ($rekap as $kab)
         <div class="kab-card">
-            <h5>{{ $kab['kabupaten'] }}</h5>
+            <div class="kab-card-head">
+                <h5>{{ $kab['kabupaten'] }}</h5>
+                <span class="kab-total-pill">{{ number_format($kab['total_kabupaten']) }} kg</span>
+            </div>
             <div class="rekap-table">
                 <table class="table table-sm mb-0">
                     <thead>
@@ -232,12 +285,12 @@
                         @foreach ($kab['per_komoditas'] as $k)
                             <tr>
                                 <td>{{ $k['komoditas'] }}</td>
-                                <td class="text-end">{{ number_format($k['total']) }}</td>
+                                <td class="text-end"><span class="produksi-badge">{{ number_format($k['total']) }}</span></td>
                             </tr>
                         @endforeach
                         <tr class="row-total">
                             <td>Total {{ $kab['kabupaten'] }}</td>
-                            <td class="text-end">{{ number_format($kab['total_kabupaten']) }}</td>
+                            <td class="text-end"><span class="produksi-badge">{{ number_format($kab['total_kabupaten']) }}</span></td>
                         </tr>
                     </tbody>
                 </table>
