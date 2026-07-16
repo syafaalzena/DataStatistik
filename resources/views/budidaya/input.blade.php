@@ -193,9 +193,9 @@
                     </div>
                     <div class="col-md-4">
                         <select name="jenis_id[]" class="form-select">
-                            <label for="jenis_id[]">Pilih Jenis Budidaya</label>
+                            <option value="">-- Pilih Jenis Budidaya --</option>
                             @foreach($jenisList as $j)
-                                <input type="checkbox" value="{{ $j->id }}" name="jenis_id[]"> {{ $j->nama_jenis }}<br>
+                                <option value="{{ $j->id }}">{{ $j->nama_jenis }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -239,6 +239,19 @@
                             <td class="text-end">{{ number_format($d->hasil_produksi, 2) }}</td>
                             <td>{{ $d->keterangan ?? '-' }}</td>
                             <td class="text-end">
+                                <button type="button"
+                                    onclick="bukaEditProduksi(
+                                        {{ $d->id }},
+                                        {{ $d->bulan }},
+                                        {{ $d->tahun }},
+                                        {{ $d->hasil_produksi }},
+                                        '{{ addslashes($d->komoditas->nama_komoditas ?? '-') }}',
+                                        '{{ addslashes($d->jenis->nama_jenis ?? '-') }}',
+                                        '{{ addslashes($d->keterangan ?? '') }}'
+                                    )"
+                                    style="background:none; border:none; padding:0; cursor:pointer; display:flex; align-items:center;">
+                                    <img src="{{ asset('images/pencil.png') }}" alt="Edit" width="20" height="20">
+                                </button>
                                 <form method="POST" action="{{ route('budidaya.produksi.destroy', $d->id) }}"
                                       onsubmit="return confirm('Hapus data ini?');" class="d-inline mb-0">
                                     @csrf
@@ -327,6 +340,18 @@
                             <td class="text-end">{{ number_format($d->jumlah_pembudidaya) }}</td>
                             <td class="text-end">{{ number_format($d->luas_lahan) }}</td>
                             <td class="text-end">
+                                <button type="button"
+                                    onclick="bukaEditSarana(
+                                        {{ $d->id }},
+                                        {{ $d->tahun }},
+                                        {{ $d->jumlah_rtp }},
+                                        {{ $d->jumlah_pembudidaya ?? 0 }},
+                                        {{ $d->luas_lahan ?? 0 }},
+                                        '{{ addslashes($s->jenis->nama_jenis ?? '-') }}'
+                                    )"
+                                    style="background:none; border:none; padding:0; cursor:pointer; display:flex; align-items:center;">
+                                    <img src="{{ asset('images/pencil.png') }}" alt="Edit" width="20" height="20">
+                                </button>
                                 <form method="POST" action="{{ route('budidaya.sarana.destroy', $d->id) }}"
                                       onsubmit="return confirm('Hapus data ini?');" class="d-inline mb-0">
                                     @csrf
@@ -373,6 +398,137 @@
         }
     }
 </script>
+<!-- script databulanan -->
+<script>
+function bukaEditProduksi(id, bulan, tahun, hasilProduksi, komoditasNama, jenisNama, keterangan) {
+    document.getElementById('editKomoditasNama').value = komoditasNama;
+    document.getElementById('editJenisNama').value = jenisNama;
+    document.getElementById('editBulan').value = bulan;
+    document.getElementById('editTahun').value = tahun;
+    document.getElementById('editHasilProduksi').value = hasilProduksi;
+    document.getElementById('editKeterangan').value = keterangan;
 
+    document.getElementById('formEditProduksi').action = '{{ url('/budidaya/produksi') }}/' + id;
+    document.getElementById('modalEditProduksi').style.display = 'flex';
+}
+
+function tutupEditProduksi() {
+    document.getElementById('modalEditProduksi').style.display = 'none';
+}
+</script>
+
+<!-- script data tahunan -->
+<script>
+function bukaEditSarana(id, tahun, rtp, pembudidaya, luasLahan, jenisNama) {
+    document.getElementById('editSaranaJenisNama').value = jenisNama;
+    document.getElementById('editSaranaTahunDisplay').value = tahun;
+    document.getElementById('editSaranaTahun').value = tahun;
+    document.getElementById('editSaranaRtp').value = rtp;
+    document.getElementById('editSaranaPembudidaya').value = pembudidaya;
+    document.getElementById('editSaranaLuasLahan').value = luasLahan;
+
+    document.getElementById('formEditSarana').action = '{{ url('/budidaya/sarana') }}/' + id;
+    document.getElementById('modalEditSarana').style.display = 'flex';
+}
+
+function tutupEditSarana() {
+    document.getElementById('modalEditSarana').style.display = 'none';
+}
+</script>   
+
+
+<!-- edit databulanan -->
+<div id="modalEditProduksi" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center;">
+    <div style="background:#fff; padding:24px; border-radius:8px; width:420px; max-width:90%;">
+        <h5 style="margin-bottom:16px;">Edit Data Produksi</h5>
+
+        <form id="formEditProduksi" method="POST" action="">
+            @csrf
+            @method('PUT')
+
+            <div class="mb-2">
+                <label class="form-label">Komoditas</label>
+                <input type="text" id="editKomoditasNama" class="form-control" disabled>
+            </div>
+            <div class="mb-2">
+                <label class="form-label">Jenis Budidaya</label>
+                <input type="text" id="editJenisNama" class="form-control" disabled>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col">
+                    <label class="form-label">Bulan</label>
+                    <select name="bulan" id="editBulan" class="form-select" required>
+                        @foreach (['1'=>'Januari','2'=>'Februari','3'=>'Maret','4'=>'April','5'=>'Mei','6'=>'Juni','7'=>'Juli','8'=>'Agustus','9'=>'September','10'=>'Oktober','11'=>'November','12'=>'Desember'] as $val => $label)
+                            <option value="{{ $val }}">{{ $label }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col">
+                    <label class="form-label">Tahun</label>
+                    <input type="number" name="tahun" id="editTahun" class="form-control" required>
+                </div>
+            </div>
+
+            <div class="mb-2">
+                <label class="form-label">Hasil Produksi (kg)</label>
+                <input type="number" step="0.01" min="0" name="hasil_produksi" id="editHasilProduksi" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Keterangan</label>
+                <input type="text" name="keterangan" id="editKeterangan" class="form-control">
+            </div>
+
+            <div style="display:flex; gap:8px; justify-content:flex-end;">
+                <button type="button" class="btn btn-secondary" onclick="tutupEditProduksi()">Batal</button>
+                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- edit data tahunan -->
+<div id="modalEditSarana" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center;">
+    <div style="background:#fff; padding:24px; border-radius:8px; width:420px; max-width:90%;">
+        <h5 style="margin-bottom:16px;">Edit Data Tahunan (Sarana)</h5>
+
+        <form id="formEditSarana" method="POST" action="">
+            @csrf
+            @method('PUT')
+
+            <div class="mb-2">
+                <label class="form-label">Jenis Budidaya</label>
+                <input type="text" id="editSaranaJenisNama" class="form-control" disabled>
+            </div>
+
+            <div class="mb-2">
+                <label class="form-label">Tahun</label>
+                <input type="number" id="editSaranaTahunDisplay" class="form-control" disabled>
+                <input type="hidden" name="tahun" id="editSaranaTahun">
+            </div>
+
+            <div class="mb-2">
+                <label class="form-label">Jumlah RTP (unit)</label>
+                <input type="number" min="0" name="jumlah_rtp" id="editSaranaRtp" class="form-control" required>
+            </div>
+
+            <div class="mb-2">
+                <label class="form-label">Jumlah Pembudidaya (orang)</label>
+                <input type="number" min="0" name="jumlah_pembudidaya" id="editSaranaPembudidaya" class="form-control">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Luas Lahan (m2)</label>
+                <input type="number" min="0" name="luas_lahan" id="editSaranaLuasLahan" class="form-control">
+            </div>
+
+            <div style="display:flex; gap:8px; justify-content:flex-end;">
+                <button type="button" class="btn btn-secondary" onclick="tutupEditSarana()">Batal</button>
+                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+            </div>
+        </form>
+    </div>
+</div>
 </body>
 </html>

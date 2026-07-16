@@ -124,4 +124,5 @@ class DataBulananBudidayaController extends Controller
         DataBulananBudidaya::findOrFail($id)->delete();
         return back()->with('success', 'Data produksi dihapus.');
     }
+    
 }
