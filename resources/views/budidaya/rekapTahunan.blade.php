@@ -255,7 +255,9 @@
         </div>
         <p class="form-text-hint">Isi tahun yang sama di kedua kolom kalau cuma mau 1 tahun.</p>
     </form>
-
+    <a href="{{ route('budidaya.rekapTahunan.export', request()->query()) }}" class="btn btn-success">
+        Unduh Excel
+    </a>
     @forelse ($gabungan as $kab)
         <div class="kab-card">
             <h5>{{ $kab['kabupaten'] }}</h5>

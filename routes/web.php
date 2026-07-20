@@ -109,6 +109,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/budidaya/rekapTahunan', [RekapBudidayaController::class, 'tahunan'])
         ->name('budidaya.rekapTahunan');
 
+    Route::get('/budidaya/rekapTahunan/export', [RekapBudidayaController::class, 'exportRekapTahunan'])
+        ->name('budidaya.rekapTahunan.export');
+
     // Route::get('/budidaya/rekapTahunan/export', [RekapBudidayaController::class, 'exportTahunan'])
     //     ->name('budidaya.rekapTahunan.export');
 

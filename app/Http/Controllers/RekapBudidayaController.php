@@ -168,4 +168,49 @@ class RekapBudidayaController extends Controller
         'periode' => $periode,
     ], 200, $headers);
 }
+public function exportRekapTahunan(Request $request)
+{
+    $tahunAwal = (int) $request->input('tahun_awal', now()->year);
+    $tahunAkhir = (int) $request->input('tahun_akhir', now()->year);
+    [$tLo, $tHi] = [min($tahunAwal, $tahunAkhir), max($tahunAwal, $tahunAkhir)];
+    $kabupatenId = $request->input('kabupaten_id');
+
+    $produksiQuery = DataBulananBudidaya::with(['kabupaten', 'komoditas'])
+        ->whereBetween('tahun', [$tLo, $tHi]);
+
+    $saranaQuery = DataTahunanSarana::with(['kabupaten', 'jenis'])
+        ->whereBetween('tahun', [$tLo, $tHi]);
+
+    if ($kabupatenId) {
+        $produksiQuery->where('kabupaten_ikan_id', $kabupatenId);
+        $saranaQuery->where('kabupaten_ikan_id', $kabupatenId);
+    }
+
+    $rekapProduksi = $this->kelompokkanProduksiPerKabupaten($produksiQuery->get());
+    $rekapSarana = $this->kelompokkanSaranaPerKabupaten($saranaQuery->get());
+
+    $kabupatens = KabupatenIkan::orderBy('nama_kabupaten')->get();
+    $daftarKabupaten = $kabupatenId ? $kabupatens->where('id', $kabupatenId) : $kabupatens;
+
+    $gabungan = $daftarKabupaten->map(function ($kab) use ($rekapProduksi, $rekapSarana) {
+        return [
+            'kabupaten' => $kab->nama_kabupaten,
+            'produksi' => $rekapProduksi->firstWhere('kabupaten_id', $kab->id),
+            'sarana' => $rekapSarana->firstWhere('kabupaten_id', $kab->id),
+        ];
+    })->filter(fn ($k) => $k['produksi'] || $k['sarana'])->values();
+
+    $periode = $tahunAwal == $tahunAkhir ? "$tahunAwal" : "$tahunAwal - $tahunAkhir";
+    $namaFile = "rekap-tahunan-budidaya.xls";
+
+    $headers = [
+        "Content-Type" => "application/vnd.ms-excel",
+        "Content-Disposition" => "attachment; filename=\"$namaFile\"",
+    ];
+
+    return response()->view('exports.rekap_tahunan', [
+        'gabungan' => $gabungan,
+        'periode' => $periode,
+    ], 200, $headers);
+}
 }
