@@ -95,6 +95,7 @@
             font-size: 15px;
             border: none;
             padding: 10px 22px;
+            text-decoration: none;
         }
         .btn-dark-custom:hover { background: #1e293b; color: #fff; }
 
