@@ -256,12 +256,15 @@
         </div>
         <p class="form-text-hint">Isi tahun yang sama di kedua kolom kalau cuma mau 1 tahun.</p>
     </form>
-    <a href="{{ route('budidaya.rekapTahunan.export', request()->query()) }}" class="btn-dark-custom">
+    <a href="{{ route('budidaya.rekapTahunan.export', request()->query()) }}" class="btn-dark-custom" style="margin-right: 10px;">
         Unduh Excel
     </a>
-    <a href="{{ route('budidaya.rekapTahunan.exportPdf', request()->query()) }}" class="btn btn-danger">
+    <a href="{{ route('budidaya.rekapTahunan.exportPdf', request()->query()) }}" class="btn btn-danger" style="font-weight: 600;">
         Unduh PDF
     </a>
+
+    <br>
+    <br>
     @forelse ($gabungan as $kab)
         <div class="kab-card">
             <h5>{{ $kab['kabupaten'] }}</h5>
