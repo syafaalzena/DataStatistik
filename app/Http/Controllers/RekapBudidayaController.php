@@ -6,6 +6,7 @@ use App\Models\KabupatenIkan;
 use App\Models\DataBulananBudidaya;
 use App\Models\DataTahunanSarana;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class RekapBudidayaController extends Controller
 {
@@ -212,5 +213,79 @@ public function exportRekapTahunan(Request $request)
         'gabungan' => $gabungan,
         'periode' => $periode,
     ], 200, $headers);
+}
+
+
+public function exportPdfBulanan(Request $request)
+{
+    $bulanAwal = (int) $request->input('bulan_awal', 1);
+    $tahunAwal = (int) $request->input('tahun_awal', now()->year);
+    $bulanAkhir = (int) $request->input('bulan_akhir', now()->month);
+    $tahunAkhir = (int) $request->input('tahun_akhir', now()->year);
+    $kabupatenId = $request->input('kabupaten_id');
+
+    $awal = $tahunAwal * 12 + $bulanAwal;
+    $akhir = $tahunAkhir * 12 + $bulanAkhir;
+    [$lo, $hi] = [min($awal, $akhir), max($awal, $akhir)];
+
+    $query = DataBulananBudidaya::with(['kabupaten', 'komoditas']);
+    if ($kabupatenId) {
+        $query->where('kabupaten_ikan_id', $kabupatenId);
+    }
+
+    $data = $query->get()->filter(function ($r) use ($lo, $hi) {
+        $k = $r->tahun * 12 + $r->bulan;
+        return $k >= $lo && $k <= $hi;
+    });
+
+    $rekap = $this->kelompokkanProduksiPerKabupaten($data);
+    $grandTotal = $data->sum('hasil_produksi');
+
+    $namaBulan = ['','Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    $periode = ($namaBulan[$bulanAwal] ?? $bulanAwal) . " $tahunAwal - " . ($namaBulan[$bulanAkhir] ?? $bulanAkhir) . " $tahunAkhir";
+
+    $pdf = Pdf::loadView('exports.rekap_produksi', compact('rekap', 'grandTotal', 'periode'))
+        ->setPaper('a4', 'portrait');
+
+    return $pdf->download('rekap-produksi-bulanan.pdf');
+}
+
+public function exportPdfTahunan(Request $request)
+{
+    $tahunAwal = (int) $request->input('tahun_awal', now()->year);
+    $tahunAkhir = (int) $request->input('tahun_akhir', now()->year);
+    [$tLo, $tHi] = [min($tahunAwal, $tahunAkhir), max($tahunAwal, $tahunAkhir)];
+    $kabupatenId = $request->input('kabupaten_id');
+
+    $produksiQuery = DataBulananBudidaya::with(['kabupaten', 'komoditas'])
+        ->whereBetween('tahun', [$tLo, $tHi]);
+    $saranaQuery = DataTahunanSarana::with(['kabupaten', 'jenis'])
+        ->whereBetween('tahun', [$tLo, $tHi]);
+
+    if ($kabupatenId) {
+        $produksiQuery->where('kabupaten_ikan_id', $kabupatenId);
+        $saranaQuery->where('kabupaten_ikan_id', $kabupatenId);
+    }
+
+    $rekapProduksi = $this->kelompokkanProduksiPerKabupaten($produksiQuery->get());
+    $rekapSarana = $this->kelompokkanSaranaPerKabupaten($saranaQuery->get());
+
+    $kabupatens = KabupatenIkan::orderBy('nama_kabupaten')->get();
+    $daftarKabupaten = $kabupatenId ? $kabupatens->where('id', $kabupatenId) : $kabupatens;
+
+    $gabungan = $daftarKabupaten->map(function ($kab) use ($rekapProduksi, $rekapSarana) {
+        return [
+            'kabupaten' => $kab->nama_kabupaten,
+            'produksi' => $rekapProduksi->firstWhere('kabupaten_id', $kab->id),
+            'sarana' => $rekapSarana->firstWhere('kabupaten_id', $kab->id),
+        ];
+    })->filter(fn ($k) => $k['produksi'] || $k['sarana'])->values();
+
+    $periode = $tahunAwal == $tahunAkhir ? "$tahunAwal" : "$tahunAwal - $tahunAkhir";
+
+    $pdf = Pdf::loadView('exports.rekap_tahunan', compact('gabungan', 'periode'))
+        ->setPaper('a4', 'portrait');
+
+    return $pdf->download('rekap-tahunan-budidaya.pdf');
 }
 }

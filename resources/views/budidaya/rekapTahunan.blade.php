@@ -95,6 +95,7 @@
             font-size: 15px;
             border: none;
             padding: 10px 22px;
+            text-decoration: none;
         }
         .btn-dark-custom:hover { background: #1e293b; color: #fff; }
 
@@ -257,6 +258,9 @@
     </form>
     <a href="{{ route('budidaya.rekapTahunan.export', request()->query()) }}" class="btn-dark-custom">
         Unduh Excel
+    </a>
+    <a href="{{ route('budidaya.rekapTahunan.exportPdf', request()->query()) }}" class="btn btn-danger">
+        Unduh PDF
     </a>
     @forelse ($gabungan as $kab)
         <div class="kab-card">

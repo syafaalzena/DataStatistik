@@ -115,6 +115,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/budidaya/rekapTahunan/export', [RekapBudidayaController::class, 'exportRekapTahunan'])
         ->name('budidaya.rekapTahunan.export');
 
+    Route::get('/budidaya/rekapBulanan/export-pdf', [RekapBudidayaController::class, 'exportPdfBulanan'])
+        ->name('budidaya.rekapBulanan.exportPdf');
+
+    Route::get('/budidaya/rekapTahunan/export-pdf', [RekapBudidayaController::class, 'exportPdfTahunan'])
+        ->name('budidaya.rekapTahunan.exportPdf');
+
+    Route::get('/export/bulanan/pdf', [DataBulananController::class, 'exportPdfBulanan'])->name('export.bulanan.pdf');
+    Route::get('/export/tahunan/pdf', [DataTahunanController::class, 'exportPdfTahunan'])->name('export.tahunan.pdf');
+
     // Route::get('/budidaya/rekapTahunan/export', [RekapBudidayaController::class, 'exportTahunan'])
     //     ->name('budidaya.rekapTahunan.export');
 

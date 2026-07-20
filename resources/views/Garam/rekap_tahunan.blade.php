@@ -272,7 +272,10 @@
 
                     <a href="{{ route('export.tahunan', ['tahun' => $tahunDipilih]) }}" 
                     class="btn btn-success mb-3">
-                        Download Rekap Tahunan
+                        Unduh Excel
+                    </a>
+                    <a href="{{ route('export.tahunan.pdf', ['tahun' => $tahunDipilih, 'kabupaten_id' => $kabupatenDipilih]) }}" class="btn btn-danger mb-3">
+                        Unduh PDF
                     </a>
 
                 <table class="table">
