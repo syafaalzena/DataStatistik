@@ -16,6 +16,7 @@ use App\Http\Controllers\DataTahunanSaranaController;
 use App\Http\Controllers\RekapBudidayaController;
 use App\Http\Controllers\KomoditasBudidayaController;
 use App\Http\Controllers\JenisBudidayaController;
+use Illuminate\Support\Facades\Auth;
 
 
 /*
@@ -24,9 +25,11 @@ use App\Http\Controllers\JenisBudidayaController;
 |--------------------------------------------------------------------------
 */
 Route::get('/', function () {
+    if (Auth::check()) {
+        return redirect()->route('dashboard');
+    }
     return view('welcome');
 })->name('home');
-
 Route::middleware('guest')->group(function () {
     Route::get('/login', function () {
         return view('welcome');

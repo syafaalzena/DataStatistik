@@ -76,6 +76,22 @@
             gap: 16px; 
         }
 
+        /* ── PROFILE ICON NAVBAR ─────────────────────── */
+        .nav-profile-img {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--clr-blue-brand);
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .nav-profile-img:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+        }
+
         /* ── HERO ───────────────────────────────────── */
         .hero {
             background: var(--clr-bg);
@@ -132,16 +148,28 @@
 
         /* ── HERO RIGHT (Card) ── */
         .hero-card {
-            background: #ffffff;
+            background: #ffffffff;
             border: 1px solid var(--clr-border);
             border-radius: 24px;
             padding: 2.5rem;
             width: 100%;
             max-width: 440px;
-            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.04);
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
             margin-left: auto;
             animation: fadeInUp 1.2s ease-out forwards, floating 4s ease-in-out infinite;
             animation-delay: 0s, 1.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #38bdf8, #0284c7);
         }
 
         .hero-card .card-title {
@@ -162,12 +190,19 @@
         }
 
         .stat-box {
-            background: var(--clr-bg);
+            background: linear-gradient(135deg, var(--clr-bg), #f0f9ff);
             border: 1px solid var(--clr-border);
             border-radius: 14px;
             padding: 1.2rem .5rem;
             flex: 1;
             text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(56, 189, 248, 0.15);
+            border-color: #38bdf8;
         }
 
         .stat-box .stat-num {
@@ -183,26 +218,34 @@
             color: var(--clr-text-muted);
             margin-top: .25rem;
             display: block;
+            font-weight: 500;
         }
 
         .bar-chart {
             display: flex;
             align-items: flex-end;
             gap: .5rem;
-            height: 90px;
+            height: 100px;
             margin-top: .5rem;
+            padding-bottom: 4px;
         }
 
         .bar {
             flex: 1;
-            border-radius: 4px 4px 0 0;
-            background: #7dd3fc;
-            transition: all 0.3s ease;
+            border-radius: 6px 6px 0 0;
+            background: linear-gradient(to top, #bae6fd, #7dd3fc);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .bar:hover {
+            background: linear-gradient(to top, #38bdf8, #0ea5e9);
+            filter: brightness(1.1);
         }
         
         .bar.active { 
-            background: #4294baff;
-            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.2);
+            background: linear-gradient(to top, #0284c7, #38bdf8);
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.35);
         }
 
         .bar-labels {
@@ -216,6 +259,7 @@
             text-align: center;
             font-size: .65rem;
             color: var(--clr-text-muted);
+            font-weight: 600;
         }
 
         /* ── KEYFRAMES ──────────────────────────────── */
@@ -352,17 +396,11 @@
             to   { opacity: 1; transform: translateX(0); }
         }
 
-          .brand-logo-img {
-    height: 30px;      /* samain sama font-size .brand-text (26px) */
-    width: auto;       /* ikut aspect ratio asli, nggak dipotong */
-    object-fit: contain;
-}
-
-.brand-logo-img {
-    height: 30px;      /* samain sama font-size .brand-text (26px) */
-    width: auto;       /* ikut aspect ratio asli, nggak dipotong */
-    object-fit: contain;
-}
+        .brand-logo-img {
+            height: 30px;      
+            width: auto;       
+            object-fit: contain;
+        }
     </style>
 </head>
 <body>
@@ -394,7 +432,9 @@
         </a>
         
         <div class="nav-right">
+            {{-- Tombol Login di Kiri, Gambar Profil di Kanan --}}
             <button id="loginBtn" class="btn btn-light rounded-pill px-4" style="font-weight: 600;">Login</button>
+            <img src="{{ asset('images/pfp.jpg') }}" alt="Profile" class="nav-profile-img" id="profileImg">
         </div>
     </div>
 </nav>
@@ -576,7 +616,7 @@
 
                     <div class="stat-row">
                         <div class="stat-box">
-                            <span class="stat-num">8</span>
+                            <span class="stat-num">24</span>
                             <span class="stat-label">Kabupaten</span>
                         </div>
                         <div class="stat-box">
@@ -621,6 +661,7 @@
 <script>
     // ── MODAL LOGIC ──────────────────────────────────────────────
     const loginBtn      = document.getElementById('loginBtn');
+    const profileImg    = document.getElementById('profileImg');
     const openRegister  = document.getElementById('openRegister');
     const loginModal    = document.getElementById('loginModal');
     const registerModal = document.getElementById('registerModal');
@@ -628,31 +669,27 @@
     const closeRegister = document.getElementById('closeRegister');
     const switchToLogin = document.getElementById('switchToLogin');
 
-    loginBtn.addEventListener('click',      () => loginModal.classList.add('active'));
+    if (loginBtn) loginBtn.addEventListener('click', () => loginModal.classList.add('active'));
+    if (profileImg) profileImg.addEventListener('click', () => loginModal.classList.add('active'));
     openRegister.addEventListener('click',  () => { loginModal.classList.remove('active'); registerModal.classList.add('active'); });
     closeLogin.addEventListener('click',    () => loginModal.classList.remove('active'));
     closeRegister.addEventListener('click', () => registerModal.classList.remove('active'));
     switchToLogin.addEventListener('click', () => { registerModal.classList.remove('active'); loginModal.classList.add('active'); });
 
     // ── AUTO-BUKA MODAL SETELAH REDIRECT ─────────────────────────
-    // Error login → field email atau password
-    // Error register → field name, nip, email, atau konfirmasi password
     @if ($errors->any())
         document.addEventListener('DOMContentLoaded', () => {
             @if ($errors->has('email') && !$errors->has('name') && !$errors->has('nip'))
-                {{-- Error dari form login (email/password saja, tanpa name/nip) → buka modal login --}}
                 loginModal.classList.add('active');
             @elseif ($errors->has('password') && !$errors->has('name') && !$errors->has('nip'))
                 loginModal.classList.add('active');
             @else
-                {{-- Error dari form register (name/nip/email/password) → buka modal register --}}
                 registerModal.classList.add('active');
             @endif
         });
     @endif
 
     @if (session('success'))
-        {{-- Register berhasil → buka modal login --}}
         document.addEventListener('DOMContentLoaded', () => {
             loginModal.classList.add('active');
         });
