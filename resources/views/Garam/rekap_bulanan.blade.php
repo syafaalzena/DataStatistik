@@ -243,8 +243,11 @@
             <div class="table-responsive">
                 <a href="{{ route('export.bulanan', ['tahun' => $tahunDipilih, 'bulan' => $bulanDipilih]) }}" 
                     class="btn btn-success mb-3">
-                        Download Rekap Bulanan
-                    </a>
+                        Unduh Excel
+                </a>
+                <a href="{{ route('export.bulanan.pdf', ['tahun' => $tahunDipilih, 'bulan' => $bulanDipilih]) }}" class="btn btn-danger mb-3">
+                    Unduh PDF
+                </a>
                 <table class="table">
                     <thead>
                         <tr>

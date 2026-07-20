@@ -280,7 +280,10 @@
 
     <div class="d-flex justify-content-end mb-3">
     <a href="{{ route('budidaya.rekapBulanan.export', request()->query()) }}" class="btn-dark-custom">
-        Download Excel
+        Unduh Excel
+    </a>
+    <a href="{{ route('budidaya.rekapBulanan.exportPdf', request()->query()) }}" class="btn btn-danger">
+        Unduh PDF
     </a>
 </div>
 

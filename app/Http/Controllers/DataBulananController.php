@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Kabupaten;
 use App\Exports\DetailProduksiExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class DataBulananController extends Controller
 {
@@ -155,5 +156,31 @@ public function exportTahunan(Request $request)
     $tahun = $request->tahun;
 
     return Excel::download(new DetailProduksiExport('tahunan', $tahun), 'rekap-tahunan.xlsx');
+}
+
+
+public function exportPdfBulanan(Request $request)
+{
+    $bulanList = [
+        1=>'Januari', 2=>'Februari', 3=>'Maret', 4=>'April',
+        5=>'Mei', 6=>'Juni', 7=>'Juli', 8=>'Agustus',
+        9=>'September', 10=>'Oktober', 11=>'November', 12=>'Desember'
+    ];
+
+    $tahunDipilih = $request->tahun ?? now()->year;
+    $bulanDipilih = $request->bulan ?? now()->month;
+
+    $data = DataBulanan::with('kabupaten')
+        ->where('tahun', $tahunDipilih)
+        ->where('bulan', $bulanDipilih)
+        ->orderBy('kabupaten_id')
+        ->get();
+
+    $namaBulan = $bulanList[$bulanDipilih] ?? $bulanDipilih;
+
+    $pdf = Pdf::loadView('exports.rekap_garam_bulanan', compact('data', 'namaBulan', 'tahunDipilih'))
+        ->setPaper('a4', 'landscape');
+
+    return $pdf->download('rekap-garam-bulanan.pdf');
 }
 }

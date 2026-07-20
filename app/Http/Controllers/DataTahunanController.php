@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DataTahunan;
 use App\Models\DataBulanan;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class DataTahunanController extends Controller
 {
@@ -134,5 +135,31 @@ class DataTahunanController extends Controller
         'data', 'tahunList', 'kabupatenList',
         'tahunDipilih', 'kabupatenDipilih', 'dataGrafik'
     ));
+}
+
+
+
+public function exportPdfTahunan(Request $request)
+{
+    $tahunDipilih = $request->tahun ?? now()->year;
+    $kabupatenDipilih = $request->kabupaten_id ?? null;
+
+    $query = DataBulanan::with('kabupaten')->where('tahun', $tahunDipilih);
+
+    if ($kabupatenDipilih) {
+        $query->where('kabupaten_id', $kabupatenDipilih);
+    }
+
+    $data = $query->orderBy('kabupaten_id')->orderBy('bulan')->get();
+
+    $namaBulan = ['','Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    $namaKabupaten = $kabupatenDipilih
+        ? \App\Models\Kabupaten::find($kabupatenDipilih)?->nama_kabupaten
+        : null;
+
+    $pdf = Pdf::loadView('exports.rekap_garam_tahunan', compact('data', 'namaBulan', 'tahunDipilih', 'namaKabupaten'))
+        ->setPaper('a4', 'landscape');
+
+    return $pdf->download('rekap-garam-tahunan.pdf');
 }
 }

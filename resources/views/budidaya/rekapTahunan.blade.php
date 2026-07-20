@@ -258,6 +258,9 @@
     <a href="{{ route('budidaya.rekapTahunan.export', request()->query()) }}" class="btn-dark-custom">
         Unduh Excel
     </a>
+    <a href="{{ route('budidaya.rekapTahunan.exportPdf', request()->query()) }}" class="btn btn-danger">
+        Unduh PDF
+    </a>
     @forelse ($gabungan as $kab)
         <div class="kab-card">
             <h5>{{ $kab['kabupaten'] }}</h5>
