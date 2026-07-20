@@ -279,13 +279,13 @@
         <div class="value">{{ number_format($grandTotal) }}</div>
     </div>
 
-      <a href="{{ route('budidaya.rekapBulanan.export', request()->query()) }}" class="btn-dark-custom" style="margin-right: 10px;">
-    Unduh Excel
-</a>
+    <a href="{{ route('budidaya.rekapBulanan.export', request()->query()) }}" class="btn-dark-custom" style="margin-right: 10px;">
+        Unduh Excel
+    </a>
 
-<a href="{{ route('budidaya.rekapBulanan.exportPdf', request()->query()) }}" class="btn btn-danger" style="font-weight: 600;">
-    Unduh PDF
-</a>
+    <a href="{{ route('budidaya.rekapBulanan.exportPdf', request()->query()) }}" class="btn btn-danger" style="font-weight: 600;">
+        Unduh PDF
+    </a>
 
 <br>
 <br>
