@@ -292,38 +292,51 @@
 
 
     @forelse ($rekap as $kab)
-        <div class="kab-card">
-            <div class="kab-card-head">
-                <h5>{{ $kab['kabupaten'] }}</h5>
-                <span class="kab-total-pill">{{ number_format($kab['total_kabupaten']) }} kg</span>
-            </div>
-            <div class="rekap-table">
-                <table class="table table-sm mb-0">
-                    <thead>
-                        <tr>
-                            <th>Jenis Ikan</th>
-                            <th class="text-end">Produksi (kg)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($kab['per_komoditas'] as $k)
-                            <tr>
-                                <td>{{ $k['komoditas'] }}</td>
-                                <td class="text-end"><span class="produksi-badge">{{ number_format($k['total']) }}</span></td>
-                            </tr>
-                        @endforeach
-                        <tr class="row-total">
-                            <td>Total {{ $kab['kabupaten'] }}</td>
-                            <td class="text-end"><span class="produksi-badge">{{ number_format($kab['total_kabupaten']) }}</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+    <div class="kab-card">
+        <div class="kab-card-head">
+            <h5>{{ $kab['kabupaten'] }}</h5>
+            <span class="kab-total-pill">{{ number_format($kab['total_kabupaten']) }} kg</span>
         </div>
-    @empty
-        <div class="empty-state">Tidak ada data produksi pada rentang yang dipilih.</div>
-    @endforelse
-
+        <div class="rekap-table" style="overflow-x:auto;">
+            <table class="table table-sm mb-0">
+                <thead>
+                    <tr>
+                        <th>Jenis Ikan</th>
+                        @foreach ($periodLabels as $label)
+                            <th class="text-end">{{ $label }}</th>
+                        @endforeach
+                        <th class="text-end">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($kab['per_komoditas'] as $k)
+                        <tr>
+                            <td>{{ $k['komoditas'] }}</td>
+                            @foreach ($periodKeys as $pk)
+                                <td class="text-end">
+                                    {{ $k['per_periode'][$pk] > 0 ? number_format($k['per_periode'][$pk]) : '-' }}
+                                </td>
+                            @endforeach
+                            <td class="text-end"><span class="produksi-badge">{{ number_format($k['total']) }}</span></td>
+                        </tr>
+                    @endforeach
+                    <tr class="row-total">
+                        <td>Total {{ $kab['kabupaten'] }}</td>
+                        @foreach ($periodKeys as $pk)
+                            @php
+                                $totalPeriode = $kab['per_komoditas']->sum(fn ($k) => $k['per_periode'][$pk]);
+                            @endphp
+                            <td class="text-end">{{ number_format($totalPeriode) }}</td>
+                        @endforeach
+                        <td class="text-end"><span class="produksi-badge">{{ number_format($kab['total_kabupaten']) }}</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+@empty
+    <div class="empty-state">Tidak ada data produksi pada rentang yang dipilih.</div>
+@endforelse
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
