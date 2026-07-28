@@ -130,7 +130,7 @@
         }
 
         .kab-card-head h5 {
-            font-weight: 800;
+            font-weight: 800; 
             font-size: 19px;
             margin: 0;
             color: var(--clr-dark);
@@ -248,7 +248,7 @@
                 <label>Dari bulan</label>
                 <select name="bulan_awal" class="form-select">
                     @foreach (['1'=>'Januari','2'=>'Februari','3'=>'Maret','4'=>'April','5'=>'Mei','6'=>'Juni','7'=>'Juli','8'=>'Agustus','9'=>'September','10'=>'Oktober','11'=>'November','12'=>'Desember'] as $val => $label)
-                        <option value="{{ $val }}" {{ (string)$bulanAwal === $val ? 'selected' : '' }}>{{ $label }}</option>
+                        <option value="{{ $val }}" {{ (string)$bulanAwal === (string)$val ? 'selected' : '' }}>{{ $label }}</option>
                     @endforeach
                 </select>
             </div>
@@ -260,7 +260,7 @@
                 <label>Sampai bulan</label>
                 <select name="bulan_akhir" class="form-select">
                     @foreach (['1'=>'Januari','2'=>'Februari','3'=>'Maret','4'=>'April','5'=>'Mei','6'=>'Juni','7'=>'Juli','8'=>'Agustus','9'=>'September','10'=>'Oktober','11'=>'November','12'=>'Desember'] as $val => $label)
-                        <option value="{{ $val }}" {{ (string)$bulanAkhir === $val ? 'selected' : '' }}>{{ $label }}</option>
+                        <option value="{{ $val }}" {{ (string)$bulanAkhir === (string)$val ? 'selected' : '' }}>{{ $label }}</option>
                     @endforeach
                 </select>
             </div>
@@ -279,11 +279,11 @@
         <div class="value">{{ number_format($grandTotal) }}</div>
     </div>
 
-      <a href="{{ route('budidaya.rekapBulanan.export', request()->query()) }}" class="btn-dark-custom" style="margin-right: 10px;">
+    <a href="{{ route('budidaya.rekapBulanan.export', request()->query()) }}" class="btn-dark-custom" style="margin-right: 10px;">
     Unduh Excel
-</a>
+    </a>
 
-<a href="{{ route('budidaya.rekapBulanan.exportPdf', request()->query()) }}" class="btn btn-danger" style="font-weight: 600;">
+    <a href="{{ route('budidaya.rekapBulanan.exportPdf', request()->query()) }}" class="btn btn-danger" style="font-weight: 600;">
     Unduh PDF
 </a>
 

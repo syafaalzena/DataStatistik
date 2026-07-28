@@ -616,7 +616,7 @@
 
                     <div class="stat-row">
                         <div class="stat-box">
-                            <span class="stat-num">24</span>
+                            <span class="stat-num">23</span>
                             <span class="stat-label">Kabupaten</span>
                         </div>
                         <div class="stat-box">
