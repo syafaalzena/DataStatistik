@@ -36,8 +36,8 @@ class RekapBudidayaController extends Controller
         $bulanNama = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
         $periodKeys = $data->map(fn ($r) => $r->tahun * 12 + $r->bulan)->unique()->sort()->values();
         $periodLabels = $periodKeys->map(function ($k) use ($bulanNama) {
-            $tahun = intdiv($k, 12);
-            $bulan = $k - $tahun * 12;
+            $tahun = intdiv($k - 1, 12);
+            $bulan = ($k - 1) % 12 + 1; // hasilnya 1..12
             return $bulanNama[$bulan - 1] . " '" . substr($tahun, -2);
         });
 
@@ -170,8 +170,8 @@ class RekapBudidayaController extends Controller
         $bulanNama = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
         $periodKeys = $data->map(fn ($r) => $r->tahun * 12 + $r->bulan)->unique()->sort()->values();
         $periodLabels = $periodKeys->map(function ($k) use ($bulanNama) {
-            $tahun = intdiv($k, 12);
-            $bulan = $k - $tahun * 12;
+            $tahun = intdiv($k - 1, 12);
+            $bulan = ($k - 1) % 12 + 1; // hasilnya 1..12
             return $bulanNama[$bulan - 1] . " '" . substr($tahun, -2);
         });
 
@@ -268,8 +268,8 @@ public function exportRekapTahunan(Request $request)
         $bulanNama = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
         $periodKeys = $data->map(fn ($r) => $r->tahun * 12 + $r->bulan)->unique()->sort()->values();
         $periodLabels = $periodKeys->map(function ($k) use ($bulanNama) {
-            $tahun = intdiv($k, 12);
-            $bulan = $k - $tahun * 12;
+            $tahun = intdiv($k - 1, 12);
+            $bulan = ($k - 1) % 12 + 1; // hasilnya 1..12
             return $bulanNama[$bulan - 1] . " '" . substr($tahun, -2);
         });
 

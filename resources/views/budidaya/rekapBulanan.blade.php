@@ -280,21 +280,13 @@
     </div>
 
     <a href="{{ route('budidaya.rekapBulanan.export', request()->query()) }}" class="btn-dark-custom" style="margin-right: 10px;">
-<<<<<<< HEAD
-    Unduh Excel
-    </a>
 
-    <a href="{{ route('budidaya.rekapBulanan.exportPdf', request()->query()) }}" class="btn btn-danger" style="font-weight: 600;">
-    Unduh PDF
-</a>
-=======
-        Unduh Excel
+    Unduh Excel
     </a>
 
     <a href="{{ route('budidaya.rekapBulanan.exportPdf', request()->query()) }}" class="btn btn-danger" style="font-weight: 600;">
         Unduh PDF
     </a>
->>>>>>> 2a372f0724024c288b52cd90617f5a7868acb073
 
 <br>
 <br>
