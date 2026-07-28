@@ -23,7 +23,6 @@ class RekapBudidayaController extends Controller
         [$lo, $hi] = [min($awal, $akhir), max($awal, $akhir)];
 
         $query = DataBulananBudidaya::with(['kabupaten', 'komoditas']);
-
         if ($kabupatenId) {
             $query->where('kabupaten_ikan_id', $kabupatenId);
         }
@@ -33,15 +32,25 @@ class RekapBudidayaController extends Controller
             return $k >= $lo && $k <= $hi;
         });
 
-        $rekap = $this->kelompokkanProduksiPerKabupaten($data);
+        // daftar periode (bulan-tahun) yang beneran ada datanya, urut dari yang paling awal
+        $bulanNama = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+        $periodKeys = $data->map(fn ($r) => $r->tahun * 12 + $r->bulan)->unique()->sort()->values();
+        $periodLabels = $periodKeys->map(function ($k) use ($bulanNama) {
+            $tahun = intdiv($k, 12);
+            $bulan = $k - $tahun * 12;
+            return $bulanNama[$bulan - 1] . " '" . substr($tahun, -2);
+        });
+
+        $rekap = $this->kelompokkanProduksiPerKabupaten($data, $periodKeys);
         $grandTotal = $data->sum('hasil_produksi');
         $kabupatens = KabupatenIkan::orderBy('nama_kabupaten')->get();
 
         return view('budidaya.rekapBulanan', compact(
             'rekap', 'grandTotal', 'bulanAwal', 'tahunAwal', 'bulanAkhir', 'tahunAkhir',
-            'kabupatens', 'kabupatenId'
+            'kabupatens', 'kabupatenId', 'periodKeys', 'periodLabels'
         ));
     }
+
 
     public function tahunan(Request $request)
     {
@@ -86,24 +95,32 @@ class RekapBudidayaController extends Controller
         ));
     }
 
-    private function kelompokkanProduksiPerKabupaten($data)
+    private function kelompokkanProduksiPerKabupaten($data, $periodKeys = null)
     {
-        return $data->groupBy('kabupaten_ikan_id')->map(function ($rows) {
-            $perKomoditas = $rows->groupBy('komoditas_budidaya_id')->map(function ($r2) {
+        return $data->groupBy('kabupaten_ikan_id')->map(function ($rows) use ($periodKeys) {
+            $perKomoditas = $rows->groupBy('komoditas_budidaya_id')->map(function ($r2) use ($periodKeys) {
+                $perPeriode = [];
+                if ($periodKeys) {
+                    foreach ($periodKeys as $pk) {
+                        $perPeriode[$pk] = $r2->filter(fn ($r) => ($r->tahun * 12 + $r->bulan) === $pk)
+                            ->sum('hasil_produksi');
+                    }
+                }
                 return [
                     'komoditas' => $r2->first()->komoditas->nama_komoditas,
                     'total' => $r2->sum('hasil_produksi'),
+                    'per_periode' => $perPeriode,
                 ];
             })->sortByDesc('total')->values();
 
-            return [
-                'kabupaten_id' => $rows->first()->kabupaten_ikan_id,
-                'kabupaten' => $rows->first()->kabupaten->nama_kabupaten,
-                'per_komoditas' => $perKomoditas,
-                'total_kabupaten' => $rows->sum('hasil_produksi'),
-            ];
-        })->sortBy('kabupaten')->values();
-    }
+        return [
+            'kabupaten_id' => $rows->first()->kabupaten_ikan_id,
+            'kabupaten' => $rows->first()->kabupaten->nama_kabupaten,
+            'per_komoditas' => $perKomoditas,
+            'total_kabupaten' => $rows->sum('hasil_produksi'),
+                ];
+            })->sortBy('kabupaten')->values();
+        }
 
     private function kelompokkanSaranaPerKabupaten($data)
     {
@@ -121,6 +138,7 @@ class RekapBudidayaController extends Controller
                 'kabupaten_id' => $rows->first()->kabupaten_ikan_id,
                 'kabupaten' => $rows->first()->kabupaten->nama_kabupaten,
                 'per_jenis' => $perJenis,
+                'total_rtp' => $rows->sum('jumlah_rtp'), 
                 'total_pembudidaya' => $rows->sum('jumlah_pembudidaya'),
                 'total_luas_lahan' => $rows->sum('luas_lahan'),
             ];
@@ -128,47 +146,56 @@ class RekapBudidayaController extends Controller
     }
 
     public function exportRekapBulanan(Request $request)
-{
-    $bulanAwal = (int) $request->input('bulan_awal', 1);
-    $tahunAwal = (int) $request->input('tahun_awal', now()->year);
-    $bulanAkhir = (int) $request->input('bulan_akhir', now()->month);
-    $tahunAkhir = (int) $request->input('tahun_akhir', now()->year);
-    $kabupatenId = $request->input('kabupaten_id');
+    {
+        $bulanAwal = (int) $request->input('bulan_awal', 1);
+        $tahunAwal = (int) $request->input('tahun_awal', now()->year);
+        $bulanAkhir = (int) $request->input('bulan_akhir', now()->month);
+        $tahunAkhir = (int) $request->input('tahun_akhir', now()->year);
+        $kabupatenId = $request->input('kabupaten_id');
 
-    $awal = $tahunAwal * 12 + $bulanAwal;
-    $akhir = $tahunAkhir * 12 + $bulanAkhir;
-    [$lo, $hi] = [min($awal, $akhir), max($awal, $akhir)];
+        $awal = $tahunAwal * 12 + $bulanAwal;
+        $akhir = $tahunAkhir * 12 + $bulanAkhir;
+        [$lo, $hi] = [min($awal, $akhir), max($awal, $akhir)];
 
-    $query = DataBulananBudidaya::with(['kabupaten', 'komoditas']);
+        $query = DataBulananBudidaya::with(['kabupaten', 'komoditas']);
+        if ($kabupatenId) {
+            $query->where('kabupaten_ikan_id', $kabupatenId);
+        }
 
-    if ($kabupatenId) {
-        $query->where('kabupaten_ikan_id', $kabupatenId);
+        $data = $query->get()->filter(function ($r) use ($lo, $hi) {
+            $k = $r->tahun * 12 + $r->bulan;
+            return $k >= $lo && $k <= $hi;
+        });
+
+        $bulanNama = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+        $periodKeys = $data->map(fn ($r) => $r->tahun * 12 + $r->bulan)->unique()->sort()->values();
+        $periodLabels = $periodKeys->map(function ($k) use ($bulanNama) {
+            $tahun = intdiv($k, 12);
+            $bulan = $k - $tahun * 12;
+            return $bulanNama[$bulan - 1] . " '" . substr($tahun, -2);
+        });
+
+        $rekap = $this->kelompokkanProduksiPerKabupaten($data, $periodKeys);
+        $grandTotal = $data->sum('hasil_produksi');
+
+        $namaBulan = ['','Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+        $periode = ($namaBulan[$bulanAwal] ?? $bulanAwal) . " $tahunAwal - " . ($namaBulan[$bulanAkhir] ?? $bulanAkhir) . " $tahunAkhir";
+
+        $namaFile = "rekap-produksi-bulanan.xls";
+        $headers = [
+            "Content-Type" => "application/vnd.ms-excel",
+            "Content-Disposition" => "attachment; filename=\"$namaFile\"",
+        ];
+
+        return response()->view('exports.rekap_produksi', [
+            'rekap' => $rekap,
+            'grandTotal' => $grandTotal,
+            'periode' => $periode,
+            'periodKeys' => $periodKeys,
+            'periodLabels' => $periodLabels,
+        ], 200, $headers);
     }
 
-    $data = $query->get()->filter(function ($r) use ($lo, $hi) {
-        $k = $r->tahun * 12 + $r->bulan;
-        return $k >= $lo && $k <= $hi;
-    });
-
-    $rekap = $this->kelompokkanProduksiPerKabupaten($data);
-    $grandTotal = $data->sum('hasil_produksi');
-
-    $namaBulan = ['','Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-    $periode = ($namaBulan[$bulanAwal] ?? $bulanAwal) . " $tahunAwal - " . ($namaBulan[$bulanAkhir] ?? $bulanAkhir) . " $tahunAkhir";
-
-    $namaFile = "rekap-produksi-bulanan.xls";
-
-    $headers = [
-        "Content-Type" => "application/vnd.ms-excel",
-        "Content-Disposition" => "attachment; filename=\"$namaFile\"",
-    ];
-
-    return response()->view('exports.rekap_produksi', [
-        'rekap' => $rekap,
-        'grandTotal' => $grandTotal,
-        'periode' => $periode,
-    ], 200, $headers);
-}
 public function exportRekapTahunan(Request $request)
 {
     $tahunAwal = (int) $request->input('tahun_awal', now()->year);
@@ -216,39 +243,47 @@ public function exportRekapTahunan(Request $request)
 }
 
 
-public function exportPdfBulanan(Request $request)
-{
-    $bulanAwal = (int) $request->input('bulan_awal', 1);
-    $tahunAwal = (int) $request->input('tahun_awal', now()->year);
-    $bulanAkhir = (int) $request->input('bulan_akhir', now()->month);
-    $tahunAkhir = (int) $request->input('tahun_akhir', now()->year);
-    $kabupatenId = $request->input('kabupaten_id');
+    public function exportPdfBulanan(Request $request)
+    {
+        $bulanAwal = (int) $request->input('bulan_awal', 1);
+        $tahunAwal = (int) $request->input('tahun_awal', now()->year);
+        $bulanAkhir = (int) $request->input('bulan_akhir', now()->month);
+        $tahunAkhir = (int) $request->input('tahun_akhir', now()->year);
+        $kabupatenId = $request->input('kabupaten_id');
 
-    $awal = $tahunAwal * 12 + $bulanAwal;
-    $akhir = $tahunAkhir * 12 + $bulanAkhir;
-    [$lo, $hi] = [min($awal, $akhir), max($awal, $akhir)];
+        $awal = $tahunAwal * 12 + $bulanAwal;
+        $akhir = $tahunAkhir * 12 + $bulanAkhir;
+        [$lo, $hi] = [min($awal, $akhir), max($awal, $akhir)];
 
-    $query = DataBulananBudidaya::with(['kabupaten', 'komoditas']);
-    if ($kabupatenId) {
-        $query->where('kabupaten_ikan_id', $kabupatenId);
+        $query = DataBulananBudidaya::with(['kabupaten', 'komoditas']);
+        if ($kabupatenId) {
+            $query->where('kabupaten_ikan_id', $kabupatenId);
+        }
+
+        $data = $query->get()->filter(function ($r) use ($lo, $hi) {
+            $k = $r->tahun * 12 + $r->bulan;
+            return $k >= $lo && $k <= $hi;
+        });
+
+        $bulanNama = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+        $periodKeys = $data->map(fn ($r) => $r->tahun * 12 + $r->bulan)->unique()->sort()->values();
+        $periodLabels = $periodKeys->map(function ($k) use ($bulanNama) {
+            $tahun = intdiv($k, 12);
+            $bulan = $k - $tahun * 12;
+            return $bulanNama[$bulan - 1] . " '" . substr($tahun, -2);
+        });
+
+        $rekap = $this->kelompokkanProduksiPerKabupaten($data, $periodKeys);
+        $grandTotal = $data->sum('hasil_produksi');
+
+        $namaBulan = ['','Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+        $periode = ($namaBulan[$bulanAwal] ?? $bulanAwal) . " $tahunAwal - " . ($namaBulan[$bulanAkhir] ?? $bulanAkhir) . " $tahunAkhir";
+
+        $pdf = Pdf::loadView('exports.rekap_produksi', compact('rekap', 'grandTotal', 'periode', 'periodKeys', 'periodLabels'))
+            ->setPaper('a4', 'landscape');
+
+        return $pdf->download('rekap-produksi-bulanan.pdf');
     }
-
-    $data = $query->get()->filter(function ($r) use ($lo, $hi) {
-        $k = $r->tahun * 12 + $r->bulan;
-        return $k >= $lo && $k <= $hi;
-    });
-
-    $rekap = $this->kelompokkanProduksiPerKabupaten($data);
-    $grandTotal = $data->sum('hasil_produksi');
-
-    $namaBulan = ['','Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-    $periode = ($namaBulan[$bulanAwal] ?? $bulanAwal) . " $tahunAwal - " . ($namaBulan[$bulanAkhir] ?? $bulanAkhir) . " $tahunAkhir";
-
-    $pdf = Pdf::loadView('exports.rekap_produksi', compact('rekap', 'grandTotal', 'periode'))
-        ->setPaper('a4', 'portrait');
-
-    return $pdf->download('rekap-produksi-bulanan.pdf');
-}
 
 public function exportPdfTahunan(Request $request)
 {

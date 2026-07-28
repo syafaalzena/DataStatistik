@@ -306,6 +306,7 @@
                                 <thead>
                                     <tr>
                                         <th>Jenis Budidaya</th>
+                                        <th class="text-end">RTP</th>
                                         <th class="text-end">Pembudidaya</th>
                                         <th class="text-end">Luas Lahan (m2)</th>
                                     </tr>
@@ -314,12 +315,14 @@
                                     @foreach ($kab['sarana']['per_jenis'] as $j)
                                         <tr>
                                             <td>{{ $j['jenis'] }}</td>
+                                            <td class="text-end"><span class="badge-sarana">{{ number_format($j['rtp']) }}</span></td>
                                             <td class="text-end"><span class="badge-sarana">{{ number_format($j['pembudidaya']) }}</span></td>
                                             <td class="text-end"><span class="badge-sarana">{{ number_format($j['luas_lahan']) }}</span></td>
                                         </tr>
                                     @endforeach
                                     <tr class="row-total">
                                         <td>Total</td>
+                                        <td class="text-end"><span class="badge-sarana">{{ number_format($kab['sarana']['total_rtp']) }}</span></td>
                                         <td class="text-end"><span class="badge-sarana">{{ number_format($kab['sarana']['total_pembudidaya']) }}</span></td>
                                         <td class="text-end"><span class="badge-sarana">{{ number_format($kab['sarana']['total_luas_lahan']) }}</span></td>
                                     </tr>
