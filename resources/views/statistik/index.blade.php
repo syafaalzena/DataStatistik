@@ -509,7 +509,7 @@
                         <div>
                             <h2 class="fw-bold fs-3 mb-3 d-flex align-items-center gap-2">
                                 <img src="{{ asset('images/fish.png') }}" alt="Kelautan" width="32" height="32" class="card-icon" style="filter: hue-rotate(50deg);">
-                                Data Budidaya Tangkap
+                                Data Budidaya Tangkappppppp
                             </h2>
                             <p style="color: var(--clr-text-muted); line-height: 1.7; font-size: 15px;">
                                 Kelola sebaran wilayah potensi laut, pelabuhan, serta wilayah pesisir Provinsi Aceh.
