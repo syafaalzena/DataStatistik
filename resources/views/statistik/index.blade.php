@@ -492,7 +492,7 @@
                                 Data Budidaya Ikan
                             </h2>
                             <p style="color: var(--clr-text-muted); line-height: 1.7; font-size: 15px;">
-                                Kelola data budidaya garam dan informasi pendukung untuk kebutuhan pelaporan.
+                                Kelola data budidaya ikan dan informasi pendukung untuk kebutuhan pelaporan.
                             </p>
                         </div>
                         <div class="mt-4 text-center">
@@ -509,7 +509,7 @@
                         <div>
                             <h2 class="fw-bold fs-3 mb-3 d-flex align-items-center gap-2">
                                 <img src="{{ asset('images/fish.png') }}" alt="Kelautan" width="32" height="32" class="card-icon" style="filter: hue-rotate(50deg);">
-                                Data Wilayah Pesisir
+                                Data Budidaya Tangkap
                             </h2>
                             <p style="color: var(--clr-text-muted); line-height: 1.7; font-size: 15px;">
                                 Kelola sebaran wilayah potensi laut, pelabuhan, serta wilayah pesisir Provinsi Aceh.
