@@ -50,18 +50,6 @@
             font-weight: 700;
         }
 
-        /* Ikon Ikan SVG */
-        .brand-logo-svg {
-            width: 32px;
-            height: 32px;
-            fill: var(--clr-blue-brand);
-            transition: transform 0.3s ease;
-        }
-
-        .brand-wrapper:hover .brand-logo-svg {
-            transform: rotate(10deg) scale(1.05);
-        }
-
         .brand-logo-img {
             height: 30px;
             width: auto;
@@ -126,36 +114,10 @@
             .welcome-banner h3 { font-size: 24px; }
         }
 
-        /* Kontainer Scroll Horizontal Modern */
-        .scroll-container-wrapper {
-            position: relative;
-        }
-
-        .horizontal-scroll-row {
-            display: flex;
-            flex-wrap: nowrap;
-            overflow-x: auto;
-            scroll-behavior: smooth;
-            padding-bottom: 25px;
+        /* Grid Menu (pengganti scroll horizontal) */
+        .menu-grid-row {
             padding-top: 10px;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .horizontal-scroll-row::-webkit-scrollbar {
-            height: 8px;
-        }
-        .horizontal-scroll-row::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .horizontal-scroll-row::-webkit-scrollbar-thumb {
-            background: #a5a5a56a;
-            border-radius: 20px;
-        }
-
-        .scroll-card-item {
-            flex: 0 0 auto;
-            width: 450px; 
-            max-width: 90vw;
+            padding-bottom: 25px;
         }
 
         .custom-card {
@@ -206,45 +168,6 @@
         .card-icon {
             object-fit: contain;
             vertical-align: middle;
-        }
-
-        .scroll-nav-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-70%);
-            width: 48px;
-            height: 48px;
-            background: #ffffff;
-            border: 1px solid var(--clr-border);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.06);
-            z-index: 10;
-            transition: all 0.2s;
-        }
-        
-        .scroll-nav-btn:hover {
-            background: var(--clr-dark);
-            border-color: var(--clr-dark);
-        }
-
-        .scroll-nav-btn:hover img {
-            filter: brightness(0) invert(1);
-        }
-
-        .scroll-btn-left { 
-            left: -40px; 
-        }
-        
-        .scroll-btn-right { 
-            right: -40px; 
-        }
-
-        .img-flip-horizontal {
-            transform: scaleX(-1);
         }
 
         .footer {
@@ -452,94 +375,54 @@
             </div>
         </div>
 
-        <div class="scroll-container-wrapper">
-            
-            <button class="scroll-nav-btn scroll-btn-left" onclick="scrollSlide('left')">
-                <img src="{{ asset('images/back.png') }}" alt="Geser Kiri" width="22" height="22">
-            </button>
-            
-            <button class="scroll-nav-btn scroll-btn-right" onclick="scrollSlide('right')">
-                <img src="{{ asset('images/back.png') }}" alt="Geser Kanan" width="22" height="22" class="img-flip-horizontal">
-            </button>
+        <div class="row menu-grid-row g-4 justify-content-center">
 
-            <div class="horizontal-scroll-row g-4" id="menuScrollRow">
-                
-                <div class="scroll-card-item px-2">
-                    <div class="custom-card h-100 d-flex flex-column justify-content-between shadow-sm">
-                        <div>
-                            <h2 class="fw-bold fs-3 mb-3 d-flex align-items-center gap-2">
-                                <img src="{{ asset('images/salt.png') }}" alt="Garam" width="32" height="32" class="card-icon">
-                                Data Garam
-                            </h2>
-                            <p style="color: var(--clr-text-muted); line-height: 1.7; font-size: 15px;">
-                                Kelola data produksi garam dan statistik garam Aceh berdasarkan kabupaten/kota.
-                            </p>
-                        </div>
-                        <div class="mt-4 text-center">
-                            <a href="{{ route('kabupaten.index') }}" class="btn-custom-dark">
-                                Masuk
-                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8.59,16.59L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.59Z"/></svg>
-                            </a>
-                        </div>
+            <div class="col-12 col-md-6 col-lg-5">
+                <div class="custom-card h-100 d-flex flex-column justify-content-between shadow-sm">
+                    <div>
+                        <h2 class="fw-bold fs-3 mb-3 d-flex align-items-center gap-2">
+                            <img src="{{ asset('images/salt.png') }}" alt="Garam" width="32" height="32" class="card-icon">
+                            Data Garam
+                        </h2>
+                        <p style="color: var(--clr-text-muted); line-height: 1.7; font-size: 15px;">
+                            Kelola data produksi garam dan statistik garam Aceh berdasarkan kabupaten/kota.
+                        </p>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <a href="{{ route('kabupaten.index') }}" class="btn-custom-dark">
+                            Masuk
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8.59,16.59L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.59Z"/></svg>
+                        </a>
                     </div>
                 </div>
-
-                <div class="scroll-card-item px-2">
-                    <div class="custom-card h-100 d-flex flex-column justify-content-between shadow-sm">
-                        <div>
-                            <h2 class="fw-bold fs-3 mb-3 d-flex align-items-center gap-2">
-                                <img src="{{ asset('images/fish.png') }}" alt="Ikan" width="32" height="32" class="card-icon">
-                                Data Budidaya Ikan
-                            </h2>
-                            <p style="color: var(--clr-text-muted); line-height: 1.7; font-size: 15px;">
-                                Kelola data budidaya garam dan informasi pendukung untuk kebutuhan pelaporan.
-                            </p>
-                        </div>
-                        <div class="mt-4 text-center">
-                            <a href="{{ route('budidaya.index') }}" class="btn-custom-dark">
-                                Masuk
-                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8.59,16.59L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.59Z"/></svg>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="scroll-card-item px-2">
-                    <div class="custom-card h-100 d-flex flex-column justify-content-between shadow-sm">
-                        <div>
-                            <h2 class="fw-bold fs-3 mb-3 d-flex align-items-center gap-2">
-                                <img src="{{ asset('images/fish.png') }}" alt="Kelautan" width="32" height="32" class="card-icon" style="filter: hue-rotate(50deg);">
-                                Data Wilayah Pesisir
-                            </h2>
-                            <p style="color: var(--clr-text-muted); line-height: 1.7; font-size: 15px;">
-                                Kelola sebaran wilayah potensi laut, pelabuhan, serta wilayah pesisir Provinsi Aceh.
-                            </p>
-                        </div>
-                        <div class="mt-4 text-center">
-                            <a href="#" class="btn-custom-dark">
-                                Masuk
-                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8.59,16.59L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.59Z"/></svg>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
             </div>
+
+            <div class="col-12 col-md-6 col-lg-5">
+                <div class="custom-card h-100 d-flex flex-column justify-content-between shadow-sm">
+                    <div>
+                        <h2 class="fw-bold fs-3 mb-3 d-flex align-items-center gap-2">
+                            <img src="{{ asset('images/fish.png') }}" alt="Ikan" width="32" height="32" class="card-icon">
+                            Data Budidaya Ikan
+                        </h2>
+                        <p style="color: var(--clr-text-muted); line-height: 1.7; font-size: 15px;">
+                            Kelola data budidaya garam dan informasi pendukung untuk kebutuhan pelaporan.
+                        </p>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <a href="{{ route('budidaya.index') }}" class="btn-custom-dark">
+                            Masuk
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8.59,16.59L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.59Z"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        function scrollSlide(direction) {
-            const row = document.getElementById('menuScrollRow');
-            const scrollAmount = 470;
-            row.scrollBy({
-                left: direction === 'left' ? -scrollAmount : scrollAmount,
-                behavior: 'smooth'
-            });
-        }
-
         // ── LOGIKA MODAL KONFIRMASI LOGOUT ──────────────────────
         const logoutModal      = document.getElementById('logoutModal');
         const openLogoutModal  = document.getElementById('openLogoutModal');

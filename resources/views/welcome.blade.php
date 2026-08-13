@@ -405,7 +405,7 @@
 </head>
 <body>
 
-{{-- ── NOTIFIKASI ERROR / SUCCESS ─────────────────────────────── --}}
+
 @if ($errors->any())
     <div class="toast-notif alert alert-danger" id="toastError">
         <strong>Gagal!</strong>
@@ -423,7 +423,7 @@
     </div>
 @endif
 
-{{-- ── NAVBAR ──────────────────────────────────────────────────── --}}
+
 <nav class="navbar">
     <div class="container d-flex justify-content-between align-items-center">
         <a href="#" class="brand-wrapper">
