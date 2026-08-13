@@ -22,7 +22,7 @@
 
         body { 
             background: var(--clr-bg); 
-            font-family: 'Inter', sans-serif; 
+            font-family: 'Poppins', sans-serif; 
             color: var(--clr-dark);
         }
 
@@ -43,11 +43,11 @@
         }
 
         .brand-text {
-            font-size: 26px;
+            font-size: 22px;
             color: #ffffff;
             line-height: 1;
             padding-top: 2px;
-            font-weight: 700;
+            font-weight: 600;
         }
 
         /* Ikon Ikan SVG */
@@ -90,20 +90,20 @@
             padding: 5px 16px;
             border-radius: 20px;
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 500;
             margin-bottom: 14px;
         }
 
         .welcome-banner h3 {
             color: #ffffff;
-            font-size: 30px;
-            font-weight: 700;
+            font-size: 24px;
+            font-weight: 600;
             margin-bottom: 8px;
         }
 
         .welcome-banner p {
             color: rgba(248, 250, 252, 0.7);
-            font-size: 15px;
+            font-size: 14px;
             margin-bottom: 0;
             max-width: 520px;
         }
@@ -123,7 +123,7 @@
 
         @media (max-width: 576px) {
             .welcome-banner { padding: 28px 24px; }
-            .welcome-banner h3 { font-size: 24px; }
+            .welcome-banner h3 { font-size: 20px; }
         }
 
         /* Kontainer Scroll Horizontal Modern */
@@ -171,12 +171,18 @@
             box-shadow: 0 12px 25px rgba(15, 23, 42, 0.31) !important;
         }
 
+        .custom-card h2 {
+            font-size: 19px;
+            font-weight: 600;
+        }
+
         .btn-custom-dark {
             background: var(--clr-dark);
             color: #f5f6e7ff;
             padding: 12px 28px;
             border-radius: 25px;
-            font-weight: 600;
+            font-weight: 500;
+            font-size: 14px;
             transition: all 0.25s ease;
             border: none;
             text-decoration: none;
@@ -354,15 +360,15 @@
         }
 
         .logout-modal-box h4 {
-            font-weight: 700;
-            font-size: 1.15rem;
+            font-weight: 600;
+            font-size: 1.1rem;
             color: var(--clr-dark);
             margin-bottom: 8px;
         }
 
         .logout-modal-box p {
             color: var(--clr-text-muted);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             margin-bottom: 26px;
         }
 
@@ -375,7 +381,7 @@
             flex: 1;
             padding: 11px 0;
             border-radius: 14px;
-            font-weight: 600;
+            font-weight: 500;
             font-size: 0.9rem;
             border: none;
             cursor: pointer;
@@ -467,11 +473,11 @@
                 <div class="scroll-card-item px-2">
                     <div class="custom-card h-100 d-flex flex-column justify-content-between shadow-sm">
                         <div>
-                            <h2 class="fw-bold fs-3 mb-3 d-flex align-items-center gap-2">
+                            <h2 class="mb-3 d-flex align-items-center gap-2">
                                 <img src="{{ asset('images/salt.png') }}" alt="Garam" width="32" height="32" class="card-icon">
                                 Data Garam
                             </h2>
-                            <p style="color: var(--clr-text-muted); line-height: 1.7; font-size: 15px;">
+                            <p style="color: var(--clr-text-muted); line-height: 1.7; font-size: 14px;">
                                 Kelola data produksi garam dan statistik garam Aceh berdasarkan kabupaten/kota.
                             </p>
                         </div>
@@ -487,11 +493,11 @@
                 <div class="scroll-card-item px-2">
                     <div class="custom-card h-100 d-flex flex-column justify-content-between shadow-sm">
                         <div>
-                            <h2 class="fw-bold fs-3 mb-3 d-flex align-items-center gap-2">
+                            <h2 class="mb-3 d-flex align-items-center gap-2">
                                 <img src="{{ asset('images/fish.png') }}" alt="Ikan" width="32" height="32" class="card-icon">
                                 Data Budidaya Ikan
                             </h2>
-                            <p style="color: var(--clr-text-muted); line-height: 1.7; font-size: 15px;">
+                            <p style="color: var(--clr-text-muted); line-height: 1.7; font-size: 14px;">
                                 Kelola data budidaya garam dan informasi pendukung untuk kebutuhan pelaporan.
                             </p>
                         </div>
@@ -507,12 +513,12 @@
                 <div class="scroll-card-item px-2">
                     <div class="custom-card h-100 d-flex flex-column justify-content-between shadow-sm">
                         <div>
-                            <h2 class="fw-bold fs-3 mb-3 d-flex align-items-center gap-2">
+                            <h2 class="mb-3 d-flex align-items-center gap-2">
                                 <img src="{{ asset('images/wave.png') }}" alt="Kelautan" width="32" height="32" class="card-icon" style="filter: hue-rotate(50deg);">
                                 Data Budidaya Tangkap
                             </h2>
-                            <p style="color: var(--clr-text-muted); line-height: 1.7; font-size: 15px;">
-                                Kelola sebaran wilayah potensi laut, pelabuhan, serta wilayah pesisir Provinsi Aceh.
+                            <p style="color: var(--clr-text-muted); line-height: 1.7; font-size: 14px;">
+                                Kelola wilayah laut, pelabuhan, serta Hasil Tangkap Provinsi Aceh.
                             </p>
                         </div>
                         <div class="mt-4 text-center">
