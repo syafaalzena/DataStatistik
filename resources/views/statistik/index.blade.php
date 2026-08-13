@@ -518,7 +518,7 @@
                                 Data Budidaya Tangkap
                             </h2>
                             <p style="color: var(--clr-text-muted); line-height: 1.7; font-size: 14px;">
-                                Kelola wilayah laut, pelabuhan, serta Hasil Tangkap Provinsi Aceh.
+                                Kelola Hasil Tangkap Provinsi Aceh.
                             </p>
                         </div>
                         <div class="mt-4 text-center">
