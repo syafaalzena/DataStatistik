@@ -395,6 +395,50 @@
                         </a>
                     </div>
                 </div>
+<<<<<<< HEAD
+=======
+
+                <div class="scroll-card-item px-2">
+                    <div class="custom-card h-100 d-flex flex-column justify-content-between shadow-sm">
+                        <div>
+                            <h2 class="fw-bold fs-3 mb-3 d-flex align-items-center gap-2">
+                                <img src="{{ asset('images/fish.png') }}" alt="Ikan" width="32" height="32" class="card-icon">
+                                Data Budidaya Ikan
+                            </h2>
+                            <p style="color: var(--clr-text-muted); line-height: 1.7; font-size: 15px;">
+                                Kelola data budidaya ikan dan informasi pendukung untuk kebutuhan pelaporan.
+                            </p>
+                        </div>
+                        <div class="mt-4 text-center">
+                            <a href="{{ route('budidaya.index') }}" class="btn-custom-dark">
+                                Masuk
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8.59,16.59L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.59Z"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="scroll-card-item px-2">
+                    <div class="custom-card h-100 d-flex flex-column justify-content-between shadow-sm">
+                        <div>
+                            <h2 class="fw-bold fs-3 mb-3 d-flex align-items-center gap-2">
+                                <img src="{{ asset('images/fish.png') }}" alt="Kelautan" width="32" height="32" class="card-icon" style="filter: hue-rotate(50deg);">
+                                Data Budidaya Tangkap
+                            </h2>
+                            <p style="color: var(--clr-text-muted); line-height: 1.7; font-size: 15px;">
+                                Kelola sebaran wilayah potensi laut, pelabuhan, serta wilayah pesisir Provinsi Aceh.
+                            </p>
+                        </div>
+                        <div class="mt-4 text-center">
+                            <a href="#" class="btn-custom-dark">
+                                Masuk
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8.59,16.59L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.59Z"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+>>>>>>> 1a1100748eb5097a89f9d7e85946032e2bf731db
             </div>
 
             <div class="col-12 col-md-6 col-lg-5">

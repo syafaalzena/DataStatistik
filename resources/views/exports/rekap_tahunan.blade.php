@@ -53,7 +53,7 @@
                     <td>{{ number_format($j['luas_lahan'], 0, ',', '.') }}</td>
                 </tr>
             @endforeach
-           <tr style="font-weight:bold; background:#e2e8f0;">
+            <tr style="font-weight:bold; background:#e2e8f0;">
             <td>Total Sarana</td>
             <td>{{ number_format($kab['sarana']['total_rtp'], 0, ',', '.') }}</td>
             <td>{{ number_format($kab['sarana']['total_pembudidaya'], 0, ',', '.') }}</td>
