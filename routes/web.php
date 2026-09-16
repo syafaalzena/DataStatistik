@@ -19,6 +19,9 @@ use App\Http\Controllers\JenisBudidayaController;
 use Illuminate\Support\Facades\Auth;
 
 
+use App\Http\Controllers\ProduksiTangkapController;
+use App\Http\Controllers\KomoditasIkanController;
+
 /*
 |--------------------------------------------------------------------------
 | Halaman Utama & Auth (Guest)
@@ -187,5 +190,20 @@ Route::middleware('auth')->group(function () {
 
     Route::delete('/budidaya/jenis/{id}', [JenisBudidayaController::class, 'destroy'])
         ->name('budidaya.jenis.destroy');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Tangkap
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/tangkap', [ProduksiTangkapController::class, 'index'])->name('tangkap.index');
+    Route::post('/tangkap/produksi', [ProduksiTangkapController::class, 'store'])->name('tangkap.produksi.store');
+    Route::put('/tangkap/produksi/{produksi}', [ProduksiTangkapController::class, 'update'])->name('tangkap.produksi.update');
+    Route::delete('/tangkap/produksi/{produksi}', [ProduksiTangkapController::class, 'destroy'])->name('tangkap.produksi.destroy');
+    Route::post('/komoditas-ikan', [KomoditasIkanController::class, 'store'])->name('komoditas-ikan.store');
+
+    Route::put('/komoditas-ikan/{komoditasIkan}', [KomoditasIkanController::class, 'update'])->name('komoditas-ikan.update');
+    Route::delete('/komoditas-ikan/{komoditasIkan}', [KomoditasIkanController::class, 'destroy'])->name('komoditas-ikan.destroy');
 
 });
