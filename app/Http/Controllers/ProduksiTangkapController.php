@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ProduksiTangkap;
+use App\Models\KabupatenIkan;
 use App\Models\Pelabuhan;
 use App\Models\Wppnri;
 use App\Models\JenisApi;
@@ -14,22 +15,34 @@ class ProduksiTangkapController extends Controller
 {
     public function index()
     {
-        $pelabuhanList = Pelabuhan::with('kabupatenIkan')->orderBy('nama')->get();
+        $kabupatenIkans = KabupatenIkan::orderBy('nama_kabupaten')->get();
+
+        return view('tangkap.index', compact('kabupatenIkans'));
+    }
+
+    public function input($kabupatenId)
+    {
+        $kabupaten = KabupatenIkan::findOrFail($kabupatenId);
+
+        $pelabuhanList = Pelabuhan::where('kabupaten_ikan_id', $kabupatenId)->orderBy('nama')->get();
         $wppnriList = Wppnri::orderBy('kode')->get();
         $jenisApiList = JenisApi::orderBy('nama')->get();
         $kategoriKapalList = KategoriUkuranKapal::orderBy('label')->get();
         $komoditasList = KomoditasIkan::orderBy('nama_ikan')->get();
 
         $dataProduksi = ProduksiTangkap::with([
-            'pelabuhan.kabupatenIkan', 'wppnri', 'jenisApi', 'kategoriUkuranKapal', 'komoditasIkan',
-        ])->latest()->get();
+            'pelabuhan', 'wppnri', 'jenisApi', 'kategoriUkuranKapal', 'komoditasIkan',
+        ])
+            ->where('kabupaten_ikan_id', $kabupatenId)
+            ->latest()
+            ->get();
 
-        return view('tangkap.produksi.index', compact(
-            'pelabuhanList', 'wppnriList', 'jenisApiList', 'kategoriKapalList', 'komoditasList', 'dataProduksi'
+        return view('tangkap.input', compact(
+            'kabupaten', 'pelabuhanList', 'wppnriList', 'jenisApiList', 'kategoriKapalList', 'komoditasList', 'dataProduksi'
         ));
     }
 
-    public function store(Request $request)
+    public function store(Request $request, $kabupatenId)
     {
         $request->validate([
             'bulan' => ['required', 'integer', 'between:1,12'],
@@ -37,6 +50,7 @@ class ProduksiTangkapController extends Controller
             'pelabuhan_id' => ['required', 'array', 'min:1'],
             'pelabuhan_id.*' => ['required', 'exists:pelabuhans,id'],
             'wppnri_id.*' => ['required', 'exists:wppnris,id'],
+            'jenis_lk.*' => ['required', 'in:Pelabuhan,Non Pelabuhan'],
             'jenis_api_id.*' => ['required', 'exists:jenis_apis,id'],
             'kategori_ukuran_kapal_id.*' => ['required', 'exists:kategori_ukuran_kapals,id'],
             'komoditas_ikan_id.*' => ['required', 'exists:komoditas_ikans,id'],
@@ -45,14 +59,14 @@ class ProduksiTangkapController extends Controller
         ]);
 
         foreach ($request->pelabuhan_id as $i => $pelabuhanId) {
-            $pelabuhan = Pelabuhan::findOrFail($pelabuhanId);
             $volume = $request->volume_produksi_kg[$i];
             $harga = $request->harga_rp[$i];
 
             ProduksiTangkap::create([
-                'kabupaten_ikan_id' => $pelabuhan->kabupaten_ikan_id,
+                'kabupaten_ikan_id' => $kabupatenId,
                 'pelabuhan_id' => $pelabuhanId,
                 'wppnri_id' => $request->wppnri_id[$i],
+                'jenis_lk' => $request->jenis_lk[$i],
                 'jenis_api_id' => $request->jenis_api_id[$i],
                 'kategori_ukuran_kapal_id' => $request->kategori_ukuran_kapal_id[$i],
                 'komoditas_ikan_id' => $request->komoditas_ikan_id[$i],
@@ -64,7 +78,7 @@ class ProduksiTangkapController extends Controller
             ]);
         }
 
-        return redirect()->route('tangkap.index')->with('success', 'Data produksi berhasil disimpan.');
+        return redirect()->route('tangkap.input', $kabupatenId)->with('success', 'Data produksi berhasil disimpan.');
     }
 
     public function update(Request $request, ProduksiTangkap $produksi)
@@ -74,19 +88,18 @@ class ProduksiTangkapController extends Controller
             'tahun' => ['required', 'integer', 'digits:4'],
             'volume_produksi_kg' => ['required', 'numeric', 'min:0'],
             'harga_rp' => ['required', 'numeric', 'min:0'],
-            'jenis_lk.*' => ['required', 'in:Pelabuhan,Non Pelabuhan'],
         ]);
 
         $validated['nilai_rp'] = $validated['volume_produksi_kg'] * $validated['harga_rp'];
         $produksi->update($validated);
 
-        return redirect()->route('tangkap.index')->with('success', 'Data produksi berhasil diperbarui.');
+        return redirect()->back()->with('success', 'Data produksi berhasil diperbarui.');
     }
 
     public function destroy(ProduksiTangkap $produksi)
     {
         $produksi->delete();
 
-        return redirect()->route('tangkap.index')->with('success', 'Data produksi berhasil dihapus.');
+        return redirect()->back()->with('success', 'Data produksi berhasil dihapus.');
     }
 }

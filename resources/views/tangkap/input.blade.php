@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Input Produksi Tangkap - SIDKP</title>
+    <title>Input Produksi Tangkap - {{ $kabupaten->nama_kabupaten }} - SIDKP</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Croissant+One&family=Inter:wght@400;600&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
@@ -51,7 +50,6 @@
             border-radius: 8px; padding: 8px 16px; font-weight: 600; font-size: 14px;
         }
         .btn-add-row:hover { background: #f1f5f9; }
-        .btn-add-row.full { width: 100%; }
 
         .riwayat-table { border-radius: 14px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,.04); background: #fff; }
         .riwayat-table table { margin-bottom: 0; }
@@ -65,6 +63,8 @@
 
         .section-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
         .section-sub { color: #64748b; font-size: 14px; margin-bottom: 16px; }
+
+        .kab-badge { display: inline-block; background: #e0f2fe; color: #0369a1; font-weight: 600; font-size: 12px; padding: 4px 12px; border-radius: 20px; margin-bottom: 6px; }
     </style>
 </head>
 <body>
@@ -85,10 +85,11 @@
 <div class="container pb-5">
 
     <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
-        <a href="{{ route('dashboard') }}" class="back-btn">&larr;</a>
+        <a href="{{ route('tangkap.index') }}" class="back-btn">&larr;</a>
         <div>
+            <span class="kab-badge">{{ $kabupaten->nama_kabupaten }}</span>
             <h2 class="fw-bold mb-1">Input Produksi Tangkap</h2>
-            <p class="text-muted mb-0">Kelola data hasil tangkapan laut per pelabuhan.</p>
+            <p class="text-muted mb-0">Kelola data hasil tangkapan laut untuk kabupaten ini.</p>
         </div>
     </div>
 
@@ -105,9 +106,13 @@
         </div>
     @endif
 
-    @if($pelabuhanList->isEmpty() || $wppnriList->isEmpty() || $jenisApiList->isEmpty() || $kategoriKapalList->isEmpty() || $komoditasList->isEmpty())
+    @if($pelabuhanList->isEmpty())
+        <div class="alert alert-warning">
+            Belum ada pelabuhan terdaftar untuk kabupaten <strong>{{ $kabupaten->nama_kabupaten }}</strong>. Tambahkan lewat tombol "+ Kelola Pelabuhan" di bawah.
+        </div>
+    @elseif($wppnriList->isEmpty() || $jenisApiList->isEmpty() || $kategoriKapalList->isEmpty() || $komoditasList->isEmpty())
         <div class="alert alert-info">
-            Sebelum input produksi, pastikan tabel master (pelabuhan, WPPNRI, jenis API, kategori ukuran kapal, komoditas ikan) sudah terisi minimal 1 baris.
+            Sebelum input produksi, pastikan tabel master (WPPNRI, jenis API, kategori ukuran kapal, komoditas ikan) sudah terisi minimal 1 baris.
         </div>
     @endif
 
@@ -116,7 +121,7 @@
         <div class="section-title">Input Produksi Bulanan</div>
         <div class="section-sub">Pilih bulan &amp; tahun, lalu isi satu baris per kombinasi pelabuhan &times; jenis ikan.</div>
 
-        <form method="POST" action="{{ route('tangkap.produksi.store') }}">
+        <form method="POST" action="{{ route('tangkap.produksi.store', $kabupaten->id) }}">
             @csrf
             <div class="row g-3 mb-3">
                 <div class="col-6 col-md-3">
@@ -144,7 +149,7 @@
                             <select name="pelabuhan_id[]" class="form-select" required>
                                 <option value="">Pilih Pelabuhan</option>
                                 @foreach($pelabuhanList as $p)
-                                    <option value="{{ $p->id }}">{{ $p->nama }} ({{ $p->kabupatenIkan->nama_kabupaten ?? '-' }})</option>
+                                    <option value="{{ $p->id }}">{{ $p->nama }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -210,7 +215,8 @@
 
             <div class="d-flex gap-2 flex-wrap mb-3">
                 <button type="button" class="btn-add-row" onclick="addProduksiRow()">+ Tambah Baris</button>
-                <button type="button" class="btn-add-row" data-bs-toggle="modal" data-bs-target="#modalTambahIkan">+ Tambah Jenis Ikan Baru</button>
+                <button type="button" class="btn-add-row" data-bs-toggle="modal" data-bs-target="#modalTambahIkan">+ Kelola Jenis Ikan</button>
+                <button type="button" class="btn-add-row" data-bs-toggle="modal" data-bs-target="#modalTambahPelabuhan">+ Kelola Pelabuhan</button>
             </div>
 
             <button type="submit" class="btn-dark-custom">Simpan Produksi</button>
@@ -223,7 +229,7 @@
     </div>
     <div id="riwayatProduksi" class="riwayat-table mb-4">
         @if($dataProduksi->isEmpty())
-            <div class="empty-state">Belum ada data produksi.</div>
+            <div class="empty-state">Belum ada data produksi untuk kabupaten ini.</div>
         @else
             <div class="table-responsive">
             <table class="table table-hover text-center align-middle mb-0">
@@ -232,7 +238,6 @@
                         <th>Bulan/Tahun</th>
                         <th>Triwulan</th>
                         <th>Semester</th>
-                        <th>Kabupaten</th>
                         <th>Pelabuhan</th>
                         <th>WPPNRI</th>
                         <th>Jenis LK</th>
@@ -254,7 +259,6 @@
                             <td>{{ \Carbon\Carbon::create()->month($d->bulan)->translatedFormat('F') }} {{ $d->tahun }}</td>
                             <td>TW {{ $d->triwulan }}</td>
                             <td>Smt {{ $d->semester }}</td>
-                            <td>{{ $d->pelabuhan->kabupatenIkan->nama_kabupaten ?? '-' }}</td>
                             <td>{{ $d->pelabuhan->nama ?? '-' }}</td>
                             <td>{{ $d->wppnri->kode ?? '-' }}</td>
                             <td>{{ $d->jenis_lk ?? '-' }}</td>
@@ -334,6 +338,21 @@
         document.getElementById('modalEdit').style.display = 'none';
     }
 
+    function bukaEditIkan(id, nama, latin, fao, sdi) {
+        document.getElementById('editIkanNamaField').value = nama;
+        document.getElementById('editIkanLatin').value = latin;
+        document.getElementById('editIkanFao').value = fao;
+        document.getElementById('editIkanSdi').value = sdi;
+        document.getElementById('formEditIkan').action = '{{ url('/komoditas-ikan') }}/' + id;
+        document.getElementById('modalEditIkan').style.display = 'flex';
+    }
+
+    function bukaEditPelabuhan(id, nama) {
+        document.getElementById('editPelabuhanNamaField').value = nama;
+        document.getElementById('formEditPelabuhan').action = '{{ url('/tangkap/pelabuhan') }}/' + id;
+        document.getElementById('modalEditPelabuhan').style.display = 'flex';
+    }
+
     const searchInput = document.getElementById('searchInput');
     searchInput.addEventListener('keyup', function () {
         const keyword = this.value.toLowerCase();
@@ -343,7 +362,7 @@
     });
 </script>
 
-{{-- MODAL EDIT --}}
+{{-- MODAL EDIT PRODUKSI --}}
 <div id="modalEdit" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center;">
     <div style="background:#fff; padding:24px; border-radius:8px; width:420px; max-width:90%;">
         <h5 style="margin-bottom:16px;">Edit Data Produksi</h5>
@@ -394,40 +413,201 @@
     </div>
 </div>
 
-{{-- MODAL TAMBAH JENIS IKAN --}}
+{{-- MODAL TAMBAH & KELOLA JENIS IKAN --}}
 <div class="modal fade" id="modalTambahIkan" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <form method="POST" action="{{ route('komoditas-ikan.store') }}">
-                @csrf
-                <div class="modal-header">
-                    <h5 class="modal-title">Tambah Jenis Ikan Baru</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-2">
-                        <label class="form-label">Nama Ikan</label>
+            <div class="modal-header">
+                <h5 class="modal-title">Kelola Jenis Ikan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{{ route('komoditas-ikan.store') }}" class="row g-2 mb-4">
+                    @csrf
+                    <div class="col-md-3">
+                        <label class="form-label small">Nama Ikan</label>
                         <input type="text" name="nama_ikan" class="form-control" required>
                     </div>
-                    <div class="mb-2">
-                        <label class="form-label">Nama Latin</label>
+                    <div class="col-md-3">
+                        <label class="form-label small">Nama Latin</label>
                         <input type="text" name="nama_latin" class="form-control">
                     </div>
-                    <div class="mb-2">
-                        <label class="form-label">Kode FAO</label>
+                    <div class="col-md-2">
+                        <label class="form-label small">Kode FAO</label>
                         <input type="text" name="kode_fao" class="form-control">
                     </div>
-                    <div class="mb-2">
-                        <label class="form-label">Kelompok SDI</label>
+                    <div class="col-md-2">
+                        <label class="form-label small">Kelompok SDI</label>
                         <input type="text" name="kelompok_sdi" class="form-control">
                     </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">+ Tambah</button>
+                    </div>
+                </form>
+
+                <hr>
+
+                <h6 class="fw-semibold mb-2">Daftar Jenis Ikan Tersimpan</h6>
+                <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                    <table class="table table-sm table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Nama Ikan</th>
+                                <th>Nama Latin</th>
+                                <th>Kode FAO</th>
+                                <th>Kelompok SDI</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($komoditasList as $ik)
+                                <tr>
+                                    <td>{{ $ik->nama_ikan }}</td>
+                                    <td><em>{{ $ik->nama_latin ?? '-' }}</em></td>
+                                    <td>{{ $ik->kode_fao ?? '-' }}</td>
+                                    <td>{{ $ik->kelompok_sdi ?? '-' }}</td>
+                                    <td>
+                                        <div class="d-flex gap-2">
+                                            <button type="button" class="btn-delete-sm" style="color:#0f172a;"
+                                                onclick="bukaEditIkan(
+                                                    {{ $ik->id }},
+                                                    '{{ addslashes($ik->nama_ikan) }}',
+                                                    '{{ addslashes($ik->nama_latin ?? '') }}',
+                                                    '{{ addslashes($ik->kode_fao ?? '') }}',
+                                                    '{{ addslashes($ik->kelompok_sdi ?? '') }}'
+                                                )">Edit</button>
+                                            <form method="POST" action="{{ route('komoditas-ikan.destroy', $ik->id) }}"
+                                                  onsubmit="return confirm('Hapus jenis ikan ini? Data ini tidak bisa dihapus kalau sudah dipakai di data Produksi.');" class="d-inline mb-0">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn-delete-sm">Hapus</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr><td colspan="5" class="text-center text-muted">Belum ada data.</td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
-                </div>
-            </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
         </div>
+    </div>
+</div>
+
+{{-- MODAL EDIT JENIS IKAN --}}
+<div id="modalEditIkan" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1100; align-items:center; justify-content:center;">
+    <div style="background:#fff; padding:24px; border-radius:8px; width:420px; max-width:90%;">
+        <h5 style="margin-bottom:16px;">Edit Jenis Ikan</h5>
+        <form id="formEditIkan" method="POST" action="">
+            @csrf
+            @method('PUT')
+            <div class="mb-2">
+                <label class="form-label">Nama Ikan</label>
+                <input type="text" name="nama_ikan" id="editIkanNamaField" class="form-control" required>
+            </div>
+            <div class="mb-2">
+                <label class="form-label">Nama Latin</label>
+                <input type="text" name="nama_latin" id="editIkanLatin" class="form-control">
+            </div>
+            <div class="mb-2">
+                <label class="form-label">Kode FAO</label>
+                <input type="text" name="kode_fao" id="editIkanFao" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Kelompok SDI</label>
+                <input type="text" name="kelompok_sdi" id="editIkanSdi" class="form-control">
+            </div>
+            <div style="display:flex; gap:8px; justify-content:flex-end;">
+                <button type="button" class="btn btn-secondary" onclick="document.getElementById('modalEditIkan').style.display='none'">Batal</button>
+                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{{-- MODAL TAMBAH & KELOLA PELABUHAN --}}
+<div class="modal fade" id="modalTambahPelabuhan" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Kelola Pelabuhan &mdash; {{ $kabupaten->nama_kabupaten }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{{ route('pelabuhan.store', $kabupaten->id) }}" class="row g-2 mb-4">
+                    @csrf
+                    <div class="col-md-8">
+                        <label class="form-label small">Nama Pelabuhan</label>
+                        <input type="text" name="nama" class="form-control" placeholder="Contoh: PPI Kuala Bubon" required>
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">+ Tambah</button>
+                    </div>
+                </form>
+
+                <hr>
+
+                <h6 class="fw-semibold mb-2">Daftar Pelabuhan di {{ $kabupaten->nama_kabupaten }}</h6>
+                <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                    <table class="table table-sm table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Nama Pelabuhan</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($pelabuhanList as $p)
+                                <tr>
+                                    <td>{{ $p->nama }}</td>
+                                    <td>
+                                        <div class="d-flex gap-2">
+                                            <button type="button" class="btn-delete-sm" style="color:#0f172a;"
+                                                onclick="bukaEditPelabuhan({{ $p->id }}, '{{ addslashes($p->nama) }}')">Edit</button>
+                                            <form method="POST" action="{{ route('pelabuhan.destroy', $p->id) }}"
+                                                  onsubmit="return confirm('Hapus pelabuhan ini? Data ini tidak bisa dihapus kalau sudah dipakai di data Produksi.');" class="d-inline mb-0">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn-delete-sm">Hapus</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr><td colspan="2" class="text-center text-muted">Belum ada pelabuhan.</td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- MODAL EDIT PELABUHAN --}}
+<div id="modalEditPelabuhan" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1100; align-items:center; justify-content:center;">
+    <div style="background:#fff; padding:24px; border-radius:8px; width:420px; max-width:90%;">
+        <h5 style="margin-bottom:16px;">Edit Pelabuhan</h5>
+        <form id="formEditPelabuhan" method="POST" action="">
+            @csrf
+            @method('PUT')
+            <div class="mb-3">
+                <label class="form-label">Nama Pelabuhan</label>
+                <input type="text" name="nama" id="editPelabuhanNamaField" class="form-control" required>
+            </div>
+            <div style="display:flex; gap:8px; justify-content:flex-end;">
+                <button type="button" class="btn btn-secondary" onclick="document.getElementById('modalEditPelabuhan').style.display='none'">Batal</button>
+                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+            </div>
+        </form>
     </div>
 </div>
 </body>
