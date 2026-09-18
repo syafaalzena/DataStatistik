@@ -9,15 +9,26 @@ use App\Models\Wppnri;
 use App\Models\JenisApi;
 use App\Models\KategoriUkuranKapal;
 use App\Models\KomoditasIkan;
+use App\Models\LaporanOperasional;
 use Illuminate\Http\Request;
 
 class ProduksiTangkapController extends Controller
 {
+
+public function menu()
+    {
+        $totalProduksiKabupaten = KabupatenIkan::count();
+        $totalLaporanOperasional = LaporanOperasional::count();
+
+        return view('tangkap.menu', compact('totalProduksiKabupaten', 'totalLaporanOperasional'));
+    }
+
+
     public function index()
     {
         $kabupatenIkans = KabupatenIkan::orderBy('nama_kabupaten')->get();
 
-        return view('tangkap.index', compact('kabupatenIkans'));
+        return view('tangkap.produksi.index', compact('kabupatenIkans'));
     }
 
     public function input($kabupatenId)

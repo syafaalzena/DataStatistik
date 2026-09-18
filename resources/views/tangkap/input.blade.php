@@ -85,7 +85,7 @@
 <div class="container pb-5">
 
     <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
-        <a href="{{ route('tangkap.index') }}" class="back-btn">&larr;</a>
+        <a href="{{ route('tangkap.produksi.index') }}" class="back-btn">&larr;</a>
         <div>
             <span class="kab-badge">{{ $kabupaten->nama_kabupaten }}</span>
             <h2 class="fw-bold mb-1">Input Produksi Tangkap</h2>
