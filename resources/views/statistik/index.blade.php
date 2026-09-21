@@ -511,29 +511,24 @@
                 </div>
 
                 <div class="scroll-card-item px-2">
-                    <div class="custom-card h-100 d-flex flex-column justify-content-between shadow-sm">
-                        <div>
-                            <h2 class="mb-3 d-flex align-items-center gap-2">
-                                <img src="{{ asset('images/wave.png') }}" alt="Kelautan" width="32" height="32" class="card-icon" style="filter: hue-rotate(50deg);">
-                                Data Budidaya Tangkap
-                            </h2>
-                            <p style="color: var(--clr-text-muted); line-height: 1.7; font-size: 14px;">
-                                Kelola Hasil Tangkap Provinsi Aceh.
-                            </p>
-                        </div>
-                        <div class="mt-4 text-center">
-                            <a href="{{ route('tangkap.index') }}" class="btn-custom-dark">
-                                Masuk
-                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8.59,16.59L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.59Z"/></svg>
-                            </a>    
-                        </div>
-                    </div>
-                </div>
-
-            </div>
+    <div class="custom-card h-100 d-flex flex-column justify-content-between shadow-sm">
+        <div>
+            <h2 class="mb-3 d-flex align-items-center gap-2">
+                <img src="{{ asset('images/wave.png') }}" alt="Tangkap" width="32" height="32" class="card-icon" style="filter: hue-rotate(50deg);">
+                Data Tangkap
+            </h2>
+            <p style="color: var(--clr-text-muted); line-height: 1.7; font-size: 14px;">
+                Kelola data produksi, trip, dan laporan operasional pelabuhan hasil tangkap laut Aceh berdasarkan kabupaten/kota.
+            </p>
         </div>
-
+        <div class="mt-4 text-center">
+            <a href="{{ route('tangkap.index') }}" class="btn-custom-dark">
+                Masuk
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8.59,16.59L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.59Z"/></svg>
+            </a>
+        </div>
     </div>
+</div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
