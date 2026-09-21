@@ -54,7 +54,7 @@
 
 <div class="container pb-5">
     <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
-        <a href="{{ route('laporan-operasional.index') }}" class="back-btn">&larr;</a>
+                <a href="{{ route('laporan-operasional.index', $kabupaten->id) }}" class="back-btn">&larr;</a>
         <div>
             <h2 class="fw-bold mb-1">{{ $laporan ? 'Edit' : 'Input' }} Laporan Operasional Pelabuhan</h2>
             <p class="text-muted mb-0">Isi rekapitulasi aktivitas harian pelabuhan perikanan untuk satu bulan.</p>
@@ -74,7 +74,7 @@
         <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
 
-    <form method="POST" action="{{ $laporan ? route('laporan-operasional.update', $laporan) : route('laporan-operasional.store') }}">
+        <form method="POST" action="{{ $laporan ? route('laporan-operasional.update', $laporan) : route('laporan-operasional.store', $kabupaten->id) }}">
         @csrf
         @if ($laporan) @method('PUT') @endif
 
@@ -291,7 +291,7 @@
         </div>
 
         <div class="d-flex justify-content-end gap-2">
-            <a href="{{ route('laporan-operasional.index') }}" class="btn btn-outline-secondary">Batal</a>
+         <a href="{{ route('laporan-operasional.index', $kabupaten->id) }}" class="btn btn-outline-secondary">Batal</a>
             <button type="submit" class="btn-dark-custom">Simpan Laporan</button>
         </div>
     </form>

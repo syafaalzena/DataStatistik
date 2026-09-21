@@ -70,7 +70,7 @@
             <span class="kategori-count">{{ $totalProduksiKabupaten }} Kabupaten/Kota</span>
         </a>
 
-        <a href="{{ route('laporan-operasional.index') }}" class="kategori-card">
+        <a href="{{ route('laporan-operasional.pilih-kabupaten') }}" class="kategori-card">
             <div class="kategori-icon">📋</div>
             <div class="kategori-title">Laporan Operasional Pelabuhan Perikanan</div>
             <div class="kategori-sub">Input rekapitulasi aktivitas harian pelabuhan: armada, produksi ikan dominan, logistik, dan pemasaran per bulan.</div>

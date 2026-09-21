@@ -14,15 +14,13 @@ use Illuminate\Http\Request;
 
 class ProduksiTangkapController extends Controller
 {
-
-public function menu()
+    public function menu()
     {
         $totalProduksiKabupaten = KabupatenIkan::count();
         $totalLaporanOperasional = LaporanOperasional::count();
 
         return view('tangkap.menu', compact('totalProduksiKabupaten', 'totalLaporanOperasional'));
     }
-
 
     public function index()
     {
@@ -112,5 +110,36 @@ public function menu()
         $produksi->delete();
 
         return redirect()->back()->with('success', 'Data produksi berhasil dihapus.');
+    }
+
+    public function rekap($kabupatenId)
+    {
+        $kabupaten = KabupatenIkan::findOrFail($kabupatenId);
+
+        $dataProduksi = ProduksiTangkap::with([
+            'pelabuhan', 'wppnri', 'jenisApi', 'kategoriUkuranKapal', 'komoditasIkan',
+        ])
+            ->where('kabupaten_ikan_id', $kabupatenId)
+            ->orderBy('tahun')->orderBy('bulan')
+            ->get();
+
+        return view('tangkap.produksi-rekap', compact('kabupaten', 'dataProduksi'));
+    }
+
+    public function exportPdf($kabupatenId)
+    {
+        $kabupaten = KabupatenIkan::findOrFail($kabupatenId);
+
+        $dataProduksi = ProduksiTangkap::with([
+            'pelabuhan', 'wppnri', 'jenisApi', 'kategoriUkuranKapal', 'komoditasIkan',
+        ])
+            ->where('kabupaten_ikan_id', $kabupatenId)
+            ->orderBy('tahun')->orderBy('bulan')
+            ->get();
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('exports.rekap_produksi_tangkap', compact('kabupaten', 'dataProduksi'))
+            ->setPaper('a4', 'landscape');
+
+        return $pdf->download('produksi-tangkap-' . \Illuminate\Support\Str::slug($kabupaten->nama_kabupaten) . '.pdf');
     }
 }

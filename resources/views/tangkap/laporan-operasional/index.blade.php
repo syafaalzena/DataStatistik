@@ -46,15 +46,15 @@
 </nav>
 
 <div class="container pb-5">
-    <div class="d-flex align-items-center justify-content-between gap-3 mb-4 flex-wrap">
-        <div class="d-flex align-items-center gap-3">
+            <div class="d-flex align-items-center gap-3">
             <a href="{{ route('tangkap.index') }}" class="back-btn">&larr;</a>
             <div>
+                <span class="badge" style="background:#e0f2fe; color:#0369a1; font-weight:600;">{{ $kabupaten->nama_kabupaten }}</span>
                 <h2 class="fw-bold mb-1">Laporan Operasional Pelabuhan Perikanan</h2>
                 <p class="text-muted mb-0">Rekapitulasi aktivitas harian pelabuhan perikanan per bulan.</p>
             </div>
         </div>
-        <a href="{{ route('laporan-operasional.create') }}" class="btn-dark-custom">+ Buat Laporan Baru</a>
+        <a href="{{ route('laporan-operasional.create', $kabupaten->id) }}" class="btn-dark-custom">+ Buat Laporan Baru</a>
     </div>
 
     @if (session('success'))

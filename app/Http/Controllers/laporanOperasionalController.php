@@ -3,36 +3,36 @@
 namespace App\Http\Controllers;
 
 use App\Models\LaporanOperasional;
+use App\Models\KabupatenIkan;
 use App\Models\Pelabuhan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class LaporanOperasionalController extends Controller
 {
-    public function index(Request $request)
+    public function index($kabupatenId)
     {
-        $query = LaporanOperasional::with('pelabuhan.kabupatenIkan');
+        $kabupaten = KabupatenIkan::findOrFail($kabupatenId);
 
-        if ($request->filled('pelabuhan_id')) {
-            $query->where('pelabuhan_id', $request->pelabuhan_id);
-        }
+        $laporans = LaporanOperasional::with('pelabuhan')
+            ->whereHas('pelabuhan', fn ($q) => $q->where('kabupaten_ikan_id', $kabupatenId))
+            ->orderByDesc('tahun')
+            ->orderByDesc('bulan')
+            ->get();
 
-        $laporans = $query->orderByDesc('tahun')->orderByDesc('bulan')->get();
-
-        $pelabuhanList = Pelabuhan::with('kabupatenIkan')->orderBy('nama')->get();
-
-        return view('tangkap.laporan-operasional.index', compact('laporans', 'pelabuhanList'));
+        return view('tangkap.laporan-operasional.index', compact('laporans', 'kabupaten'));
     }
 
-    public function create()
+    public function create($kabupatenId)
     {
-        $pelabuhanList = Pelabuhan::with('kabupatenIkan')->orderBy('nama')->get();
+        $kabupaten = KabupatenIkan::findOrFail($kabupatenId);
+        $pelabuhanList = Pelabuhan::where('kabupaten_ikan_id', $kabupatenId)->orderBy('nama')->get();
         $laporan = null;
 
-        return view('tangkap.laporan-operasional.form', compact('pelabuhanList', 'laporan'));
+        return view('tangkap.laporan-operasional.form', compact('pelabuhanList', 'laporan', 'kabupaten'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request, $kabupatenId)
     {
         $validated = $this->validateData($request);
 
@@ -65,17 +65,19 @@ class LaporanOperasionalController extends Controller
     public function show(LaporanOperasional $laporanOperasional)
     {
         $laporanOperasional->load(['pelabuhan.kabupatenIkan', 'armadaTangkap', 'produksiIkan', 'logistik', 'pemasaran']);
+        $kabupaten = $laporanOperasional->pelabuhan->kabupatenIkan;
 
-        return view('tangkap.laporan-operasional.show', ['laporan' => $laporanOperasional]);
+        return view('tangkap.laporan-operasional.show', ['laporan' => $laporanOperasional, 'kabupaten' => $kabupaten]);
     }
 
     public function edit(LaporanOperasional $laporanOperasional)
     {
         $laporanOperasional->load(['armadaTangkap', 'produksiIkan', 'logistik', 'pemasaran']);
-        $pelabuhanList = Pelabuhan::with('kabupatenIkan')->orderBy('nama')->get();
+        $kabupaten = $laporanOperasional->pelabuhan->kabupatenIkan;
+        $pelabuhanList = Pelabuhan::where('kabupaten_ikan_id', $kabupaten->id)->orderBy('nama')->get();
         $laporan = $laporanOperasional;
 
-        return view('tangkap.laporan-operasional.form', compact('pelabuhanList', 'laporan'));
+        return view('tangkap.laporan-operasional.form', compact('pelabuhanList', 'laporan', 'kabupaten'));
     }
 
     public function update(Request $request, LaporanOperasional $laporanOperasional)
@@ -114,9 +116,17 @@ class LaporanOperasionalController extends Controller
 
     public function destroy(LaporanOperasional $laporanOperasional)
     {
+        $kabupatenId = $laporanOperasional->pelabuhan->kabupaten_ikan_id;
         $laporanOperasional->delete();
 
-        return redirect()->route('laporan-operasional.index')->with('success', 'Laporan operasional berhasil dihapus.');
+        return redirect()->route('laporan-operasional.index', $kabupatenId)->with('success', 'Laporan operasional berhasil dihapus.');
+    }
+
+    public function pilihKabupaten()
+    {
+        $kabupatenIkans = KabupatenIkan::orderBy('nama_kabupaten')->get();
+
+        return view('tangkap.laporan-operasional.pilih-kabupaten', compact('kabupatenIkans'));
     }
 
     private function validateData(Request $request): array
@@ -168,11 +178,8 @@ class LaporanOperasionalController extends Controller
 
     private function syncDetails(LaporanOperasional $laporan, Request $request): void
     {
-        // Data Armada Tangkap
         foreach ((array) $request->input('ukuran_kapal', []) as $i => $ukuran) {
-            if (blank($ukuran)) {
-                continue;
-            }
+            if (blank($ukuran)) continue;
 
             $laporan->armadaTangkap()->create([
                 'ukuran_kapal' => $ukuran,
@@ -183,11 +190,8 @@ class LaporanOperasionalController extends Controller
             ]);
         }
 
-        // Produksi Ikan Dominan
         foreach ((array) $request->input('jenis_ikan', []) as $i => $jenis) {
-            if (blank($jenis)) {
-                continue;
-            }
+            if (blank($jenis)) continue;
 
             $produksi = (float) $request->input("produksi_kg.$i", 0);
             $harga = (float) $request->input("harga_rp.$i", 0);
@@ -201,11 +205,8 @@ class LaporanOperasionalController extends Controller
             ]);
         }
 
-        // Logistik
         foreach ((array) $request->input('nama_item', []) as $i => $nama) {
-            if (blank($nama)) {
-                continue;
-            }
+            if (blank($nama)) continue;
 
             $jumlah = (float) $request->input("jumlah_logistik.$i", 0);
             $harga = $request->input("harga_logistik.$i");
@@ -222,11 +223,8 @@ class LaporanOperasionalController extends Controller
             ]);
         }
 
-        // Data Pemasaran
         foreach ((array) $request->input('jenis_ikan_pemasaran', []) as $i => $jenis) {
-            if (blank($jenis)) {
-                continue;
-            }
+            if (blank($jenis)) continue;
 
             $laporan->pemasaran()->create([
                 'kategori' => $request->input("kategori_pemasaran.$i", 'Lokal'),

@@ -213,12 +213,14 @@
                 </div>
             </div>
 
-            <div class="d-flex gap-2 flex-wrap mb-3">
-                <button type="button" class="btn-add-row" onclick="addProduksiRow()">+ Tambah Baris</button>
-                <button type="button" class="btn-add-row" data-bs-toggle="modal" data-bs-target="#modalTambahIkan">+ Kelola Jenis Ikan</button>
-                <button type="button" class="btn-add-row" data-bs-toggle="modal" data-bs-target="#modalTambahPelabuhan">+ Kelola Pelabuhan</button>
-            </div>
-
+           <div class="d-flex gap-2 flex-wrap mb-3">
+    <button type="button" class="btn-add-row" onclick="addProduksiRow()">+ Tambah Baris</button>
+    <button type="button" class="btn-add-row" data-bs-toggle="modal" data-bs-target="#modalTambahIkan">+ Kelola Jenis Ikan</button>
+    <button type="button" class="btn-add-row" data-bs-toggle="modal" data-bs-target="#modalTambahPelabuhan">+ Kelola Pelabuhan</button>
+    <a href="{{ route('laporan-operasional.index', $kabupaten->id) }}" class="btn-add-row" style="text-decoration:none;">Laporan Operasional &rarr;</a>
+    
+    <a href="{{ route('tangkap.produksi.rekap', $kabupaten->id) }}" class="btn-dark-custom" style="text-decoration:none;">📊 Lihat & Cetak</a>
+    </div>
             <button type="submit" class="btn-dark-custom">Simpan Produksi</button>
         </form>
     </div>
