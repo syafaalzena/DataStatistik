@@ -64,15 +64,50 @@
             </div>
         </div>
         <div class="d-flex gap-2 flex-wrap">
-            <button onclick="window.print()" class="btn-action btn-print">🖨 Cetak</button>
-            <a href="{{ route('tangkap.produksi.exportPdf', $kabupaten->id) }}" class="btn-action btn-pdf">⬇ PDF</a>
-            <a href="{{ route('tangkap.produksi.export', $kabupaten->id) }}" class="btn-action btn-excel">⬇ Excel</a>
+        
+           <a href="{{ route('tangkap.produksi.exportPdf', array_merge(['kabupaten' => $kabupaten->id], request()->query())) }}" class="btn-action btn-pdf">⬇ PDF</a>
+        <a href="{{ route('tangkap.produksi.export', array_merge(['kabupaten' => $kabupaten->id], request()->query())) }}" class="btn-action btn-excel">⬇ Excel</a>
+
         </div>
     </div>
 
     <div class="mb-3">
         <h4 class="fw-bold">Data Produksi Tangkap &mdash; {{ $kabupaten->nama_kabupaten }}</h4>
     </div>
+
+    <form method="GET" class="panel-card mb-3 no-print">
+    <div class="row g-2 align-items-end">
+        <div class="col-6 col-md-3">
+            <label class="form-label small fw-semibold">Tahun</label>
+            <select name="tahun" class="form-select">
+                <option value="">Semua Tahun</option>
+                @foreach($dataProduksi->pluck('tahun')->unique()->sort()->values() as $th)
+                    <option value="{{ $th }}" {{ request('tahun') == $th ? 'selected' : '' }}>{{ $th }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-6 col-md-3">
+            <label class="form-label small fw-semibold">Semester</label>
+            <select name="semester" class="form-select">
+                <option value="">Semua Semester</option>
+                <option value="1" {{ request('semester') == '1' ? 'selected' : '' }}>Semester 1 (Jan-Jun)</option>
+                <option value="2" {{ request('semester') == '2' ? 'selected' : '' }}>Semester 2 (Jul-Des)</option>
+            </select>
+        </div>
+        <div class="col-6 col-md-3">
+            <label class="form-label small fw-semibold">Bulan (opsional)</label>
+            <select name="bulan" class="form-select">
+                <option value="">Semua Bulan</option>
+                @foreach(range(1,12) as $b)
+                    <option value="{{ $b }}" {{ request('bulan') == $b ? 'selected' : '' }}>{{ \Carbon\Carbon::create()->month($b)->translatedFormat('F') }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-6 col-md-3">
+            <button type="submit" class="btn-action btn-print w-100">Terapkan Filter</button>
+        </div>
+    </div>
+</form>
 
     <div class="panel-card">
         @if ($dataProduksi->isEmpty())

@@ -200,7 +200,6 @@ Route::middleware('auth')->group(function () {
     */
 
 
-// Menu utama Data Tangkap (kartu pilihan kategori)
 Route::get('/tangkap', [TangkapMenuController::class, 'index'])->name('tangkap.index');
 
 // PENTING: route literal /tangkap/produksi dan /tangkap/laporan-operasional
@@ -208,10 +207,11 @@ Route::get('/tangkap', [TangkapMenuController::class, 'index'])->name('tangkap.i
 Route::get('/tangkap/produksi', [ProduksiTangkapController::class, 'index'])->name('tangkap.produksi.index');
 Route::get('/tangkap/laporan-operasional', [LaporanOperasionalController::class, 'pilihKabupaten'])->name('laporan-operasional.pilih-kabupaten');
 
-// Halaman awal per kabupaten: daftar data produksi yang sudah diinput
-Route::get('/tangkap/{kabupaten}', [ProduksiTangkapController::class, 'daftar'])->name('tangkap.produksi.daftar');
-// Form input produksi (dipakai untuk tambah data baru & edit data per periode)
-Route::get('/tangkap/{kabupaten}/produksi/create', [ProduksiTangkapController::class, 'input'])->name('tangkap.input');
+Route::get('/tangkap/{kabupaten}', [ProduksiTangkapController::class, 'input'])->name('tangkap.input');
+Route::get('/tangkap/{kabupaten}/produksi/create', [ProduksiTangkapController::class, 'create'])->name('tangkap.produksi.create');
+Route::get('/tangkap/{kabupaten}/produksi/rekap', [ProduksiTangkapController::class, 'rekap'])->name('tangkap.produksi.rekap');
+Route::get('/tangkap/{kabupaten}/produksi/export', [ProduksiTangkapController::class, 'export'])->name('tangkap.produksi.export');
+Route::get('/tangkap/{kabupaten}/produksi/export-pdf', [ProduksiTangkapController::class, 'exportPdf'])->name('tangkap.produksi.exportPdf');
 Route::post('/tangkap/{kabupaten}/produksi', [ProduksiTangkapController::class, 'store'])->name('tangkap.produksi.store');
 Route::put('/tangkap/produksi/{produksi}', [ProduksiTangkapController::class, 'update'])->name('tangkap.produksi.update');
 Route::delete('/tangkap/produksi/{produksi}', [ProduksiTangkapController::class, 'destroy'])->name('tangkap.produksi.destroy');
@@ -224,10 +224,6 @@ Route::post('/tangkap/{kabupaten}/pelabuhan', [PelabuhanController::class, 'stor
 Route::put('/tangkap/pelabuhan/{pelabuhan}', [PelabuhanController::class, 'update'])->name('pelabuhan.update');
 Route::delete('/tangkap/pelabuhan/{pelabuhan}', [PelabuhanController::class, 'destroy'])->name('pelabuhan.destroy');
 
-Route::get('/tangkap/{kabupaten}/produksi/rekap', [ProduksiTangkapController::class, 'rekap'])->name('tangkap.produksi.rekap');
-Route::get('/tangkap/{kabupaten}/produksi/export-pdf', [ProduksiTangkapController::class, 'exportPdf'])->name('tangkap.produksi.exportPdf');
-Route::delete('/tangkap/{kabupaten}/produksi/grup', [ProduksiTangkapController::class, 'destroyGrup'])->name('tangkap.produksi.destroyGrup');
-
 Route::get('/tangkap/{kabupaten}/laporan-operasional', [LaporanOperasionalController::class, 'index'])->name('laporan-operasional.index');
 Route::get('/tangkap/{kabupaten}/laporan-operasional/create', [LaporanOperasionalController::class, 'create'])->name('laporan-operasional.create');
 Route::post('/tangkap/{kabupaten}/laporan-operasional', [LaporanOperasionalController::class, 'store'])->name('laporan-operasional.store');
@@ -235,5 +231,4 @@ Route::get('/tangkap/laporan-operasional/{laporanOperasional}', [LaporanOperasio
 Route::get('/tangkap/laporan-operasional/{laporanOperasional}/edit', [LaporanOperasionalController::class, 'edit'])->name('laporan-operasional.edit');
 Route::put('/tangkap/laporan-operasional/{laporanOperasional}', [LaporanOperasionalController::class, 'update'])->name('laporan-operasional.update');
 Route::delete('/tangkap/laporan-operasional/{laporanOperasional}', [LaporanOperasionalController::class, 'destroy'])->name('laporan-operasional.destroy');
-
 });

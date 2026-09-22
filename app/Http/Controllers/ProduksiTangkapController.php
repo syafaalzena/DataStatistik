@@ -14,14 +14,7 @@ use Illuminate\Http\Request;
 
 class ProduksiTangkapController extends Controller
 {
-    public function menu()
-    {
-        $totalProduksiKabupaten = KabupatenIkan::count();
-        $totalLaporanOperasional = LaporanOperasional::count();
-
-        return view('tangkap.menu', compact('totalProduksiKabupaten', 'totalLaporanOperasional'));
-    }
-
+    
     public function index()
     {
         $kabupatenIkans = KabupatenIkan::orderBy('nama_kabupaten')->get();
@@ -30,26 +23,32 @@ class ProduksiTangkapController extends Controller
     }
 
     public function input($kabupatenId)
-    {
-        $kabupaten = KabupatenIkan::findOrFail($kabupatenId);
+{
+    $kabupaten = KabupatenIkan::findOrFail($kabupatenId);
 
-        $pelabuhanList = Pelabuhan::where('kabupaten_ikan_id', $kabupatenId)->orderBy('nama')->get();
-        $wppnriList = Wppnri::orderBy('kode')->get();
-        $jenisApiList = JenisApi::orderBy('nama')->get();
-        $kategoriKapalList = KategoriUkuranKapal::orderBy('label')->get();
-        $komoditasList = KomoditasIkan::orderBy('nama_ikan')->get();
+    $dataProduksi = ProduksiTangkap::with([
+        'pelabuhan', 'wppnri', 'jenisApi', 'kategoriUkuranKapal', 'komoditasIkan',
+    ])
+        ->where('kabupaten_ikan_id', $kabupatenId)
+        ->latest()
+        ->get();
 
-        $dataProduksi = ProduksiTangkap::with([
-            'pelabuhan', 'wppnri', 'jenisApi', 'kategoriUkuranKapal', 'komoditasIkan',
-        ])
-            ->where('kabupaten_ikan_id', $kabupatenId)
-            ->latest()
-            ->get();
+    return view('tangkap.input', compact('kabupaten', 'dataProduksi'));
+}
 
-        return view('tangkap.input', compact(
-            'kabupaten', 'pelabuhanList', 'wppnriList', 'jenisApiList', 'kategoriKapalList', 'komoditasList', 'dataProduksi'
-        ));
-    }
+public function create($kabupatenId)
+{
+    $kabupaten = KabupatenIkan::findOrFail($kabupatenId);
+    $pelabuhanList = Pelabuhan::where('kabupaten_ikan_id', $kabupatenId)->orderBy('nama')->get();
+    $wppnriList = Wppnri::orderBy('kode')->get();
+    $jenisApiList = JenisApi::orderBy('nama')->get();
+    $kategoriKapalList = KategoriUkuranKapal::orderBy('label')->get();
+    $komoditasList = KomoditasIkan::orderBy('nama_ikan')->get();
+
+    return view('tangkap.produksi-create', compact(
+        'kabupaten', 'pelabuhanList', 'wppnriList', 'jenisApiList', 'kategoriKapalList', 'komoditasList'
+    ));
+}
 
     public function store(Request $request, $kabupatenId)
     {
@@ -112,34 +111,52 @@ class ProduksiTangkapController extends Controller
         return redirect()->back()->with('success', 'Data produksi berhasil dihapus.');
     }
 
-    public function rekap($kabupatenId)
-    {
-        $kabupaten = KabupatenIkan::findOrFail($kabupatenId);
+    public function rekap($kabupatenId, Request $request)
+{
+    $kabupaten = KabupatenIkan::findOrFail($kabupatenId);
+    $dataProduksi = $this->filteredProduksi($kabupatenId, $request);
 
-        $dataProduksi = ProduksiTangkap::with([
-            'pelabuhan', 'wppnri', 'jenisApi', 'kategoriUkuranKapal', 'komoditasIkan',
-        ])
-            ->where('kabupaten_ikan_id', $kabupatenId)
-            ->orderBy('tahun')->orderBy('bulan')
-            ->get();
+    return view('tangkap.produksi-rekap', compact('kabupaten', 'dataProduksi'));
+}
 
-        return view('tangkap.produksi-rekap', compact('kabupaten', 'dataProduksi'));
+public function export($kabupatenId, Request $request)
+{
+    $kabupaten = KabupatenIkan::findOrFail($kabupatenId);
+
+    return \Maatwebsite\Excel\Facades\Excel::download(
+        new \App\Exports\ProduksiTangkapExport($kabupatenId, $kabupaten->nama_kabupaten, $request->query()),
+        'produksi-tangkap-' . \Illuminate\Support\Str::slug($kabupaten->nama_kabupaten) . '.xlsx'
+    );
+}
+
+public function exportPdf($kabupatenId, Request $request)
+{
+    $kabupaten = KabupatenIkan::findOrFail($kabupatenId);
+    $dataProduksi = $this->filteredProduksi($kabupatenId, $request);
+
+    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('exports.rekap_produksi_tangkap', compact('kabupaten', 'dataProduksi'))
+        ->setPaper('a4', 'landscape');
+
+    return $pdf->download('produksi-tangkap-' . \Illuminate\Support\Str::slug($kabupaten->nama_kabupaten) . '.pdf');
+}
+
+private function filteredProduksi($kabupatenId, Request $request)
+{
+    $query = ProduksiTangkap::with([
+        'pelabuhan', 'wppnri', 'jenisApi', 'kategoriUkuranKapal', 'komoditasIkan',
+    ])->where('kabupaten_ikan_id', $kabupatenId);
+
+    if ($request->filled('tahun')) {
+        $query->where('tahun', $request->tahun);
     }
 
-    public function exportPdf($kabupatenId)
-    {
-        $kabupaten = KabupatenIkan::findOrFail($kabupatenId);
-
-        $dataProduksi = ProduksiTangkap::with([
-            'pelabuhan', 'wppnri', 'jenisApi', 'kategoriUkuranKapal', 'komoditasIkan',
-        ])
-            ->where('kabupaten_ikan_id', $kabupatenId)
-            ->orderBy('tahun')->orderBy('bulan')
-            ->get();
-
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('exports.rekap_produksi_tangkap', compact('kabupaten', 'dataProduksi'))
-            ->setPaper('a4', 'landscape');
-
-        return $pdf->download('produksi-tangkap-' . \Illuminate\Support\Str::slug($kabupaten->nama_kabupaten) . '.pdf');
+    if ($request->filled('bulan')) {
+        $query->where('bulan', $request->bulan);
+    } elseif ($request->filled('semester')) {
+        $bulanRange = $request->semester == 1 ? [1, 6] : [7, 12];
+        $query->whereBetween('bulan', $bulanRange);
     }
+
+    return $query->orderBy('tahun')->orderBy('bulan')->get();
+}
 }
