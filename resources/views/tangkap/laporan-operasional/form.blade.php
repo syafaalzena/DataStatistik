@@ -11,31 +11,142 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
-        :root { --clr-bg: #F7F5F0; --clr-dark: #0f172a; --clr-blue-brand: #38bdf8; }
-        body { background: var(--clr-bg); font-family: 'Inter', sans-serif; color: var(--clr-dark); }
-        .navbar { background: var(--clr-dark); color: white; padding: 14px 0; margin-bottom: 1.5rem; }
-        .brand-wrapper { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-        .brand-text { font-weight: bold; font-size: 26px; color: #fff; }
-        .back-btn { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: #fff; border: 1px solid #e2e8f0; border-radius: 30px; text-decoration: none; box-shadow: 0 2px 6px rgba(0,0,0,.05); }
-        .back-btn:hover { background: #0f172a; color: #fff; }
-        .btn-logout-icon { background: transparent; border: 1.5px solid rgba(248,250,252,.25); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .btn-logout-icon:hover { background: var(--clr-blue-brand); border-color: var(--clr-blue-brand); }
+        :root {
+            --clr-bg: #F7F5F0; 
+            --clr-dark: #0f172a; 
+            --clr-blue-brand: #38bdf8; 
+        }
+        body { 
+            background: var(--clr-bg); f
+            ont-family: 'Inter', sans-serif; 
+            color: var(--clr-dark); }
 
-        .panel-card { background: #fff; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,.04); padding: 24px; margin-bottom: 20px; }
-        .form-control, .form-select { border-radius: 8px; border: 1px solid #e2e8f0; font-size: 14px; }
-        .field-label { font-size: 12px; font-weight: 600; color: #64748b; margin-bottom: 2px; display: block; }
+        .navbar { 
+            background: var(--clr-dark); 
+            color: white; 
+            padding: 14px 0; 
+            margin-bottom: 1.5rem; 
+        }
+        .brand-wrapper { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; t
+            ext-decoration: none; 
+        }
+        .brand-text { 
+            font-weight: bold; 
+            font-size: 26px; 
+            color: #fff; 
+        }
+        .back-btn { 
+            width: 48px; 
+            height: 48px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: #fff; 
+            border: 1px solid #e2e8f0; 
+            border-radius: 30px; 
+            text-decoration: none; 
+            box-shadow: 0 2px 6px rgba(0,0,0,.05); 
+        }
+        .back-btn:hover { 
+            background: #0f172a; 
+            color: #fff; 
+        }
+        .btn-logout-icon { 
+            background: transparent; 
+            border: 1.5px solid rgba(248,250,252,.25);
+            width: 44px; 
+            height: 44px; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            cursor: pointer; 
+        }
+        .btn-logout-icon:hover { 
+            background: var(--clr-blue-brand); 
+            border-color: var(--clr-blue-brand); 
+        }
 
-        .section-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
-        .section-sub { color: #64748b; font-size: 13px; margin-bottom: 16px; }
+        .panel-card { 
+            background: #fff; 
+            border-radius: 14px; 
+            box-shadow: 0 2px 8px rgba(0,0,0,.04); 
+            padding: 24px; 
+            margin-bottom: 20px; 
+        }
+        .form-control, .form-select { 
+            border-radius: 8px; 
+            border: 1px solid #e2e8f0; 
+            font-size: 14px; 
+        }
+        .field-label { 
+            font-size: 12px; 
+            font-weight: 600; color: #64748b; 
+            margin-bottom: 2px; 
+            display: block; 
+        }
 
-        .row-input { border: 1px solid #eef0e8; border-radius: 10px; padding: 14px; margin-bottom: 10px; background: #fafaf7; }
-        .btn-remove-row { background: none; border: none; color: #dc2626; font-size: 13px; font-weight: 600; }
-        .btn-remove-row:hover { text-decoration: underline; }
-        .btn-add-row { background: none; border: 1.5px dashed #94a3b8; color: #475569; border-radius: 8px; padding: 8px 16px; font-weight: 600; font-size: 14px; }
-        .btn-add-row:hover { background: #f1f5f9; }
+        .section-title { 
+            font-size: 18px; 
+            font-weight: 700;
+            margin-bottom: 4px; 
+        }
 
-        .btn-dark-custom { background: var(--clr-dark); color: #fff; border-radius: 8px; font-weight: 600; border: none; padding: 10px 26px; }
-        .btn-dark-custom:hover { background: #1e293b; color: #fff; }
+        .section-sub { 
+            color: #64748b; 
+            font-size: 13px; 
+            margin-bottom: 16px; 
+        }
+
+        .row-input { 
+            border: 1px solid #eef0e8; 
+            border-radius: 10px; 
+            padding: 14px; 
+            margin-bottom: 10px; 
+            background: #fafaf7; 
+        }
+
+        .btn-remove-row { 
+            background: none; 
+            border: none; 
+            color: #dc2626; 
+            font-size: 13px; 
+            font-weight: 600; 
+        }
+
+        .btn-remove-row:hover { 
+            text-decoration: underline; 
+        }
+
+        .btn-add-row { 
+            background: none; 
+            border: 1.5px dashed #94a3b8; 
+            color: #475569; 
+            border-radius: 8px; 
+            padding: 8px 16px; 
+            font-weight: 600; 
+            font-size: 14px; 
+        }
+
+        .btn-add-row:hover { 
+            background: #f1f5f9; 
+        }
+
+        .btn-dark-custom { 
+            background: var(--clr-dark); 
+            color: #fff; 
+            border-radius: 8px; 
+            font-weight: 600; 
+            border: none; 
+            padding: 10px 26px; 
+        }
+        .btn-dark-custom:hover { 
+            background: #1e293b; 
+            color: #fff; 
+        }
     </style>
 </head>
 <body>
