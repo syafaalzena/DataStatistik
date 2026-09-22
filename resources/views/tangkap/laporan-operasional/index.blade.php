@@ -46,11 +46,11 @@
 </nav>
 
 <div class="container pb-5">
-            <div class="d-flex align-items-center gap-3">
-            <a href="{{ route('tangkap.index') }}" class="back-btn">&larr;</a>
+    <div class="d-flex align-items-center justify-content-between gap-3 mb-4 flex-wrap">
+        <div class="d-flex align-items-center gap-3">
+            <a href="{{ route('laporan-operasional.pilih-kabupaten') }}" class="back-btn">&larr;</a>
             <div>
-                <span class="badge" style="background:#e0f2fe; color:#0369a1; font-weight:600;">{{ $kabupaten->nama_kabupaten }}</span>
-                <h2 class="fw-bold mb-1">Laporan Operasional Pelabuhan Perikanan</h2>
+                <h2 class="fw-bold mb-1">Laporan Operasional - {{ $kabupaten->nama_kabupaten }}</h2>
                 <p class="text-muted mb-0">Rekapitulasi aktivitas harian pelabuhan perikanan per bulan.</p>
             </div>
         </div>
@@ -76,7 +76,6 @@
                     <thead>
                         <tr>
                             <th>Pelabuhan</th>
-                            <th>Kabupaten/Kota</th>
                             <th>Bulan</th>
                             <th>Tahun</th>
                             <th>Total Produksi (Kg)</th>
@@ -88,7 +87,6 @@
                         @foreach ($laporans as $l)
                             <tr>
                                 <td>{{ $l->pelabuhan->nama ?? '-' }}</td>
-                                <td>{{ $l->pelabuhan->kabupatenIkan->nama_kabupaten ?? '-' }}</td>
                                 <td>{{ $l->nama_bulan }}</td>
                                 <td>{{ $l->tahun }}</td>
                                 <td>{{ number_format($l->total_produksi_kg, 0, ',', '.') }}</td>

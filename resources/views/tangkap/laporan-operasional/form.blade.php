@@ -85,14 +85,24 @@
             <div class="row g-3">
                 <div class="col-md-4">
                     <label class="field-label">Pelabuhan Perikanan</label>
-                    <select name="pelabuhan_id" class="form-select" required>
+                    <select name="pelabuhan_id" id="pelabuhanSelect" class="form-select" required>
                         <option value="">-- Pilih Pelabuhan --</option>
                         @foreach ($pelabuhanList as $p)
                             <option value="{{ $p->id }}" @selected(old('pelabuhan_id', $laporan->pelabuhan_id ?? null) == $p->id)>
-                                {{ $p->nama }} ({{ $p->kabupatenIkan->nama_kabupaten ?? '-' }})
+                                {{ $p->nama }}
                             </option>
                         @endforeach
                     </select>
+                    <button type="button" class="btn btn-sm btn-outline-secondary mt-2" data-bs-toggle="collapse" data-bs-target="#tambahPelabuhanBox">
+                        + Tambah Pelabuhan Baru
+                    </button>
+                    <div class="collapse mt-2" id="tambahPelabuhanBox">
+                        <div class="d-flex gap-2">
+                            <input type="text" id="namaPelabuhanBaru" class="form-control form-control-sm" placeholder="Nama pelabuhan baru">
+                            <button type="button" id="btnSimpanPelabuhan" class="btn btn-sm btn-dark-custom">Simpan</button>
+                        </div>
+                        <div id="tambahPelabuhanError" class="text-danger small mt-1"></div>
+                    </div>
                 </div>
                 <div class="col-md-4">
                     <label class="field-label">Bulan</label>
@@ -126,10 +136,10 @@
                 @php $armadaRows = old('ukuran_kapal', $laporan->armadaTangkap ?? []); @endphp
                 @forelse ($armadaRows as $i => $row)
                     @php
-                        $ukuran = is_array($row) ? $row : ($row->ukuran_kapal ?? old("ukuran_kapal.$i"));
-                        $jmlKapal = is_array($row) ? old("jumlah_kapal.$i") : $row->jumlah_kapal;
-                        $jmlAbk = is_array($row) ? old("jumlah_abk.$i") : $row->jumlah_abk;
-                        $status = is_array($row) ? old("status_dokumen.$i") : $row->status_dokumen;
+                        $ukuran = is_object($row) ? $row->ukuran_kapal : ($row ?? old("ukuran_kapal.$i"));
+                        $jmlKapal = is_object($row) ? $row->jumlah_kapal : old("jumlah_kapal.$i");
+                        $jmlAbk = is_object($row) ? $row->jumlah_abk : old("jumlah_abk.$i");
+                        $status = is_object($row) ? $row->status_dokumen : old("status_dokumen.$i");
                     @endphp
                     <div class="row-input row g-2 align-items-end">
                         <div class="col-md-3">
@@ -170,9 +180,9 @@
                 @php $produksiRows = old('jenis_ikan', $laporan->produksiIkan ?? []); @endphp
                 @forelse ($produksiRows as $i => $row)
                     @php
-                        $jenis = is_array($row) ? $row : ($row->jenis_ikan ?? old("jenis_ikan.$i"));
-                        $produksiKg = is_array($row) ? old("produksi_kg.$i") : $row->produksi_kg;
-                        $harga = is_array($row) ? old("harga_rp.$i") : $row->harga_rp;
+                        $jenis = is_object($row) ? $row->jenis_ikan : ($row ?? old("jenis_ikan.$i"));
+                        $produksiKg = is_object($row) ? $row->produksi_kg : old("produksi_kg.$i");
+                        $harga = is_object($row) ? $row->harga_rp : old("harga_rp.$i");
                     @endphp
                     <div class="row-input row g-2 align-items-end produksi-row">
                         <div class="col-md-4">
@@ -209,11 +219,11 @@
                 @php $logistikRows = old('nama_item', $laporan->logistik ?? []); @endphp
                 @forelse ($logistikRows as $i => $row)
                     @php
-                        $nama = is_array($row) ? $row : ($row->nama_item ?? old("nama_item.$i"));
-                        $jml = is_array($row) ? old("jumlah_logistik.$i") : $row->jumlah;
-                        $satuan = is_array($row) ? old("satuan.$i") : $row->satuan;
-                        $hrg = is_array($row) ? old("harga_logistik.$i") : $row->harga_rp;
-                        $total = is_array($row) ? old("total_logistik.$i") : $row->total_rp;
+                        $nama = is_object($row) ? $row->nama_item : ($row ?? old("nama_item.$i"));
+                        $jml = is_object($row) ? $row->jumlah : old("jumlah_logistik.$i");
+                        $satuan = is_object($row) ? $row->satuan : old("satuan.$i");
+                        $hrg = is_object($row) ? $row->harga_rp : old("harga_logistik.$i");
+                        $total = is_object($row) ? $row->total_rp : old("total_logistik.$i");
                     @endphp
                     <div class="row-input row g-2 align-items-end logistik-row">
                         <div class="col-md-3">
@@ -254,10 +264,10 @@
                 @php $pemasaranRows = old('jenis_ikan_pemasaran', $laporan->pemasaran ?? []); @endphp
                 @forelse ($pemasaranRows as $i => $row)
                     @php
-                        $kategori = is_array($row) ? old("kategori_pemasaran.$i") : $row->kategori;
-                        $jenis = is_array($row) ? $row : ($row->jenis_ikan ?? old("jenis_ikan_pemasaran.$i"));
-                        $qty = is_array($row) ? old("quantity_kg.$i") : $row->quantity_kg;
-                        $tujuan = is_array($row) ? old("tujuan.$i") : $row->tujuan;
+                        $kategori = is_object($row) ? $row->kategori : old("kategori_pemasaran.$i");
+                        $jenis = is_object($row) ? $row->jenis_ikan : ($row ?? old("jenis_ikan_pemasaran.$i"));
+                        $qty = is_object($row) ? $row->quantity_kg : old("quantity_kg.$i");
+                        $tujuan = is_object($row) ? $row->tujuan : old("tujuan.$i");
                     @endphp
                     <div class="row-input row g-2 align-items-end">
                         <div class="col-md-2">
@@ -298,6 +308,49 @@
 </div>
 
 <script>
+
+    document.getElementById('btnSimpanPelabuhan').addEventListener('click', function () {
+    const namaInput = document.getElementById('namaPelabuhanBaru');
+    const errorBox = document.getElementById('tambahPelabuhanError');
+    errorBox.textContent = '';
+
+    if (!namaInput.value.trim()) {
+        errorBox.textContent = 'Nama pelabuhan wajib diisi.';
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('nama', namaInput.value);
+    formData.append('_token', document.querySelector('input[name="_token"]').value);
+
+    fetch('{{ route('pelabuhan.store', $kabupaten->id) }}', {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: formData,
+    })
+        .then(async (res) => {
+            if (!res.ok) {
+                const err = await res.json().catch(() => null);
+                throw new Error(err?.message || 'Gagal menambah pelabuhan.');
+            }
+            return res.json();
+        })
+        .then((pelabuhan) => {
+            const select = document.getElementById('pelabuhanSelect');
+            const opt = document.createElement('option');
+            opt.value = pelabuhan.id;
+            opt.textContent = pelabuhan.nama;
+            opt.selected = true;
+            select.appendChild(opt);
+
+            namaInput.value = '';
+            bootstrap.Collapse.getOrCreateInstance(document.getElementById('tambahPelabuhanBox')).hide();
+        })
+        .catch((err) => {
+            errorBox.textContent = err.message;
+        });
+});
+
     function hitungNilai(input) {
         const row = input.closest('.produksi-row');
         const kg = parseFloat(row.querySelector('.produksi-kg').value) || 0;
