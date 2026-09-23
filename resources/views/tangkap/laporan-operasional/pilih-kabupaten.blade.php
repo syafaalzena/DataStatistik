@@ -12,19 +12,85 @@
 
     <style>
         :root { --clr-bg: #F7F5F0; --clr-dark: #0f172a; --clr-blue-brand: #38bdf8; }
-        body { background: var(--clr-bg); font-family: 'Inter', sans-serif; color: var(--clr-dark); }
-        .navbar { background: var(--clr-dark); color: white; padding: 14px 0; margin-bottom: 1.25rem; }
-        .brand-wrapper { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-        .brand-text { font-weight: bold; font-size: 26px; color: #fff; }
-        .back-btn { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: #fff; border: 1px solid #e2e8f0; border-radius: 30px; text-decoration: none; box-shadow: 0 2px 6px rgba(0,0,0,.05); }
-        .back-btn:hover { background: #0f172a; color: #fff; }
-        .btn-logout-icon { background: transparent; border: 1.5px solid rgba(248,250,252,.25); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .btn-logout-icon:hover { background: var(--clr-blue-brand); border-color: var(--clr-blue-brand); }
+        body { 
+            background: var(--clr-bg); 
+            font-family: 'Inter', sans-serif; 
+            color: var(--clr-dark); 
+        }
 
-        .search-wrapper { max-width: 480px; margin: 0 auto 1.25rem auto; }
-        .search-box input { width: 100%; padding: 12px 18px; border-radius: 30px; border: 1px solid #e2e8f0; background: #fff; }
+        .navbar { 
+            background: var(--clr-dark); 
+            color: white; 
+            padding: 14px 0; 
+            margin-bottom: 1.25rem; 
+        }
 
-        .kab-list { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+        .brand-wrapper { 
+            display: flex; a
+            lign-items: center; 
+            gap: 12px; 
+            text-decoration: none; 
+        }
+
+        .brand-text { 
+            font-weight: bold; 
+            font-size: 26px; 
+            color: #fff; 
+        }
+
+        .back-btn { 
+            width: 48px; 
+            height: 48px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: #fff; 
+            border: 1px solid #e2e8f0; 
+            border-radius: 30px; 
+            text-decoration: none; 
+            box-shadow: 0 2px 6px rgba(0,0,0,.05); 
+        }
+
+        .back-btn:hover { 
+            background: #0f172a; color: #fff; 
+        }
+
+        .btn-logout-icon { 
+            background: transparent; 
+            border: 1.5px solid rgba(248,250,252,.25); 
+            width: 44px; 
+            height: 44px; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            cursor: pointer; 
+        }
+
+        .btn-logout-icon:hover { 
+            background: var(--clr-blue-brand); 
+            border-color: var(--clr-blue-brand); 
+        }
+
+        .search-wrapper { 
+            max-width: 480px; 
+            margin: 0 auto 1.25rem auto; 
+        }
+
+        .search-box input { 
+            width: 100%; 
+            padding: 12px 18px; 
+            border-radius: 30px; 
+            border: 1px solid #e2e8f0; 
+            background: #fff; 
+        }
+
+        .kab-list { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 8px; 
+        }
+        
         @media (max-width: 992px) { .kab-list { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 576px) { .kab-list { grid-template-columns: 1fr; } }
 

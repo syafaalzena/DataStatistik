@@ -12,23 +12,109 @@
 
     <style>
         :root { --clr-bg: #F7F5F0; --clr-dark: #0f172a; --clr-blue-brand: #38bdf8; }
-        body { background: var(--clr-bg); font-family: 'Inter', sans-serif; color: var(--clr-dark); }
-        .navbar { background: var(--clr-dark); color: white; padding: 14px 0; margin-bottom: 1.25rem; }
-        .brand-wrapper { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-        .brand-text { font-weight: bold; font-size: 26px; color: #fff; }
-        .back-btn { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: #fff; border: 1px solid #e2e8f0; border-radius: 30px; text-decoration: none; box-shadow: 0 2px 6px rgba(0,0,0,.05); }
-        .back-btn:hover { background: #0f172a; color: #fff; }
-        .btn-logout-icon { background: transparent; border: 1.5px solid rgba(248,250,252,.25); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .btn-logout-icon:hover { background: var(--clr-blue-brand); border-color: var(--clr-blue-brand); }
+        body { 
+            background: var(--clr-bg); 
+            font-family: 'Inter', sans-serif; 
+            color: var(--clr-dark); 
+        }
 
-        .panel-card { background: #fff; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,.04); padding: 22px; }
-        .btn-dark-custom { background: var(--clr-dark); color: #fff; border-radius: 8px; font-weight: 600; border: none; padding: 10px 22px; text-decoration: none; display: inline-block; }
-        .btn-dark-custom:hover { background: #1e293b; color: #fff; }
+        .navbar { 
+            background: var(--clr-dark); 
+            color: white; 
+            padding: 14px 0; 
+            margin-bottom: 1.25rem; 
+        }
 
-        .laporan-table thead th { background: var(--clr-dark); color: #fff; font-weight: 600; border: none; font-size: 13px; white-space: nowrap; }
-        .laporan-table td { vertical-align: middle; font-size: 14px; }
-        .btn-icon-sm { border: none; background: none; font-size: 13px; font-weight: 600; }
-        .empty-state { text-align: center; padding: 40px 20px; color: #94a3b8; }
+        .brand-wrapper { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            text-decoration: none; 
+        }
+
+        .brand-text { 
+            font-weight: bold; 
+            font-size: 26px; 
+            color: #fff; 
+        }
+        .back-btn { 
+            width: 48px; 
+            height: 48px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: #fff; 
+            border: 1px solid #e2e8f0; 
+            border-radius: 30px; 
+            text-decoration: none; 
+            box-shadow: 0 2px 6px rgba(0,0,0,.05); 
+        }
+        .back-btn:hover { 
+            background: #0f172a; 
+            color: #fff; 
+        }
+        .btn-logout-icon { 
+            background: transparent; 
+            border: 1.5px solid rgba(248,250,252,.25); 
+            width: 44px; 
+            height: 44px; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            cursor: pointer; 
+        }
+
+        .btn-logout-icon:hover { 
+            background: var(--clr-blue-brand); 
+            border-color: var(--clr-blue-brand); 
+        }
+
+        .panel-card {
+            background: #fff; 
+            border-radius: 14px; 
+            box-shadow: 0 2px 8px rgba(0,0,0,.04); padding: 22px; 
+        }
+
+        .btn-dark-custom { 
+            background: var(--clr-dark); 
+            color: #fff;
+            border-radius: 8px; 
+            font-weight: 600; 
+            border: none; 
+            padding: 10px 22px; 
+            text-decoration: none; 
+            display: inline-block; 
+        }
+
+        .btn-dark-custom:hover { 
+            background: #1e293b; 
+            color: #fff; 
+        }
+
+        .laporan-table thead th { 
+            background: var(--clr-dark); 
+            color: #fff; 
+            font-weight: 600; 
+            border: none; 
+            font-size: 13px; 
+            white-space: nowrap; 
+        }
+
+        .laporan-table td { 
+            vertical-align: middle; 
+            font-size: 14px; 
+        }
+        .btn-icon-sm { 
+            border: none; 
+            background: none; 
+            font-size: 13px; font-weight: 600; 
+        }
+        .empty-state { 
+            text-align: center; 
+            padding: 40px 20px; 
+            color: #94a3b8; 
+        }
     </style>
 </head>
 <body>
