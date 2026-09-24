@@ -59,7 +59,7 @@
 <div class="container pb-5">
     <div class="d-flex align-items-center justify-content-between gap-3 mb-3 flex-wrap no-print">
         <div class="d-flex align-items-center gap-3">
-                <a href="{{ route('laporan-operasional.index', $kabupaten->id) }}" class="back-btn">&larr;</a>
+            <a href="{{ route('laporan-operasional.index', $laporan->pelabuhan->kabupaten_ikan_id) }}" class="back-btn">&larr;</a>
             <div>
                 <h2 class="fw-bold mb-1">Rekap Laporan Operasional</h2>
                 <p class="text-muted mb-0">{{ $laporan->pelabuhan->nama ?? '-' }} - {{ $laporan->nama_bulan }} {{ $laporan->tahun }}</p>

@@ -11,31 +11,142 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
-        :root { --clr-bg: #F7F5F0; --clr-dark: #0f172a; --clr-blue-brand: #38bdf8; }
-        body { background: var(--clr-bg); font-family: 'Inter', sans-serif; color: var(--clr-dark); }
-        .navbar { background: var(--clr-dark); color: white; padding: 14px 0; margin-bottom: 1.5rem; }
-        .brand-wrapper { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-        .brand-text { font-weight: bold; font-size: 26px; color: #fff; }
-        .back-btn { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: #fff; border: 1px solid #e2e8f0; border-radius: 30px; text-decoration: none; box-shadow: 0 2px 6px rgba(0,0,0,.05); }
-        .back-btn:hover { background: #0f172a; color: #fff; }
-        .btn-logout-icon { background: transparent; border: 1.5px solid rgba(248,250,252,.25); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .btn-logout-icon:hover { background: var(--clr-blue-brand); border-color: var(--clr-blue-brand); }
+        :root {
+            --clr-bg: #F7F5F0; 
+            --clr-dark: #0f172a; 
+            --clr-blue-brand: #38bdf8; 
+        }
+        body { 
+            background: var(--clr-bg); f
+            ont-family: 'Inter', sans-serif; 
+            color: var(--clr-dark); }
 
-        .panel-card { background: #fff; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,.04); padding: 24px; margin-bottom: 20px; }
-        .form-control, .form-select { border-radius: 8px; border: 1px solid #e2e8f0; font-size: 14px; }
-        .field-label { font-size: 12px; font-weight: 600; color: #64748b; margin-bottom: 2px; display: block; }
+        .navbar { 
+            background: var(--clr-dark); 
+            color: white; 
+            padding: 14px 0; 
+            margin-bottom: 1.5rem; 
+        }
+        .brand-wrapper { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; t
+            ext-decoration: none; 
+        }
+        .brand-text { 
+            font-weight: bold; 
+            font-size: 26px; 
+            color: #fff; 
+        }
+        .back-btn { 
+            width: 48px; 
+            height: 48px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: #fff; 
+            border: 1px solid #e2e8f0; 
+            border-radius: 30px; 
+            text-decoration: none; 
+            box-shadow: 0 2px 6px rgba(0,0,0,.05); 
+        }
+        .back-btn:hover { 
+            background: #0f172a; 
+            color: #fff; 
+        }
+        .btn-logout-icon { 
+            background: transparent; 
+            border: 1.5px solid rgba(248,250,252,.25);
+            width: 44px; 
+            height: 44px; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            cursor: pointer; 
+        }
+        .btn-logout-icon:hover { 
+            background: var(--clr-blue-brand); 
+            border-color: var(--clr-blue-brand); 
+        }
 
-        .section-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
-        .section-sub { color: #64748b; font-size: 13px; margin-bottom: 16px; }
+        .panel-card { 
+            background: #fff; 
+            border-radius: 14px; 
+            box-shadow: 0 2px 8px rgba(0,0,0,.04); 
+            padding: 24px; 
+            margin-bottom: 20px; 
+        }
+        .form-control, .form-select { 
+            border-radius: 8px; 
+            border: 1px solid #e2e8f0; 
+            font-size: 14px; 
+        }
+        .field-label { 
+            font-size: 12px; 
+            font-weight: 600; color: #64748b; 
+            margin-bottom: 2px; 
+            display: block; 
+        }
 
-        .row-input { border: 1px solid #eef0e8; border-radius: 10px; padding: 14px; margin-bottom: 10px; background: #fafaf7; }
-        .btn-remove-row { background: none; border: none; color: #dc2626; font-size: 13px; font-weight: 600; }
-        .btn-remove-row:hover { text-decoration: underline; }
-        .btn-add-row { background: none; border: 1.5px dashed #94a3b8; color: #475569; border-radius: 8px; padding: 8px 16px; font-weight: 600; font-size: 14px; }
-        .btn-add-row:hover { background: #f1f5f9; }
+        .section-title { 
+            font-size: 18px; 
+            font-weight: 700;
+            margin-bottom: 4px; 
+        }
 
-        .btn-dark-custom { background: var(--clr-dark); color: #fff; border-radius: 8px; font-weight: 600; border: none; padding: 10px 26px; }
-        .btn-dark-custom:hover { background: #1e293b; color: #fff; }
+        .section-sub { 
+            color: #64748b; 
+            font-size: 13px; 
+            margin-bottom: 16px; 
+        }
+
+        .row-input { 
+            border: 1px solid #eef0e8; 
+            border-radius: 10px; 
+            padding: 14px; 
+            margin-bottom: 10px; 
+            background: #fafaf7; 
+        }
+
+        .btn-remove-row { 
+            background: none; 
+            border: none; 
+            color: #dc2626; 
+            font-size: 13px; 
+            font-weight: 600; 
+        }
+
+        .btn-remove-row:hover { 
+            text-decoration: underline; 
+        }
+
+        .btn-add-row { 
+            background: none; 
+            border: 1.5px dashed #94a3b8; 
+            color: #475569; 
+            border-radius: 8px; 
+            padding: 8px 16px; 
+            font-weight: 600; 
+            font-size: 14px; 
+        }
+
+        .btn-add-row:hover { 
+            background: #f1f5f9; 
+        }
+
+        .btn-dark-custom { 
+            background: var(--clr-dark); 
+            color: #fff; 
+            border-radius: 8px; 
+            font-weight: 600; 
+            border: none; 
+            padding: 10px 26px; 
+        }
+        .btn-dark-custom:hover { 
+            background: #1e293b; 
+            color: #fff; 
+        }
     </style>
 </head>
 <body>
@@ -85,14 +196,24 @@
             <div class="row g-3">
                 <div class="col-md-4">
                     <label class="field-label">Pelabuhan Perikanan</label>
-                    <select name="pelabuhan_id" class="form-select" required>
+                    <select name="pelabuhan_id" id="pelabuhanSelect" class="form-select" required>
                         <option value="">-- Pilih Pelabuhan --</option>
                         @foreach ($pelabuhanList as $p)
                             <option value="{{ $p->id }}" @selected(old('pelabuhan_id', $laporan->pelabuhan_id ?? null) == $p->id)>
-                                {{ $p->nama }} ({{ $p->kabupatenIkan->nama_kabupaten ?? '-' }})
+                                {{ $p->nama }}
                             </option>
                         @endforeach
                     </select>
+                    <button type="button" class="btn btn-sm btn-outline-secondary mt-2" data-bs-toggle="collapse" data-bs-target="#tambahPelabuhanBox">
+                        + Tambah Pelabuhan Baru
+                    </button>
+                    <div class="collapse mt-2" id="tambahPelabuhanBox">
+                        <div class="d-flex gap-2">
+                            <input type="text" id="namaPelabuhanBaru" class="form-control form-control-sm" placeholder="Nama pelabuhan baru">
+                            <button type="button" id="btnSimpanPelabuhan" class="btn btn-sm btn-dark-custom">Simpan</button>
+                        </div>
+                        <div id="tambahPelabuhanError" class="text-danger small mt-1"></div>
+                    </div>
                 </div>
                 <div class="col-md-4">
                     <label class="field-label">Bulan</label>
@@ -126,10 +247,10 @@
                 @php $armadaRows = old('ukuran_kapal', $laporan->armadaTangkap ?? []); @endphp
                 @forelse ($armadaRows as $i => $row)
                     @php
-                        $ukuran = is_array($row) ? $row : ($row->ukuran_kapal ?? old("ukuran_kapal.$i"));
-                        $jmlKapal = is_array($row) ? old("jumlah_kapal.$i") : $row->jumlah_kapal;
-                        $jmlAbk = is_array($row) ? old("jumlah_abk.$i") : $row->jumlah_abk;
-                        $status = is_array($row) ? old("status_dokumen.$i") : $row->status_dokumen;
+                        $ukuran = is_object($row) ? $row->ukuran_kapal : ($row ?? old("ukuran_kapal.$i"));
+                        $jmlKapal = is_object($row) ? $row->jumlah_kapal : old("jumlah_kapal.$i");
+                        $jmlAbk = is_object($row) ? $row->jumlah_abk : old("jumlah_abk.$i");
+                        $status = is_object($row) ? $row->status_dokumen : old("status_dokumen.$i");
                     @endphp
                     <div class="row-input row g-2 align-items-end">
                         <div class="col-md-3">
@@ -170,9 +291,9 @@
                 @php $produksiRows = old('jenis_ikan', $laporan->produksiIkan ?? []); @endphp
                 @forelse ($produksiRows as $i => $row)
                     @php
-                        $jenis = is_array($row) ? $row : ($row->jenis_ikan ?? old("jenis_ikan.$i"));
-                        $produksiKg = is_array($row) ? old("produksi_kg.$i") : $row->produksi_kg;
-                        $harga = is_array($row) ? old("harga_rp.$i") : $row->harga_rp;
+                        $jenis = is_object($row) ? $row->jenis_ikan : ($row ?? old("jenis_ikan.$i"));
+                        $produksiKg = is_object($row) ? $row->produksi_kg : old("produksi_kg.$i");
+                        $harga = is_object($row) ? $row->harga_rp : old("harga_rp.$i");
                     @endphp
                     <div class="row-input row g-2 align-items-end produksi-row">
                         <div class="col-md-4">
@@ -209,11 +330,11 @@
                 @php $logistikRows = old('nama_item', $laporan->logistik ?? []); @endphp
                 @forelse ($logistikRows as $i => $row)
                     @php
-                        $nama = is_array($row) ? $row : ($row->nama_item ?? old("nama_item.$i"));
-                        $jml = is_array($row) ? old("jumlah_logistik.$i") : $row->jumlah;
-                        $satuan = is_array($row) ? old("satuan.$i") : $row->satuan;
-                        $hrg = is_array($row) ? old("harga_logistik.$i") : $row->harga_rp;
-                        $total = is_array($row) ? old("total_logistik.$i") : $row->total_rp;
+                        $nama = is_object($row) ? $row->nama_item : ($row ?? old("nama_item.$i"));
+                        $jml = is_object($row) ? $row->jumlah : old("jumlah_logistik.$i");
+                        $satuan = is_object($row) ? $row->satuan : old("satuan.$i");
+                        $hrg = is_object($row) ? $row->harga_rp : old("harga_logistik.$i");
+                        $total = is_object($row) ? $row->total_rp : old("total_logistik.$i");
                     @endphp
                     <div class="row-input row g-2 align-items-end logistik-row">
                         <div class="col-md-3">
@@ -254,10 +375,10 @@
                 @php $pemasaranRows = old('jenis_ikan_pemasaran', $laporan->pemasaran ?? []); @endphp
                 @forelse ($pemasaranRows as $i => $row)
                     @php
-                        $kategori = is_array($row) ? old("kategori_pemasaran.$i") : $row->kategori;
-                        $jenis = is_array($row) ? $row : ($row->jenis_ikan ?? old("jenis_ikan_pemasaran.$i"));
-                        $qty = is_array($row) ? old("quantity_kg.$i") : $row->quantity_kg;
-                        $tujuan = is_array($row) ? old("tujuan.$i") : $row->tujuan;
+                        $kategori = is_object($row) ? $row->kategori : old("kategori_pemasaran.$i");
+                        $jenis = is_object($row) ? $row->jenis_ikan : ($row ?? old("jenis_ikan_pemasaran.$i"));
+                        $qty = is_object($row) ? $row->quantity_kg : old("quantity_kg.$i");
+                        $tujuan = is_object($row) ? $row->tujuan : old("tujuan.$i");
                     @endphp
                     <div class="row-input row g-2 align-items-end">
                         <div class="col-md-2">
@@ -298,6 +419,49 @@
 </div>
 
 <script>
+
+    document.getElementById('btnSimpanPelabuhan').addEventListener('click', function () {
+    const namaInput = document.getElementById('namaPelabuhanBaru');
+    const errorBox = document.getElementById('tambahPelabuhanError');
+    errorBox.textContent = '';
+
+    if (!namaInput.value.trim()) {
+        errorBox.textContent = 'Nama pelabuhan wajib diisi.';
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('nama', namaInput.value);
+    formData.append('_token', document.querySelector('input[name="_token"]').value);
+
+    fetch('{{ route('pelabuhan.store', $kabupaten->id) }}', {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: formData,
+    })
+        .then(async (res) => {
+            if (!res.ok) {
+                const err = await res.json().catch(() => null);
+                throw new Error(err?.message || 'Gagal menambah pelabuhan.');
+            }
+            return res.json();
+        })
+        .then((pelabuhan) => {
+            const select = document.getElementById('pelabuhanSelect');
+            const opt = document.createElement('option');
+            opt.value = pelabuhan.id;
+            opt.textContent = pelabuhan.nama;
+            opt.selected = true;
+            select.appendChild(opt);
+
+            namaInput.value = '';
+            bootstrap.Collapse.getOrCreateInstance(document.getElementById('tambahPelabuhanBox')).hide();
+        })
+        .catch((err) => {
+            errorBox.textContent = err.message;
+        });
+});
+
     function hitungNilai(input) {
         const row = input.closest('.produksi-row');
         const kg = parseFloat(row.querySelector('.produksi-kg').value) || 0;
