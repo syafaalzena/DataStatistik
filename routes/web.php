@@ -220,6 +220,7 @@ Route::post('/komoditas-ikan', [KomoditasIkanController::class, 'store'])->name(
 Route::put('/komoditas-ikan/{komoditasIkan}', [KomoditasIkanController::class, 'update'])->name('komoditas-ikan.update');
 Route::delete('/komoditas-ikan/{komoditasIkan}', [KomoditasIkanController::class, 'destroy'])->name('komoditas-ikan.destroy');
 
+Route::get('/tangkap/{kabupaten}/pelabuhan', [PelabuhanController::class, 'index'])->name('pelabuhan.index');
 Route::post('/tangkap/{kabupaten}/pelabuhan', [PelabuhanController::class, 'store'])->name('pelabuhan.store');
 Route::put('/tangkap/pelabuhan/{pelabuhan}', [PelabuhanController::class, 'update'])->name('pelabuhan.update');
 Route::delete('/tangkap/pelabuhan/{pelabuhan}', [PelabuhanController::class, 'destroy'])->name('pelabuhan.destroy');

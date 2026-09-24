@@ -66,6 +66,7 @@
     <div class="d-flex gap-2 flex-wrap mb-4">
         <a href="{{ route('tangkap.produksi.create', $kabupaten->id) }}" class="btn-dark-custom">+ Tambah Data Produksi</a>
         <a href="{{ route('tangkap.produksi.rekap', $kabupaten->id) }}" class="btn-outline-custom"> Lihat & Cetak</a>
+        <a href="{{ route('pelabuhan.index', $kabupaten->id) }}" class="btn-outline-custom"> Kelola Pelabuhan</a>
     </div>
 
     <div class="mb-3">
@@ -76,7 +77,7 @@
         @if($dataProduksi->isEmpty())
             <div class="empty-state">Belum ada data produksi untuk kabupaten ini. Klik "+ Tambah Data Produksi" untuk mulai input.</div>
         @else
-            <div class="table-responsive">
+            <div id="tableWrapper" class="table-responsive">
             <table class="table table-hover text-center align-middle mb-0">
                 <thead>
                     <tr>
@@ -131,6 +132,7 @@
                 </tbody>
             </table>
             </div>
+            <div id="noResultMsg" class="empty-state" style="display:none;">Tidak ada data yang cocok.</div>
         @endif
     </div>
 
@@ -152,11 +154,21 @@
         document.getElementById('modalEdit').style.display = 'none';
     }
     const searchInput = document.getElementById('searchInput');
+    const tableWrapper = document.getElementById('tableWrapper');
+    const noResultMsg = document.getElementById('noResultMsg');
     searchInput.addEventListener('keyup', function () {
         const keyword = this.value.toLowerCase();
+        let visibleCount = 0;
         document.querySelectorAll('#riwayatProduksi tbody tr').forEach(function (row) {
-            row.style.display = row.textContent.toLowerCase().includes(keyword) ? '' : 'none';
+            const match = row.textContent.toLowerCase().includes(keyword);
+            row.style.display = match ? '' : 'none';
+            if (match) visibleCount++;
         });
+
+        if (tableWrapper && noResultMsg) {
+            tableWrapper.style.display = visibleCount === 0 ? 'none' : '';
+            noResultMsg.style.display = visibleCount === 0 ? '' : 'none';
+        }
     });
 </script>
 

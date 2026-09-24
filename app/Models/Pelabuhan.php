@@ -9,7 +9,7 @@ class Pelabuhan extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['kabupaten_ikan_id', 'nama'];
+    protected $fillable = ['kabupaten_ikan_id', 'nama', 'jenis_lk'];
 
     public function kabupatenIkan()
     {

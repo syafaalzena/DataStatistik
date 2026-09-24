@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class KabupatenIkan extends Model
 {
     use HasFactory;
-    protected $fillable = ['nama_kabupaten'];
+    protected $fillable = ['nama_kabupaten', 'provinsi'];
 
     public function komoditas()
 {

@@ -2,117 +2,52 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\KabupatenIkan;
+use App\Models\KomoditasIkan;
 use Illuminate\Http\Request;
-use App\Models\KomoditasBudidaya;
-use App\Models\JenisBudidaya;
-use App\Models\DataBulananBudidaya;
-use App\Models\DataTahunanSarana;
+use Illuminate\Validation\Rule;
 
-class KabupatenIkanController extends Controller
+class KomoditasIkanController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-{
-    $kabupatenIkans = KabupatenIkan::orderBy('nama_kabupaten')->get();
-
-    return view('budidaya.index', compact('kabupatenIkans'));
-
-    }
-
-    public function input($kabupatenId)
-{
-    $kabupaten = KabupatenIkan::findOrFail($kabupatenId);
-
-    $komoditasList = KomoditasBudidaya::where('kabupaten_ikan_id', $kabupatenId)
-        ->orderBy('nama_komoditas')
-        ->get();
-
-    $jenisList = JenisBudidaya::where('kabupaten_ikan_id', $kabupatenId)
-        ->orderBy('nama_jenis')
-        ->get();
-
-    $dataProduksi = DataBulananBudidaya::with(['komoditas', 'jenis'])
-        ->where('kabupaten_ikan_id', $kabupatenId)
-        ->orderByDesc('tahun')
-        ->orderByDesc('bulan')
-        ->get();
-
-    $dataSarana = DataTahunanSarana::with('jenis')
-        ->where('kabupaten_ikan_id', $kabupatenId)
-        ->orderByDesc('tahun')
-        ->get();
-
-    return view('budidaya.input', compact(
-        'kabupaten',
-        'komoditasList',
-        'jenisList',
-        'dataProduksi',
-        'dataSarana'
-    ));
-}
-
-    public function create()
-    {
-        return view('kabupaten_ikans.create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        $request->validate([
-            'nama_kabupaten' => 'required|string|max:255',
+        $validated = $request->validate([
+            'nama_ikan' => [
+                'required', 'string',
+                Rule::unique('komoditas_ikans')->where(fn ($q) => $q->where('nama_latin', $request->input('nama_latin'))),
+            ],
+            'nama_latin' => ['nullable', 'string'],
+            'kode_fao' => ['nullable', 'string'],
+            'kelompok_sdi' => ['nullable', 'string'],
         ]);
 
-        KabupatenIkan::create($request->all());
+        KomoditasIkan::create($validated);
 
-        return redirect()->route('kabupaten_ikans.index')
-            ->with('success', 'Kabupaten Ikan created successfully.');
+        return redirect()->back()->with('success', 'Jenis ikan baru berhasil ditambahkan.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(KabupatenIkan $kabupatenIkan)
+    public function update(Request $request, KomoditasIkan $komoditasIkan)
     {
-        return view('kabupaten_ikans.show', compact('kabupatenIkan'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(KabupatenIkan $kabupatenIkan)
-    {
-        return view('kabupaten_ikans.edit', compact('kabupatenIkan'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, KabupatenIkan $kabupatenIkan)
-    {
-        $request->validate([
-            'nama_kabupaten' => 'required|string|max:255',
+        $validated = $request->validate([
+            'nama_ikan' => [
+                'required', 'string',
+                Rule::unique('komoditas_ikans')
+                    ->where(fn ($q) => $q->where('nama_latin', $request->input('nama_latin')))
+                    ->ignore($komoditasIkan->id),
+            ],
+            'nama_latin' => ['nullable', 'string'],
+            'kode_fao' => ['nullable', 'string'],
+            'kelompok_sdi' => ['nullable', 'string'],
         ]);
 
-        $kabupatenIkan->update($request->all());
+        $komoditasIkan->update($validated);
 
-        return redirect()->route('kabupaten_ikans.index')
-            ->with('success', 'Kabupaten Ikan updated successfully.');
+        return redirect()->back()->with('success', 'Data jenis ikan berhasil diperbarui.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(KabupatenIkan $kabupatenIkan)
+    public function destroy(KomoditasIkan $komoditasIkan)
     {
-        $kabupatenIkan->delete();
+        $komoditasIkan->delete();
 
-        return redirect()->route('kabupaten_ikans.index')
-            ->with('success', 'Kabupaten Ikan deleted successfully.');
+        return redirect()->back()->with('success', 'Jenis ikan berhasil dihapus.');
     }
 }

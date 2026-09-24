@@ -16,6 +16,8 @@ class DatabaseSeeder extends Seeder
     $this->call([
     WppnriSeeder::class,
     KategoriUkuranKapalSeeder::class,
+    JenisApiSeeder::class,
+    KomoditasIkanSeeder::class,
 ]);
     }
 }
