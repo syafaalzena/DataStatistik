@@ -2,12 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\KabupatenIkan;
 use App\Models\KomoditasIkan;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
-class KomoditasIkanController extends Controller
+class KabupatenIkanController extends Controller
 {
+    public function index()
+{
+    $kabupatenIkans = KabupatenIkan::orderBy('nama_kabupaten')->get();
+
+    return view('budidaya.index', compact('kabupatenIkans'));
+}
     public function store(Request $request)
     {
         $validated = $request->validate([
