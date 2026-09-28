@@ -247,12 +247,17 @@
                 @php $armadaRows = old('ukuran_kapal', $laporan->armadaTangkap ?? []); @endphp
                 @forelse ($armadaRows as $i => $row)
                     @php
+                        $namaArmada = is_object($row) ? $row->nama_armada : old("nama_armada.$i");
                         $ukuran = is_object($row) ? $row->ukuran_kapal : ($row ?? old("ukuran_kapal.$i"));
                         $jmlKapal = is_object($row) ? $row->jumlah_kapal : old("jumlah_kapal.$i");
                         $jmlAbk = is_object($row) ? $row->jumlah_abk : old("jumlah_abk.$i");
                         $status = is_object($row) ? $row->status_dokumen : old("status_dokumen.$i");
                     @endphp
                     <div class="row-input row g-2 align-items-end">
+                        <div class="col-md-3">
+                            <label class="field-label">Nama Armada</label>
+                            <input type="text" name="nama_armada[]" class="form-control" value="{{ $namaArmada }}" placeholder="cth: KM Sinar Laut">
+                        </div>
                         <div class="col-md-3">
                             <label class="field-label">Ukuran Kapal (GT)</label>
                             <input type="text" name="ukuran_kapal[]" class="form-control" value="{{ $ukuran }}" placeholder="cth: < 5">
@@ -479,6 +484,10 @@
     function addArmadaRow() {
         const html = `
         <div class="row-input row g-2 align-items-end">
+            <div class="col-md-3">
+                <label class="field-label">Nama Armada</label>
+                <input type="text" name="nama_armada[]" class="form-control" placeholder="cth: KM Sinar Laut">
+            </div>
             <div class="col-md-3">
                 <label class="field-label">Ukuran Kapal (GT)</label>
                 <input type="text" name="ukuran_kapal[]" class="form-control" placeholder="cth: < 5">

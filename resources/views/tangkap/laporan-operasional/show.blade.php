@@ -92,6 +92,7 @@
                     <thead>
                         <tr>
                             <th>No</th>
+                            <th>Nama Armada</th>
                             <th>Ukuran Kapal (GT)</th>
                             <th>Jumlah Kapal (Unit)</th>
                             <th>Jumlah ABK (Org)</th>
@@ -102,18 +103,19 @@
                         @forelse ($laporan->armadaTangkap as $i => $a)
                             <tr>
                                 <td class="text-center">{{ $i + 1 }}</td>
+                                <td>{{ $a->nama_armada ?? '-' }}</td>
                                 <td>{{ $a->ukuran_kapal }}</td>
                                 <td class="num">{{ number_format($a->jumlah_kapal, 0, ',', '.') }}</td>
                                 <td class="num">{{ number_format($a->jumlah_abk, 0, ',', '.') }}</td>
                                 <td class="text-center">{{ $a->status_dokumen ?? '-' }}</td>
                             </tr>
                         @empty
-                            <tr><td colspan="5" class="text-center text-muted">Belum ada data</td></tr>
+                            <tr><td colspan="6" class="text-center text-muted">Belum ada data</td></tr>
                         @endforelse
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="2" class="text-center">Total</td>
+                            <td colspan="3" class="text-center">Total</td>
                             <td class="num">{{ number_format($laporan->total_kapal, 0, ',', '.') }}</td>
                             <td class="num">{{ number_format($laporan->total_abk, 0, ',', '.') }}</td>
                             <td></td>

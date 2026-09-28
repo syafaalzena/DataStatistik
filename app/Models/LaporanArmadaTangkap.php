@@ -11,11 +11,12 @@ class LaporanArmadaTangkap extends Model
 
     protected $fillable =[
         'laporan_operasional-id',
+        'nama_armada',
         'ukuran_kapal',
         'jumlah_kapal',
         'jumlah_abk',
         'status_dokumen',
-        'ukuran',
+        'urutan',
     ];
 
     public function laporanOperasional()
