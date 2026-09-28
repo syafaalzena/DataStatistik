@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet">
 
     <style>
         :root {
@@ -17,8 +18,8 @@
             --clr-blue-brand: #38bdf8; 
         }
         body { 
-            background: var(--clr-bg); f
-            ont-family: 'Inter', sans-serif; 
+            background: var(--clr-bg); 
+            font-family: 'Inter', sans-serif; 
             color: var(--clr-dark); }
 
         .navbar { 
@@ -31,7 +32,7 @@
             display: flex; 
             align-items: center; 
             gap: 12px; t
-            ext-decoration: none; 
+            text-decoration: none; 
         }
         .brand-text { 
             font-weight: bold; 
@@ -249,6 +250,8 @@
                     @php
                         $jenisAlat = is_object($row) ? $row->jenis_alat_tangkap : old("jenis_alat_tangkap.$i");
                         $namaArmada = is_object($row) ? $row->nama_armada : old("nama_armada.$i");
+                        $lat = is_object($row) ? $row->latitude : old ("latitude.$i");
+                        $lng = is_object($row) ? $row->longitude : old ("longitude.$i");
                         $ukuran = is_object($row) ? $row->ukuran_kapal : ($row ?? old("ukuran_kapal.$i"));
                         $jmlKapal = is_object($row) ? $row->jumlah_kapal : old("jumlah_kapal.$i");
                         $jmlAbk = is_object($row) ? $row->jumlah_abk : old("jumlah_abk.$i");
@@ -261,7 +264,7 @@
                         </div>
                         <div class="col-md-4">
                             <label class="field-label">Jenis Alat Tangkap / API</label>
-                            <input type="text" name="jenis_alat_tangkap[]" class="form-control" placeholder="cth: Rawai Dasar">
+                            <input type="text" name="jenis_alat_tangkap[]" class="form-control" value="{{ $jenisAlat }}" placeholder="cth: Rawai Dasar">
                         </div>
                         <div class="col-md-3">
                             <label class="field-label">Ukuran Kapal (GT)</label>
@@ -282,6 +285,16 @@
                                 <option value="Lengkap" @selected($status == 'Lengkap')>Lengkap</option>
                                 <option value="Tidak Lengkap" @selected($status == 'Tidak Lengkap')>Tidak Lengkap</option>
                             </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="field-label">Titik Koordinat</label>
+                            <input type="hidden" name="latitude[]" value="{{ $lat }}">
+                            <input type="hidden" name="longitude[]" value="{{ $lng }}">
+                            <div class="d-flex align-items-center gap-2">
+                                <button type="button" class="btn btn-outline-secondary btn-sm btn-pilih-peta">📍 Pilih di Peta</button>
+                                <button type="button" class="btn btn-link btn-sm text-danger p-0 btn-hapus-titik">Hapus titik</button>
+                            </div>
+                            <div class="small text-muted mt-1 koordinat-teks">{{ ($lat !== null && $lat !== '' && $lng !== null && $lng !== '') ? $lat . ', ' . $lng : 'Belum dipilih' }}</div>
                         </div>
                         <div class="col-md-1">
                             <button type="button" class="btn-remove-row" onclick="this.closest('.row-input').remove()">Hapus</button>
@@ -428,7 +441,39 @@
     </form>
 </div>
 
+<div class="modal fade" id="modalPeta" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Pilih Titik Koordinat</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group mb-2">
+                    <input type="text" id="petaCari" class="form-control" placeholder="Cari tempat, cth: PPI Lampulo">
+                    <button type="button" class="btn btn-dark" id="petaCariBtn">Cari</button>
+                    <button type="button" class="btn btn-outline-secondary" id="petaLokasiSaya">Lokasi Saya</button>
+                </div>
+                <div id="petaHasil" class="list-group mb-2" style="max-height: 180px; overflow-y: auto;"></div>
+                <div id="petaCanvas" style="height: 400px; border-radius: 8px;"></div>
+                <div class="small text-muted mt-2">
+                    Klik di peta untuk menaruh penanda, atau geser penandanya.
+                    Titik terpilih: <strong id="petaKoordinat">belum dipilih</strong>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-dark" id="petaGunakan" disabled>Gunakan Titik Ini</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+
 <script>
+
+    
 
     document.getElementById('btnSimpanPelabuhan').addEventListener('click', function () {
     const namaInput = document.getElementById('namaPelabuhanBaru');
@@ -472,6 +517,164 @@
         });
 });
 
+    let petaMap = null, petaMarker = null, petaRow = null, petaLat = null, petaLng = null;
+const petaModalEl = document.getElementById('modalPeta');
+const PETA_AWAL = [4.6951, 96.7494]; // tengah Aceh
+
+function tampilTitik(lat, lng) {
+    petaLat = Number(lat.toFixed(7));
+    petaLng = Number(lng.toFixed(7));
+    document.getElementById('petaKoordinat').textContent = petaLat + ', ' + petaLng;
+    document.getElementById('petaGunakan').disabled = false;
+}
+
+function setTitik(lat, lng) {
+    if (!petaMarker) {
+        petaMarker = L.marker([lat, lng], { draggable: true }).addTo(petaMap);
+        petaMarker.on('dragend', function () {
+            const p = petaMarker.getLatLng();
+            tampilTitik(p.lat, p.lng);
+        });
+    } else {
+        petaMarker.setLatLng([lat, lng]);
+    }
+    tampilTitik(lat, lng);
+}
+
+function resetTitik() {
+    if (petaMarker) { petaMap.removeLayer(petaMarker); petaMarker = null; }
+    petaLat = petaLng = null;
+    document.getElementById('petaKoordinat').textContent = 'belum dipilih';
+    document.getElementById('petaGunakan').disabled = true;
+    document.getElementById('petaHasil').innerHTML = '';
+    document.getElementById('petaCari').value = '';
+}
+
+// Buka peta dari tombol di baris armada mana pun (termasuk baris yang baru ditambah)
+document.getElementById('armadaContainer').addEventListener('click', function (e) {
+    const hapus = e.target.closest('.btn-hapus-titik');
+    if (hapus) {
+        const row = hapus.closest('.row-input');
+        row.querySelector('input[name="latitude[]"]').value = '';
+        row.querySelector('input[name="longitude[]"]').value = '';
+        row.querySelector('.koordinat-teks').textContent = 'Belum dipilih';
+        return;
+    }
+
+    const btn = e.target.closest('.btn-pilih-peta');
+    if (!btn) return;
+    petaRow = btn.closest('.row-input');
+    bootstrap.Modal.getOrCreateInstance(petaModalEl).show();
+});
+
+// Leaflet harus dihitung ulang ukurannya setelah modal benar-benar tampil
+petaModalEl.addEventListener('shown.bs.modal', function () {
+    if (!petaMap) {
+        petaMap = L.map('petaCanvas').setView(PETA_AWAL, 8);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap',
+        }).addTo(petaMap);
+        petaMap.on('click', function (e) { setTitik(e.latlng.lat, e.latlng.lng); });
+    }
+    petaMap.invalidateSize();
+    resetTitik();
+
+    // Kalau baris ini sudah punya koordinat, langsung tampilkan
+    const lat = parseFloat(petaRow.querySelector('input[name="latitude[]"]').value);
+    const lng = parseFloat(petaRow.querySelector('input[name="longitude[]"]').value);
+    if (!isNaN(lat) && !isNaN(lng)) {
+        petaMap.setView([lat, lng], 14);
+        setTitik(lat, lng);
+    } else {
+        petaMap.setView(PETA_AWAL, 8);
+    }
+});
+
+let petaTimer = null, petaAbort = null;
+
+function labelHasil(p) {
+    const bagian = [p.name, p.street, p.district, p.city, p.county, p.state];
+    // buang bagian kosong dan yang dobel
+    return bagian.filter((v, i) => v && bagian.indexOf(v) === i).join(', ');
+}
+
+async function cariLokasi() {
+    const q = document.getElementById('petaCari').value.trim();
+    const box = document.getElementById('petaHasil');
+
+    if (q.length < 3) { box.innerHTML = ''; return; }
+
+    // batalkan pencarian sebelumnya yang belum selesai
+    if (petaAbort) petaAbort.abort();
+    petaAbort = new AbortController();
+    box.textContent = 'Mencari...';
+
+    try {
+        const url = 'https://photon.komoot.io/api/?limit=10&lat=4.6951&lon=96.7494&q=' + encodeURIComponent(q);
+        const res = await fetch(url, { signal: petaAbort.signal });
+        if (!res.ok) throw new Error('gagal');
+        const data = await res.json();
+
+        const hasil = (data.features || []).filter(f => f.properties.countrycode === 'ID');
+        box.innerHTML = '';
+
+        if (!hasil.length) {
+            box.textContent = 'Tempat tidak ditemukan. Coba kata lain, atau klik langsung di peta.';
+            return;
+        }
+
+        hasil.forEach(function (f) {
+            const [lon, lat] = f.geometry.coordinates; // Photon: urutannya [longitude, latitude]
+            const item = document.createElement('button');
+            item.type = 'button';
+            item.className = 'list-group-item list-group-item-action small';
+            item.textContent = labelHasil(f.properties);
+            item.addEventListener('click', function () {
+                petaMap.setView([lat, lon], 15);
+                setTitik(lat, lon);
+                box.innerHTML = '';
+            });
+            box.appendChild(item);
+        });
+    } catch (err) {
+        if (err.name === 'AbortError') return; // pencarian lama dibatalkan, itu normal
+        box.textContent = 'Pencarian gagal. Klik langsung di peta saja.';
+    }
+}
+
+// Cari otomatis 0,4 detik setelah berhenti mengetik
+document.getElementById('petaCari').addEventListener('input', function () {
+    clearTimeout(petaTimer);
+    petaTimer = setTimeout(cariLokasi, 400);
+});
+
+// Tombol Cari dan Enter tetap jalan, langsung tanpa menunggu
+document.getElementById('petaCariBtn').addEventListener('click', cariLokasi);
+document.getElementById('petaCari').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        clearTimeout(petaTimer);
+        cariLokasi();
+    }
+});
+
+document.getElementById('petaLokasiSaya').addEventListener('click', function () {
+    if (!navigator.geolocation) { alert('Browser tidak mendukung lokasi.'); return; }
+    navigator.geolocation.getCurrentPosition(function (pos) {
+        petaMap.setView([pos.coords.latitude, pos.coords.longitude], 16);
+        setTitik(pos.coords.latitude, pos.coords.longitude);
+    }, function () { alert('Tidak bisa mengambil lokasi. Izinkan akses lokasi di browser.'); });
+});
+
+document.getElementById('petaGunakan').addEventListener('click', function () {
+    if (petaLat === null || !petaRow) return;
+    petaRow.querySelector('input[name="latitude[]"]').value = petaLat;
+    petaRow.querySelector('input[name="longitude[]"]').value = petaLng;
+    petaRow.querySelector('.koordinat-teks').textContent = petaLat + ', ' + petaLng;
+    bootstrap.Modal.getInstance(petaModalEl).hide();
+});
+
     function hitungNilai(input) {
         const row = input.closest('.produksi-row');
         const kg = parseFloat(row.querySelector('.produksi-kg').value) || 0;
@@ -496,6 +699,15 @@
             <div class="col-md-4">
                 <label class="field-label">Jenis Alat Tangkap / API</label>
                 <input type="text" name="jenis_alat_tangkap[]" class="form-control" placeholder="cth: Rawai Dasar">
+            <div class="col-md-3">
+                <label class="field-label">Titik Koordinat</label>
+                <input type="hidden" name="latitude[]">
+                <input type="hidden" name="longitude[]">
+                <div class="d-flex align-items-center gap-2">
+                    <button type="button" class="btn btn-outline-secondary btn-sm btn-pilih-peta">📍 Pilih di Peta</button>
+                    <button type="button" class="btn btn-link btn-sm text-danger p-0 btn-hapus-titik">Hapus titik</button>
+                </div>
+                <div class="small text-muted mt-1 koordinat-teks">Belum dipilih</div>
             </div>
             <div class="col-md-3">
                 <label class="field-label">Ukuran Kapal (GT)</label>

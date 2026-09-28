@@ -86,7 +86,7 @@
 
         <div class="row">
             {{-- DATA ARMADA TANGKAP --}}
-            <div class="col-lg-6">
+            <div class="col-12">
                 <div class="section-heading">Data Armada Tangkap</div>
                 <table class="recap">
                     <thead>
@@ -98,6 +98,7 @@
                             <th>Jumlah Kapal (Unit)</th>
                             <th>Jumlah ABK (Org)</th>
                             <th>Kelengkapan Dokumen</th>
+                            <th>Koordinat</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -110,17 +111,24 @@
                                 <td class="num">{{ number_format($a->jumlah_kapal, 0, ',', '.') }}</td>
                                 <td class="num">{{ number_format($a->jumlah_abk, 0, ',', '.') }}</td>
                                 <td class="text-center">{{ $a->status_dokumen ?? '-' }}</td>
+                                <td class="text-center">
+                                    @if ($a->latitude !== null && $a->longitude !== null)
+                                        <a href="https://www.google.com/maps?q={{ $a->latitude }},{{ $a->longitude }}" target="_blank" rel="noopener">{{ $a->latitude }}, {{ $a->longitude }}</a>
+                                    @else
+                                        -
+                                    @endif
+                                </td>
                             </tr>
                         @empty
-                            <tr><td colspan="6" class="text-center text-muted">Belum ada data</td></tr>
+                            <tr><td colspan="8" class="text-center text-muted">Belum ada data</td></tr>
                         @endforelse
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="3" class="text-center">Total</td>
+                            <td colspan="4" class="text-center">Total</td>
                             <td class="num">{{ number_format($laporan->total_kapal, 0, ',', '.') }}</td>
                             <td class="num">{{ number_format($laporan->total_abk, 0, ',', '.') }}</td>
-                            <td></td>
+                            <td colspan="2"></td>
                         </tr>
                     </tfoot>
                 </table>

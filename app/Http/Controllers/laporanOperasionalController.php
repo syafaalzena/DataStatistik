@@ -177,6 +177,11 @@ class LaporanOperasionalController extends Controller
             'jenis_alat_tangkap' => ['array'],
             'jenis_alat_tangkap.*' => ['nullable', 'string', 'max:150'],
 
+            'latitude' => ['array'],
+            'latitude.*' => ['nullable', 'numeric', 'between:-90,90'],
+            'longitude' => ['array'],
+            'longitude.*' => ['nullable', 'numeric', 'between:-180,180'],
+
             'ukuran_kapal' => ['array'],
             'ukuran_kapal.*' => ['nullable', 'string', 'max:100'],
             'jumlah_kapal' => ['array'],
@@ -226,6 +231,8 @@ class LaporanOperasionalController extends Controller
             $laporan->armadaTangkap()->create([
                 'nama_armada' => $request->input("nama_armada.$i"),
                 'jenis_alat_tangkap' => $request->input("jenis_alat_tangkap.$i"),
+                'latitude' => $request->filled("latitude.$i") ? $request->input("latitude.$i") : null,
+                'longitude' => $request->filled("longitude.$i") ? $request->input("longitude.$i") : null,
                 'ukuran_kapal' => $ukuran,
                 'jumlah_kapal' => $request->input("jumlah_kapal.$i", 0) ?: 0,
                 'jumlah_abk' => $request->input("jumlah_abk.$i", 0) ?: 0,
