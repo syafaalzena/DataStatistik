@@ -699,15 +699,17 @@ document.getElementById('petaGunakan').addEventListener('click', function () {
             <div class="col-md-4">
                 <label class="field-label">Jenis Alat Tangkap / API</label>
                 <input type="text" name="jenis_alat_tangkap[]" class="form-control" placeholder="cth: Rawai Dasar">
+            </div>
             <div class="col-md-3">
                 <label class="field-label">Titik Koordinat</label>
                 <input type="hidden" name="latitude[]">
                 <input type="hidden" name="longitude[]">
+                
                 <div class="d-flex align-items-center gap-2">
                     <button type="button" class="btn btn-outline-secondary btn-sm btn-pilih-peta">📍 Pilih di Peta</button>
                     <button type="button" class="btn btn-link btn-sm text-danger p-0 btn-hapus-titik">Hapus titik</button>
                 </div>
-                <div class="small text-muted mt-1 koordinat-teks">Belum dipilih</div>
+                
             </div>
             <div class="col-md-3">
                 <label class="field-label">Ukuran Kapal (GT)</label>
