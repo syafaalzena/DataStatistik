@@ -14,11 +14,12 @@ class LaporanProduksiIkan extends Model
         'jenis_ikan',
         'produksi_kg',
         'harga_rp',
+        'nilai_rp',
         'urutan',
     ];
 
     public function laporanOperasional()
     {
-        return $this->belongsTo(laporanOperasional::class);
+        return $this->belongsTo(LaporanOperasional::class);
     }
 }

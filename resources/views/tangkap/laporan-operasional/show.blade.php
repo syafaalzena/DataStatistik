@@ -76,7 +76,7 @@
     @endif
 
     <div class="laporan-sheet">
-        <div class="laporan-title">Daftar Rekapitulasi Aktivitas Harian Pelabuhan Perikanan</div>
+        <div class="laporan-title">Daftar Rekapitulasi Aktivitas Bulanan Pelabuhan Perikanan</div>
 
         <table class="meta-table mb-3">
             <tr><td><strong>Pelabuhan Perikanan</strong></td><td>:</td><td>{{ $laporan->pelabuhan->nama ?? '-' }}</td></tr>

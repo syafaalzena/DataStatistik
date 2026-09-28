@@ -13,7 +13,7 @@ class LaporanPemasaran extends Model
         'laporan_operasional_id',
         'kategori',
         'jenis_ikan',
-        'quantyti_kg',
+        'quantity_kg',
         'tujuan',
         'urutan',
     ];
