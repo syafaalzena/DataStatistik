@@ -207,6 +207,7 @@ Route::get('/tangkap', [TangkapMenuController::class, 'index'])->name('tangkap.i
 // HARUS di atas /tangkap/{kabupaten}, supaya tidak "ketangkep" jadi nilai {kabupaten}
 Route::get('/tangkap/produksi', [ProduksiTangkapController::class, 'index'])->name('tangkap.produksi.index');
 Route::get('/tangkap/laporan-operasional', [LaporanOperasionalController::class, 'pilihKabupaten'])->name('laporan-operasional.pilih-kabupaten');
+Route::get('/tangkap/laporan-operasional/rekap', [LaporanOperasionalController::class, 'rekapTahunan'])->name('laporan-operasional.rekap');
 
 Route::get('/tangkap/{kabupaten}', [ProduksiTangkapController::class, 'input'])->name('tangkap.input');
 Route::get('/tangkap/{kabupaten}/produksi/create', [ProduksiTangkapController::class, 'create'])->name('tangkap.produksi.create');
@@ -240,5 +241,4 @@ Route::get('/tangkap/laporan-operasional/{laporanOperasional}', [LaporanOperasio
 Route::get('/tangkap/laporan-operasional/{laporanOperasional}/edit', [LaporanOperasionalController::class, 'edit'])->name('laporan-operasional.edit');
 Route::put('/tangkap/laporan-operasional/{laporanOperasional}', [LaporanOperasionalController::class, 'update'])->name('laporan-operasional.update');
 Route::delete('/tangkap/laporan-operasional/{laporanOperasional}', [LaporanOperasionalController::class, 'destroy'])->name('laporan-operasional.destroy');
-Route::get('/tangkap/laporan-operasional/rekap', [LaporanOperasionalController::class, 'rekapTahunan'])->name('laporan-operasional.rekap');
 });
