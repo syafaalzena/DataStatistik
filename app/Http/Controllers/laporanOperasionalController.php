@@ -174,6 +174,9 @@ class LaporanOperasionalController extends Controller
             'nama_armada' => ['array'],
             'nama_armada.*' => ['nullable', 'string', 'max:150'],
 
+            'jenis_alat_tangkap' => ['array'],
+            'jenis_alat_tangkap.*' => ['nullable', 'string', 'max:150'],
+
             'ukuran_kapal' => ['array'],
             'ukuran_kapal.*' => ['nullable', 'string', 'max:100'],
             'jumlah_kapal' => ['array'],
@@ -222,6 +225,7 @@ class LaporanOperasionalController extends Controller
 
             $laporan->armadaTangkap()->create([
                 'nama_armada' => $request->input("nama_armada.$i"),
+                'jenis_alat_tangkap' => $request->input("jenis_alat_tangkap.$i"),
                 'ukuran_kapal' => $ukuran,
                 'jumlah_kapal' => $request->input("jumlah_kapal.$i", 0) ?: 0,
                 'jumlah_abk' => $request->input("jumlah_abk.$i", 0) ?: 0,

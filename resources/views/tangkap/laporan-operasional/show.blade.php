@@ -93,6 +93,7 @@
                         <tr>
                             <th>No</th>
                             <th>Nama Armada</th>
+                            <th>Jenis Alat Tangkap</th>
                             <th>Ukuran Kapal (GT)</th>
                             <th>Jumlah Kapal (Unit)</th>
                             <th>Jumlah ABK (Org)</th>
@@ -104,6 +105,7 @@
                             <tr>
                                 <td class="text-center">{{ $i + 1 }}</td>
                                 <td>{{ $a->nama_armada ?? '-' }}</td>
+                                <td>{{ $a->jenis_alat_tangkap ?? '-' }}</td>
                                 <td>{{ $a->ukuran_kapal }}</td>
                                 <td class="num">{{ number_format($a->jumlah_kapal, 0, ',', '.') }}</td>
                                 <td class="num">{{ number_format($a->jumlah_abk, 0, ',', '.') }}</td>
