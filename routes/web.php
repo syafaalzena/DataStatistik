@@ -236,9 +236,10 @@ Route::post('/tangkap/{kabupaten}/trip', [TripTangkapController::class, 'store']
 Route::put('/tangkap/trip/{trip}', [TripTangkapController::class, 'update'])->name('tangkap.trip.update');
 Route::delete('/tangkap/trip/{trip}', [TripTangkapController::class, 'destroy'])->name('tangkap.trip.destroy');
 Route::get('/tangkap/{kabupaten}/laporan-operasional/create', [LaporanOperasionalController::class, 'create'])->name('laporan-operasional.create');
-Route::post('/tangkap/{kabupaten}/laporan-operasional', [LaporanOperasionalController::class, 'store'])->name('laporan-operasional.store');
-Route::get('/tangkap/laporan-operasional/{laporanOperasional}', [LaporanOperasionalController::class, 'show'])->name('laporan-operasional.show');
-Route::get('/tangkap/laporan-operasional/{laporanOperasional}/edit', [LaporanOperasionalController::class, 'edit'])->name('laporan-operasional.edit');
-Route::put('/tangkap/laporan-operasional/{laporanOperasional}', [LaporanOperasionalController::class, 'update'])->name('laporan-operasional.update');
-Route::delete('/tangkap/laporan-operasional/{laporanOperasional}', [LaporanOperasionalController::class, 'destroy'])->name('laporan-operasional.destroy');
+Route::get('/tangkap/{kabupaten}/trip', [TripTangkapController::class, 'input'])->name('tangkap.trip.input');
+Route::get('/tangkap/{kabupaten}/trip/create', [TripTangkapController::class, 'create'])->name('tangkap.trip.create');
+Route::get('/tangkap/{kabupaten}/trip/rekap', [TripTangkapController::class, 'rekap'])->name('tangkap.trip.rekap');
+Route::post('/tangkap/{kabupaten}/trip', [TripTangkapController::class, 'store'])->name('tangkap.trip.store');
+Route::put('/tangkap/trip/{trip}', [TripTangkapController::class, 'update'])->name('tangkap.trip.update');
+Route::delete('/tangkap/trip/{trip}', [TripTangkapController::class, 'destroy'])->name('tangkap.trip.destroy');
 });

@@ -60,39 +60,44 @@ public function create($kabupatenId)
     public function store(Request $request, $kabupatenId)
     {
         $request->validate([
-            'bulan' => ['required', 'integer', 'between:1,12'],
-            'tahun' => ['required', 'integer', 'digits:4'],
-            'pelabuhan_id' => ['required', 'array', 'min:1'],
-            'pelabuhan_id.*' => ['required', 'exists:pelabuhans,id'],
-            'wppnri_id.*' => ['required', 'exists:wppnris,id'],
-            'jenis_lk.*' => ['required', 'in:Pelabuhan,Non Pelabuhan'],
-            'jenis_api_id.*' => ['required', 'exists:jenis_apis,id'],
-            'kategori_ukuran_kapal_id.*' => ['required', 'exists:kategori_ukuran_kapals,id'],
-            'komoditas_ikan_id.*' => ['required', 'exists:komoditas_ikans,id'],
-            'volume_produksi_kg.*' => ['required', 'numeric', 'min:0'],
-            'harga_rp.*' => ['required', 'numeric', 'min:0'],
+            'jenis_ikan.*' => ['required', 'string', 'max:150'],
+            'nama_latin.*' => ['nullable', 'string', 'max:150'],
         ]);
 
         foreach ($request->pelabuhan_id as $i => $pelabuhanId) {
-            $volume = $request->volume_produksi_kg[$i];
-            $harga = $request->harga_rp[$i];
+    $namaIkan = trim($request->jenis_ikan[$i]);
+    $namaLatin = trim($request->nama_latin[$i] ?? '');
 
-            ProduksiTangkap::create([
-                'kabupaten_ikan_id' => $kabupatenId,
-                'pelabuhan_id' => $pelabuhanId,
-                'wppnri_id' => $request->wppnri_id[$i],
-                'jenis_lk' => $request->jenis_lk[$i],
-                'jenis_api_id' => $request->jenis_api_id[$i],
-                'kategori_ukuran_kapal_id' => $request->kategori_ukuran_kapal_id[$i],
-                'komoditas_ikan_id' => $request->komoditas_ikan_id[$i],
-                'bulan' => $request->bulan,
-                'tahun' => $request->tahun,
-                'volume_produksi_kg' => $volume,
-                'harga_rp' => $harga,
-                'nilai_rp' => $volume * $harga,
-            ]);
-        }
+    $komoditas = \App\Models\KomoditasIkan::firstOrCreate(
+        ['nama_ikan' => $namaIkan],
+        ['nama_latin' => $namaLatin ?: null]
+    );
 
+    // kalau ikan sudah ada tapi belum ada nama latinnya, isi sekarang
+    if ($namaLatin && !$komoditas->nama_latin) {
+        $komoditas->update(['nama_latin' => $namaLatin]);
+    }
+
+    $volume = $request->volume_produksi_kg[$i];
+    $harga = $request->harga_rp[$i];
+
+    ProduksiTangkap::create([
+        'kabupaten_ikan_id' => $kabupatenId,
+        'pelabuhan_id' => $pelabuhanId,
+        'wppnri_id' => $request->wppnri_id[$i],
+        'jenis_lk' => $request->jenis_lk[$i],
+        'jenis_api_id' => $request->jenis_api_id[$i],
+        'kategori_ukuran_kapal_id' => $request->kategori_ukuran_kapal_id[$i],
+        'komoditas_ikan_id' => $komoditas->id,
+        'nama_latin_input' => $namaLatin ?: null,
+        'bulan' => $request->bulan,
+        'tahun' => $request->tahun,
+        'volume_produksi_kg' => $volume,
+        'harga_rp' => $harga,
+        'nilai_rp' => $volume * $harga,
+    ]);
+
+    }
         return redirect()->route('tangkap.input', $kabupatenId)->with('success', 'Data produksi berhasil disimpan.');
     }
 
