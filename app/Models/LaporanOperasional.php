@@ -44,7 +44,22 @@ class LaporanOperasional extends Model
 
     public function getTotalKapalAttribute()
     {
-        return $this->armadaTangkap->sum('jumlah_kapal');
+        return $this->armadaTangkap->pluck('nama_armada')->filter()->unique()->count();
+    }
+
+    public function getTotalTripAttribute()
+    {
+        return $this->armadaTangkap->count();
+    }
+
+    public function getRekapKapalAttribute()
+    {
+        return $this->armadaTangkap
+            ->groupBy(fn ($a) => $a->nama_armada ?: '(Tanpa Nama)')
+            ->map(fn ($rows) => [
+                'jumlah_trip' => $rows->count(),
+                'ukuran_kapal' => $rows->first()->ukuran_kapal,
+            ]);
     }
 
     public function getTotalAbkAttribute()
