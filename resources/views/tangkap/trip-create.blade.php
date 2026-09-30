@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tambah Data Produksi - {{ $kabupaten->nama_kabupaten }} - SIDKP</title>
+    <title>Tambah Data Trip - {{ $kabupaten->nama_kabupaten }} - SIDKP</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
@@ -26,14 +26,12 @@
         .btn-outline-custom:hover { background: #f1f5f9; color: var(--clr-dark); }
 
         .form-card { background: #fff; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,.04); padding: 24px; }
-        .row-produksi { border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; margin-bottom: 14px; position: relative; background: #fafafa; }
-        .row-produksi .row-title { font-weight: 600; font-size: 13px; color: #64748b; margin-bottom: 10px; }
+        .row-trip { border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; margin-bottom: 14px; position: relative; background: #fafafa; }
+        .row-trip .row-title { font-weight: 600; font-size: 13px; color: #64748b; margin-bottom: 10px; }
         .btn-remove-row { position: absolute; top: 10px; right: 10px; background: none; border: none; color: #dc2626; font-weight: 600; font-size: 13px; }
         .btn-remove-row:hover { text-decoration: underline; }
-        .nilai-preview { font-size: 13px; color: #0369a1; font-weight: 600; margin-top: 6px; }
         .btn-add-row { background: #e0f2fe; color: #0369a1; border: 1px dashed #7dd3fc; border-radius: 8px; font-weight: 600; padding: 10px 16px; width: 100%; }
         .btn-add-row:hover { background: #bae6fd; }
-
     </style>
 </head>
 <body>
@@ -53,11 +51,11 @@
 <div class="container pb-5">
 
     <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
-        <a href="{{ route('tangkap.input', $kabupaten->id) }}" class="back-btn">&larr;</a>
+        <a href="{{ route('tangkap.trip.input', $kabupaten->id) }}" class="back-btn">&larr;</a>
         <div>
             <span class="kab-badge">{{ $kabupaten->nama_kabupaten }}</span>
-            <h2 class="fw-bold mb-1">Tambah Data Produksi</h2>
-            <p class="text-muted mb-0">Isi bulan/tahun, lalu tambahkan satu atau lebih baris hasil tangkapan.</p>
+            <h2 class="fw-bold mb-1">Tambah Data Trip</h2>
+            <p class="text-muted mb-0">Catat tiap kapal yang pulang melaut — boleh beberapa kejadian sekaligus dengan tanggal berbeda-beda.</p>
         </div>
     </div>
 
@@ -71,44 +69,29 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('tangkap.produksi.store', $kabupaten->id) }}">
-        @csrf
+    @if($pelabuhanList->isEmpty())
+        <div class="alert alert-warning">Belum ada pelabuhan terdaftar untuk kabupaten ini. Tambahkan dulu lewat halaman Data Produksi.</div>
+    @endif
 
-        <div class="form-card mb-4">
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <label class="form-label">Bulan</label>
-                    <select name="bulan" class="form-select" required>
-                        <option value="">Pilih Bulan</option>
-                        @foreach (['1'=>'Januari','2'=>'Februari','3'=>'Maret','4'=>'April','5'=>'Mei','6'=>'Juni','7'=>'Juli','8'=>'Agustus','9'=>'September','10'=>'Oktober','11'=>'November','12'=>'Desember'] as $val => $label)
-                            <option value="{{ $val }}" {{ old('bulan') == $val ? 'selected' : '' }}>{{ $label }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">Tahun</label>
-                    <input type="number" name="tahun" class="form-control" value="{{ old('tahun', date('Y')) }}" required>
-                </div>
-            </div>
-        </div>
+    <form method="POST" action="{{ route('tangkap.trip.store', $kabupaten->id) }}">
+        @csrf
 
         <div id="rowsWrapper"></div>
 
-        <button type="button" class="btn-add-row mb-4" onclick="tambahBaris()">+ Tambah Baris Produksi</button>
+        <button type="button" class="btn-add-row mb-4" onclick="tambahBaris()">+ Tambah Baris Trip</button>
 
         <div class="d-flex gap-2 justify-content-end">
-            <a href="{{ route('tangkap.input', $kabupaten->id) }}" class="btn-outline-custom">Batal</a>
+            <a href="{{ route('tangkap.trip.input', $kabupaten->id) }}" class="btn-outline-custom">Batal</a>
             <button type="submit" class="btn-dark-custom">Simpan Semua Data</button>
         </div>
     </form>
 
 </div>
 
-{{-- Template 1 baris produksi, di-clone lewat JS --}}
 <template id="rowTemplate">
-    <div class="row-produksi">
+    <div class="row-trip">
         <button type="button" class="btn-remove-row" onclick="hapusBaris(this)">Hapus</button>
-        <div class="row-title">Baris Produksi</div>
+        <div class="row-title">Baris Trip</div>
         <div class="row g-2">
             <div class="col-md-4">
                 <label class="form-label">Pelabuhan</label>
@@ -137,6 +120,15 @@
                 </select>
             </div>
             <div class="col-md-4">
+                <label class="form-label">Jenis API</label>
+                <select name="jenis_api_id[]" class="form-select" required>
+                    <option value="">Pilih Jenis API</option>
+                    @foreach ($jenisApiList as $a)
+                        <option value="{{ $a->id }}">{{ $a->nama }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-4">
                 <label class="form-label">Kategori Ukuran Kapal</label>
                 <select name="kategori_ukuran_kapal_id[]" class="form-select" required>
                     <option value="">Pilih Kategori</option>
@@ -146,36 +138,16 @@
                 </select>
             </div>
             <div class="col-md-4">
-                <label class="form-label">Jenis API</label>
-                <select name="jenis_api_id[]" class="form-select" required>
-                    <option value="">Pilih Jenis API</option>
-                    @foreach ($jenisApiList as $a)
-                        <option value="{{ $a->id }}">{{ $a->nama }}</option>
-                    @endforeach
-                </select>
+                <label class="form-label">Tanggal Kapal Pulang</label>
+                <input type="date" name="tanggal[]" class="form-control" value="{{ date('Y-m-d') }}" required>
             </div>
-           <div class="col-md-4">
-    <label class="form-label">Jenis Ikan</label>
-    <input type="text" name="jenis_ikan[]" class="form-control" placeholder="Contoh: Tuna" required>
-</div>
-<div class="col-md-4">
-    <label class="form-label">Nama Latin <span class="text-muted" style="font-weight:400;">(boleh kosong)</span></label>
-    <input type="text" name="nama_latin[]" class="form-control" placeholder="Contoh: Thunnus sp.">
-</div>
-            <div class="col-md-6">
-                <label class="form-label">Volume Produksi (Kg)</label>
-                <input type="number" step="0.01" min="0" name="volume_produksi_kg[]" class="form-control input-volume" required>
-            </div>
-            <div class="col-md-6">
-                <label class="form-label">Harga (Rp/Kg)</label>
-                <input type="number" step="1" min="0" name="harga_rp[]" class="form-control input-harga" required>
+            <div class="col-md-4">
+                <label class="form-label">Jumlah Trip</label>
+                <input type="number" min="1" name="jumlah_trip[]" class="form-control" value="1" required>
             </div>
         </div>
-        <div class="nilai-preview">Nilai: Rp 0</div>
     </div>
 </template>
-
-
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
@@ -184,11 +156,8 @@
 
     function tambahBaris() {
         const clone = template.content.cloneNode(true);
-        const rowEl = clone.querySelector('.row-produksi');
+        const rowEl = clone.querySelector('.row-trip');
 
-        const volumeInput = rowEl.querySelector('.input-volume');
-        const hargaInput = rowEl.querySelector('.input-harga');
-        const preview = rowEl.querySelector('.nilai-preview');
         const pelabuhanSelect = rowEl.querySelector('.input-pelabuhan');
         const jenisLkSelect = rowEl.querySelector('.input-jenis-lk');
 
@@ -197,27 +166,18 @@
             jenisLkSelect.value = opt ? (opt.getAttribute('data-jenis-lk') || '') : '';
         });
 
-        function updatePreview() {
-            const v = parseFloat(volumeInput.value) || 0;
-            const h = parseFloat(hargaInput.value) || 0;
-            preview.textContent = 'Nilai: Rp ' + (v * h).toLocaleString('id-ID');
-        }
-        volumeInput.addEventListener('input', updatePreview);
-        hargaInput.addEventListener('input', updatePreview);
-
         wrapper.appendChild(rowEl);
     }
 
     function hapusBaris(btn) {
-        const rows = wrapper.querySelectorAll('.row-produksi');
+        const rows = wrapper.querySelectorAll('.row-trip');
         if (rows.length <= 1) {
-            alert('Minimal harus ada 1 baris produksi.');
+            alert('Minimal harus ada 1 baris trip.');
             return;
         }
-        btn.closest('.row-produksi').remove();
+        btn.closest('.row-trip').remove();
     }
 
-    // Selalu mulai dengan 1 baris kosong
     tambahBaris();
 </script>
 
