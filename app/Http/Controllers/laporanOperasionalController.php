@@ -12,8 +12,7 @@ class LaporanOperasionalController extends Controller
 {
     public function pilihKabupaten()
     {
-        $kabupatenIkans = KabupatenIkan::orderBy('nama_kabupaten')->get();
-
+        $kabupatenIkans = KabupatenIkan::where('aktif_tangkap', true)->orderBy('nama_kabupaten')->get();
         return view('tangkap.laporan-operasional.pilih-kabupaten', compact('kabupatenIkans'));
     }
 

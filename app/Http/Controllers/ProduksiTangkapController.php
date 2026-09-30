@@ -16,7 +16,7 @@ class ProduksiTangkapController extends Controller
 {
     public function menu()
 {
-    $totalProduksiKabupaten = KabupatenIkan::count();
+    $totalProduksiKabupaten = KabupatenIkan::where('aktif_tangkap', true)->count();
     $totalLaporanOperasional = LaporanOperasional::count();
 
     return view('tangkap.menu', compact('totalProduksiKabupaten', 'totalLaporanOperasional'));
@@ -25,8 +25,7 @@ class ProduksiTangkapController extends Controller
 
     public function index()
     {
-        $kabupatenIkans = KabupatenIkan::orderBy('nama_kabupaten')->get();
-
+        $kabupatenIkans = KabupatenIkan::where('aktif_tangkap', true)->orderBy('nama_kabupaten')->get();
         return view('tangkap.produksi.index', compact('kabupatenIkans'));
     }
 

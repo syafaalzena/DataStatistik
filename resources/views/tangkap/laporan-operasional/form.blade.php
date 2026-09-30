@@ -205,16 +205,11 @@
                             </option>
                         @endforeach
                     </select>
-                    <button type="button" class="btn btn-sm btn-outline-secondary mt-2" data-bs-toggle="collapse" data-bs-target="#tambahPelabuhanBox">
-                        + Tambah Pelabuhan Baru
-                    </button>
-                    <div class="collapse mt-2" id="tambahPelabuhanBox">
-                        <div class="d-flex gap-2">
-                            <input type="text" id="namaPelabuhanBaru" class="form-control form-control-sm" placeholder="Nama pelabuhan baru">
-                            <button type="button" id="btnSimpanPelabuhan" class="btn btn-sm btn-dark-custom">Simpan</button>
+                    @if ($pelabuhanList->isEmpty())
+                        <div class="small text-danger mt-2">
+                            Belum ada pelabuhan terdaftar untuk kabupaten ini. Hubungi admin untuk menambahkannya.
                         </div>
-                        <div id="tambahPelabuhanError" class="text-danger small mt-1"></div>
-                    </div>
+                    @endif
                 </div>
                 <div class="col-md-4">
                     <label class="field-label">Bulan</label>
@@ -480,51 +475,6 @@
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-
-    
-
-    document.getElementById('btnSimpanPelabuhan').addEventListener('click', function () {
-    const namaInput = document.getElementById('namaPelabuhanBaru');
-    const errorBox = document.getElementById('tambahPelabuhanError');
-    errorBox.textContent = '';
-
-    if (!namaInput.value.trim()) {
-        errorBox.textContent = 'Nama pelabuhan wajib diisi.';
-        return;
-    }
-
-    const formData = new FormData();
-    formData.append('nama', namaInput.value);
-    formData.append('_token', document.querySelector('input[name="_token"]').value);
-
-    fetch('{{ route('pelabuhan.store', $kabupaten->id) }}', {
-        method: 'POST',
-        headers: { 'Accept': 'application/json' },
-        body: formData,
-    })
-        .then(async (res) => {
-            if (!res.ok) {
-                const err = await res.json().catch(() => null);
-                throw new Error(err?.message || 'Gagal menambah pelabuhan.');
-            }
-            return res.json();
-        })
-        .then((pelabuhan) => {
-            const select = document.getElementById('pelabuhanSelect');
-            const opt = document.createElement('option');
-            opt.value = pelabuhan.id;
-            opt.textContent = pelabuhan.nama;
-            opt.selected = true;
-            select.appendChild(opt);
-
-            namaInput.value = '';
-            bootstrap.Collapse.getOrCreateInstance(document.getElementById('tambahPelabuhanBox')).hide();
-        })
-        .catch((err) => {
-            errorBox.textContent = err.message;
-        });
-});
-
     let petaMap = null, petaMarker = null, petaRow = null, petaLat = null, petaLng = null;
     let armadaIndexCounter = {{ count($armadaRows ?? []) }};
 const petaModalEl = document.getElementById('modalPeta');
