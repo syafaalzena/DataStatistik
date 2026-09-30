@@ -16,10 +16,13 @@
         .navbar { background: var(--clr-dark); color: white; padding: 14px 0; margin-bottom: 1.25rem; }
         .brand-wrapper { display: flex; align-items: center; gap: 12px; text-decoration: none; }
         .brand-text { font-weight: bold; font-size: 26px; color: #fff; }
+        .brand-logo-img { height: 40px; width: auto; }
         .back-btn { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: #fff; border: 1px solid #e2e8f0; border-radius: 30px; text-decoration: none; box-shadow: 0 2px 6px rgba(0,0,0,.05); }
         .back-btn:hover { background: #0f172a; color: #fff; }
         .btn-logout-icon { background: transparent; border: 1.5px solid rgba(248,250,252,.25); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .btn-logout-icon:hover { background: var(--clr-blue-brand); border-color: var(--clr-blue-brand); }
+        .btn-logout-icon img { filter: brightness(0) invert(1); transition: filter .18s ease; }
+        .btn-logout-icon:hover img { filter: none; }
 
         .kategori-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
         @media (max-width: 768px) { .kategori-grid { grid-template-columns: 1fr; } }
@@ -44,18 +47,23 @@
 <nav class="navbar">
     <div class="container d-flex justify-content-between align-items-center">
         <a href="{{ route('dashboard') }}" class="brand-wrapper">
+            <img src="{{ asset('images/pancacita.png') }}" alt="Logo Pancacita" class="brand-logo-img">
             <span class="brand-text">SIDKP</span>
         </a>
         <form method="POST" action="{{ route('logout') }}" class="mb-0">
             @csrf
-            <button type="submit" class="btn-logout-icon" title="Logout"></button>
+            <button type="submit" class="btn-logout-icon" title="Logout">
+                <img src="{{ asset('images/logout.png') }}" alt="Logout" width="20" height="20">
+            </button>
         </form>
     </div>
 </nav>
 
 <div class="container pb-5">
-    <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
-        <a href="{{ route('dashboard') }}" class="back-btn">&larr;</a>
+    <div class="d-flex align-items-center gap-3 mb-4">
+        <a href="{{ route('dashboard') }}" class="back-btn">
+            <img src="{{ asset('images/back.png') }}" alt="Back" width="22" height="22">
+        </a>
         <div>
             <h2 class="fw-bold mb-1">Data Tangkap</h2>
             <p class="text-muted mb-0">Pilih kategori data tangkap yang ingin dikelola.</p>
@@ -64,14 +72,14 @@
 
     <div class="kategori-grid">
         <a href="{{ route('tangkap.produksi.index') }}" class="kategori-card">
-            <div class="kategori-icon">🐟</div>
+            <div class="kategori-icon"><img src="{{ asset('images/fish3.png') }}" alt="Ikan" width="32" height="32" class="card-icon"></div>
             <div class="kategori-title">Produksi Tangkap per Kabupaten</div>
             <div class="kategori-sub">Input data produksi tangkap per komoditas, WPPNRI, alat tangkap, dan ukuran kapal per kabupaten/kota.</div>
             <span class="kategori-count">{{ $totalProduksiKabupaten }} Kabupaten/Kota</span>
         </a>
 
         <a href="{{ route('laporan-operasional.pilih-kabupaten') }}" class="kategori-card">
-            <div class="kategori-icon">📋</div>
+            <div class="kategori-icon"><img src="{{ asset('images/report.png') }}" alt="Ikan" width="32" height="32" class="card-icon"></div>
             <div class="kategori-title">Laporan Operasional Pelabuhan Perikanan</div>
             <div class="kategori-sub">Input rekapitulasi aktivitas harian pelabuhan: armada, produksi ikan dominan, logistik, dan pemasaran per bulan.</div>
             <span class="kategori-count">{{ $totalLaporanOperasional }} Laporan Tersimpan</span>

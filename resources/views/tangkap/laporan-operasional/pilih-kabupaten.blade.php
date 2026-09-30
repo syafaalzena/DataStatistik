@@ -38,6 +38,8 @@
             color: #fff; 
         }
 
+        .brand-logo-img { height: 40px; width: auto; }
+
         .back-btn { 
             width: 48px; 
             height: 48px; 
@@ -100,6 +102,8 @@
         .kab-empty { text-align: center; padding: 30px; color: #94a3b8; display: none; }
         .btn-dark-custom { background: var(--clr-dark); color: #fff; border-radius: 8px; font-weight: 600; border: none; padding: 10px 20px; text-decoration: none; display: inline-block; white-space: nowrap; }
         .btn-dark-custom:hover { background: #1e293b; color: #fff; }
+        .btn-logout-icon img { filter: brightness(0) invert(1); transition: filter .18s ease; }
+        .btn-logout-icon:hover img { filter: none; }
     </style>
 </head>
 <body>
@@ -107,11 +111,14 @@
 <nav class="navbar">
     <div class="container d-flex justify-content-between align-items-center">
         <a href="{{ route('dashboard') }}" class="brand-wrapper">
+            <img src="{{ asset('images/pancacita.png') }}" alt="Logo Pancacita" class="brand-logo-img">
             <span class="brand-text">SIDKP</span>
         </a>
         <form method="POST" action="{{ route('logout') }}" class="mb-0">
             @csrf
-            <button type="submit" class="btn-logout-icon" title="Logout"></button>
+            <button type="submit" class="btn-logout-icon" title="Logout">
+                <img src="{{ asset('images/logout.png') }}" alt="Logout" width="20" height="20">
+            </button>
         </form>
     </div>
 </nav>
@@ -119,7 +126,9 @@
 <div class="container pb-5">
     <div class="d-flex align-items-center justify-content-between gap-3 mb-4 flex-wrap">
         <div class="d-flex align-items-center gap-3">
-            <a href="{{ route('tangkap.index') }}" class="back-btn">&larr;</a>
+            <a href="{{ route('tangkap.index') }}" class="back-btn">
+                <img src="{{ asset('images/back.png') }}" alt="Back" width="22" height="22">
+            </a>
             <div>
                 <h2 class="fw-bold mb-1">Laporan Operasional Pelabuhan</h2>
                 <p class="text-muted mb-0">Pilih kabupaten/kota untuk melihat atau menambah laporan.</p>
