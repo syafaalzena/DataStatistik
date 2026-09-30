@@ -19,6 +19,8 @@
         .brand-logo-img { height: 40px; width: auto; }
         .back-btn { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: #fff; border: 1px solid #e2e8f0; border-radius: 30px; text-decoration: none; box-shadow: 0 2px 6px rgba(0,0,0,.05); }
         .back-btn:hover { background: #0f172a; color: #fff; }
+        .back-btn img { transition: filter .18s ease; }
+        .back-btn:hover img { filter: brightness(0) invert(1); }
         .btn-logout-icon { background: transparent; border: 1.5px solid rgba(248,250,252,.25); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .btn-logout-icon:hover { background: var(--clr-blue-brand); border-color: var(--clr-blue-brand); }
         .btn-logout-icon img { filter: brightness(0) invert(1); transition: filter .18s ease; }

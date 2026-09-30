@@ -57,6 +57,9 @@
             background: #0f172a; color: #fff; 
         }
 
+        .back-btn img { transition: filter .18s ease; }
+        .back-btn:hover img { filter: brightness(0) invert(1); }
+
         .btn-logout-icon { 
             background: transparent; 
             border: 1.5px solid rgba(248,250,252,.25); 
