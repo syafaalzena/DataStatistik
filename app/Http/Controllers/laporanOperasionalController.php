@@ -72,14 +72,14 @@ class LaporanOperasionalController extends Controller
 
     public function show(LaporanOperasional $laporanOperasional)
     {
-        $laporanOperasional->load(['pelabuhan.kabupatenIkan', 'armadaTangkap', 'produksiIkan', 'logistik', 'pemasaran']);
+        $laporanOperasional->load(['pelabuhan.kabupatenIkan', 'armadaTangkap.dokumens', 'produksiIkan', 'logistik', 'pemasaran']);
 
         return view('tangkap.laporan-operasional.show', ['laporan' => $laporanOperasional]);
     }
 
     public function edit(LaporanOperasional $laporanOperasional)
     {
-        $laporanOperasional->load(['armadaTangkap', 'produksiIkan', 'logistik', 'pemasaran', 'pelabuhan.kabupatenIkan']);
+        $laporanOperasional->load(['armadaTangkap.dokumens', 'produksiIkan', 'logistik', 'pemasaran', 'pelabuhan.kabupatenIkan']);
 
         $kabupaten = $laporanOperasional->pelabuhan->kabupatenIkan;
         $pelabuhanList = Pelabuhan::where('kabupaten_ikan_id', $kabupaten->id)->orderBy('nama')->get();
@@ -173,23 +173,21 @@ class LaporanOperasionalController extends Controller
 
             'nama_armada' => ['array'],
             'nama_armada.*' => ['nullable', 'string', 'max:150'],
-
+            'tanggal_berangkat' => ['array'],
+            'tanggal_berangkat.*' => ['nullable', 'date'],
             'jenis_alat_tangkap' => ['array'],
             'jenis_alat_tangkap.*' => ['nullable', 'string', 'max:150'],
-
+            'ukuran_kapal' => ['array'],
+            'ukuran_kapal.*' => ['nullable', 'string', 'max:100'],
+            'jumlah_abk' => ['array'],
+            'jumlah_abk.*' => ['nullable', 'numeric', 'min:0'],
             'latitude' => ['array'],
             'latitude.*' => ['nullable', 'numeric', 'between:-90,90'],
             'longitude' => ['array'],
             'longitude.*' => ['nullable', 'numeric', 'between:-180,180'],
-
-            'ukuran_kapal' => ['array'],
-            'ukuran_kapal.*' => ['nullable', 'string', 'max:100'],
-            'jumlah_kapal' => ['array'],
-            'jumlah_kapal.*' => ['nullable', 'numeric', 'min:0'],
-            'jumlah_abk' => ['array'],
-            'jumlah_abk.*' => ['nullable', 'numeric', 'min:0'],
-            'status_dokumen' => ['array'],
-            'status_dokumen.*' => ['nullable', 'string', 'max:100'],
+            'dokumen_nama' => ['array'],
+            'dokumen_nama.*' => ['array'],
+            'dokumen_nama.*.*' => ['nullable', 'string', 'max:150'],
 
             'jenis_ikan' => ['array'],
             'jenis_ikan.*' => ['nullable', 'string', 'max:150'],
@@ -222,23 +220,33 @@ class LaporanOperasionalController extends Controller
 
     private function syncDetails(LaporanOperasional $laporan, Request $request): void
     {
-        // Data Armada Tangkap
+        // Data Armada Tangkap (per trip)
         foreach ((array) $request->input('ukuran_kapal', []) as $i => $ukuran) {
             if (blank($ukuran)) {
                 continue;
             }
 
-            $laporan->armadaTangkap()->create([
+            $trip = $laporan->armadaTangkap()->create([
                 'nama_armada' => $request->input("nama_armada.$i"),
+                'tanggal_berangkat' => $request->input("tanggal_berangkat.$i") ?: null,
                 'jenis_alat_tangkap' => $request->input("jenis_alat_tangkap.$i"),
                 'latitude' => $request->filled("latitude.$i") ? $request->input("latitude.$i") : null,
                 'longitude' => $request->filled("longitude.$i") ? $request->input("longitude.$i") : null,
                 'ukuran_kapal' => $ukuran,
-                'jumlah_kapal' => $request->input("jumlah_kapal.$i", 0) ?: 0,
                 'jumlah_abk' => $request->input("jumlah_abk.$i", 0) ?: 0,
-                'status_dokumen' => $request->input("status_dokumen.$i"),
                 'urutan' => $i,
             ]);
+
+            foreach ((array) $request->input("dokumen_nama.$i", []) as $j => $namaDok) {
+                if (blank($namaDok)) {
+                    continue;
+                }
+
+                $trip->dokumens()->create([
+                    'nama_dokumen' => $namaDok,
+                    'urutan' => $j,
+                ]);
+            }
         }
 
         // Produksi Ikan Dominan

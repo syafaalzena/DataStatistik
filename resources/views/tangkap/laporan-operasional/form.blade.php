@@ -242,60 +242,68 @@
 
         {{-- ARMADA TANGKAP --}}
         <div class="panel-card">
-            <div class="section-title">Data Armada Tangkap</div>
-            <div class="section-sub">Jumlah kapal & ABK per kategori ukuran kapal (GT). Klik "Tambah Baris" untuk menambah kategori.</div>
+            <div class="section-title">Data Armada Tangkap (Per Trip)</div>
+            <div class="section-sub">Catat setiap kali kapal berangkat melaut. Satu baris = satu trip.</div>
             <div id="armadaContainer">
                 @php $armadaRows = old('ukuran_kapal', $laporan->armadaTangkap ?? []); @endphp
                 @forelse ($armadaRows as $i => $row)
                     @php
-                        $jenisAlat = is_object($row) ? $row->jenis_alat_tangkap : old("jenis_alat_tangkap.$i");
                         $namaArmada = is_object($row) ? $row->nama_armada : old("nama_armada.$i");
-                        $lat = is_object($row) ? $row->latitude : old ("latitude.$i");
-                        $lng = is_object($row) ? $row->longitude : old ("longitude.$i");
+                        $tglBerangkat = is_object($row) ? optional($row->tanggal_berangkat)->format('Y-m-d') : old("tanggal_berangkat.$i");
+                        $jenisAlat = is_object($row) ? $row->jenis_alat_tangkap : old("jenis_alat_tangkap.$i");
+                        $lat = is_object($row) ? $row->latitude : old("latitude.$i");
+                        $lng = is_object($row) ? $row->longitude : old("longitude.$i");
                         $ukuran = is_object($row) ? $row->ukuran_kapal : ($row ?? old("ukuran_kapal.$i"));
-                        $jmlKapal = is_object($row) ? $row->jumlah_kapal : old("jumlah_kapal.$i");
                         $jmlAbk = is_object($row) ? $row->jumlah_abk : old("jumlah_abk.$i");
-                        $status = is_object($row) ? $row->status_dokumen : old("status_dokumen.$i");
                     @endphp
-                    <div class="row-input row g-2 align-items-end">
+                    <div class="row-input row g-2 align-items-end" data-index="{{ $i }}">
                         <div class="col-md-3">
-                            <label class="field-label">Nama Armada</label>
-                            <input type="text" name="nama_armada[]" class="form-control" value="{{ $namaArmada }}" placeholder="cth: KM Sinar Laut">
-                        </div>
-                        <div class="col-md-4">
-                            <label class="field-label">Jenis Alat Tangkap / API</label>
-                            <input type="text" name="jenis_alat_tangkap[]" class="form-control" value="{{ $jenisAlat }}" placeholder="cth: Rawai Dasar">
-                        </div>
-                        <div class="col-md-3">
-                            <label class="field-label">Ukuran Kapal (GT)</label>
-                            <input type="text" name="ukuran_kapal[]" class="form-control" value="{{ $ukuran }}" placeholder="cth: < 5">
-                        </div>
-                        <div class="col-md-3">
-                            <label class="field-label">Jumlah Kapal (Unit)</label>
-                            <input type="number" step="0.01" name="jumlah_kapal[]" class="form-control" value="{{ $jmlKapal }}">
-                        </div>
-                        <div class="col-md-3">
-                            <label class="field-label">Jumlah ABK (Org)</label>
-                            <input type="number" step="0.01" name="jumlah_abk[]" class="form-control" value="{{ $jmlAbk }}">
+                            <label class="field-label">Nama Kapal</label>
+                            <input type="text" name="nama_armada[{{ $i }}]" class="form-control" value="{{ $namaArmada }}" placeholder="cth: KM Sinar Laut">
                         </div>
                         <div class="col-md-2">
-                            <label class="field-label">Kelengkapan Dokumen</label>
-                            <select name="status_dokumen[]" class="form-select">
-                                <option value="">-</option>
-                                <option value="Lengkap" @selected($status == 'Lengkap')>Lengkap</option>
-                                <option value="Tidak Lengkap" @selected($status == 'Tidak Lengkap')>Tidak Lengkap</option>
-                            </select>
+                            <label class="field-label">Tanggal Berangkat</label>
+                            <input type="date" name="tanggal_berangkat[{{ $i }}]" class="form-control" value="{{ $tglBerangkat }}">
                         </div>
                         <div class="col-md-3">
+                            <label class="field-label">Jenis Alat Tangkap / API</label>
+                            <input type="text" name="jenis_alat_tangkap[{{ $i }}]" class="form-control" value="{{ $jenisAlat }}" placeholder="cth: Rawai Dasar">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="field-label">Ukuran Kapal (GT)</label>
+                            <input type="text" name="ukuran_kapal[{{ $i }}]" class="form-control" value="{{ $ukuran }}" placeholder="cth: < 5">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="field-label">Jumlah ABK (Org)</label>
+                            <input type="number" step="0.01" name="jumlah_abk[{{ $i }}]" class="form-control" value="{{ $jmlAbk }}">
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="field-label">Dokumen Trip (bebas diisi: SLO, SPB, CV, dll)</label>
+                            <div class="dokumen-list">
+                                @if (is_object($row))
+                                    @foreach ($row->dokumens as $d)
+                                        <div class="d-flex gap-2 mb-1 dokumen-item">
+                                            <input type="text" name="dokumen_nama[{{ $i }}][]" class="form-control form-control-sm" value="{{ $d->nama_dokumen }}" placeholder="cth: SLO">
+                                            <button type="button" class="btn btn-sm btn-outline-danger btn-hapus-dokumen">Hapus</button>
+                                        </div>
+                                    @endforeach
+                                @endif
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-secondary btn-tambah-dokumen mt-1">+ Tambah Dokumen</button>
+                        </div>
+
+                        <div class="col-md-4">
                             <label class="field-label">Titik Koordinat</label>
-                            <input type="hidden" name="latitude[]" value="{{ $lat }}">
-                            <input type="hidden" name="longitude[]" value="{{ $lng }}">
+                            <input type="hidden" name="latitude[{{ $i }}]" value="{{ $lat }}">
+                            <input type="hidden" name="longitude[{{ $i }}]" value="{{ $lng }}">
                             <div class="d-flex align-items-center gap-2">
                                 <button type="button" class="btn btn-outline-secondary btn-sm btn-pilih-peta">📍 Pilih di Peta</button>
                                 <button type="button" class="btn btn-link btn-sm text-danger p-0 btn-hapus-titik">Hapus titik</button>
                             </div>
                             <div class="small text-muted mt-1 koordinat-teks">{{ ($lat !== null && $lat !== '' && $lng !== null && $lng !== '') ? $lat . ', ' . $lng : 'Belum dipilih' }}</div>
                         </div>
+
                         <div class="col-md-1">
                             <button type="button" class="btn-remove-row" onclick="this.closest('.row-input').remove()">Hapus</button>
                         </div>
@@ -303,7 +311,7 @@
                 @empty
                 @endforelse
             </div>
-            <button type="button" class="btn-add-row mt-2" onclick="addArmadaRow()">+ Tambah Baris</button>
+            <button type="button" class="btn-add-row mt-2" onclick="addArmadaRow()">+ Tambah Trip</button>
         </div>
 
         {{-- PRODUKSI IKAN DOMINAN --}}
@@ -518,6 +526,7 @@
 });
 
     let petaMap = null, petaMarker = null, petaRow = null, petaLat = null, petaLng = null;
+    let armadaIndexCounter = {{ count($armadaRows ?? []) }};
 const petaModalEl = document.getElementById('modalPeta');
 const PETA_AWAL = [4.6951, 96.7494]; // tengah Aceh
 
@@ -555,9 +564,27 @@ document.getElementById('armadaContainer').addEventListener('click', function (e
     const hapus = e.target.closest('.btn-hapus-titik');
     if (hapus) {
         const row = hapus.closest('.row-input');
-        row.querySelector('input[name="latitude[]"]').value = '';
-        row.querySelector('input[name="longitude[]"]').value = '';
+        row.querySelector('input[name^="latitude"]').value = '';
+        row.querySelector('input[name^="longitude"]').value = '';
         row.querySelector('.koordinat-teks').textContent = 'Belum dipilih';
+        return;
+    }
+
+    const tambahDok = e.target.closest('.btn-tambah-dokumen');
+    if (tambahDok) {
+        const row = tambahDok.closest('.row-input');
+        const idx = row.dataset.index;
+        const div = document.createElement('div');
+        div.className = 'd-flex gap-2 mb-1 dokumen-item';
+        div.innerHTML = `<input type="text" name="dokumen_nama[${idx}][]" class="form-control form-control-sm" placeholder="cth: SLO">
+                        <button type="button" class="btn btn-sm btn-outline-danger btn-hapus-dokumen">Hapus</button>`;
+        row.querySelector('.dokumen-list').appendChild(div);
+        return;
+    }
+
+    const hapusDok = e.target.closest('.btn-hapus-dokumen');
+    if (hapusDok) {
+        hapusDok.closest('.dokumen-item').remove();
         return;
     }
 
@@ -581,8 +608,9 @@ petaModalEl.addEventListener('shown.bs.modal', function () {
     resetTitik();
 
     // Kalau baris ini sudah punya koordinat, langsung tampilkan
-    const lat = parseFloat(petaRow.querySelector('input[name="latitude[]"]').value);
-    const lng = parseFloat(petaRow.querySelector('input[name="longitude[]"]').value);
+
+    const lat = parseFloat(petaRow.querySelector('input[name^="latitude"]').value);
+    const lng = parseFloat(petaRow.querySelector('input[name^="longitude"]').value);
     if (!isNaN(lat) && !isNaN(lng)) {
         petaMap.setView([lat, lng], 14);
         setTitik(lat, lng);
@@ -669,8 +697,8 @@ document.getElementById('petaLokasiSaya').addEventListener('click', function () 
 
 document.getElementById('petaGunakan').addEventListener('click', function () {
     if (petaLat === null || !petaRow) return;
-    petaRow.querySelector('input[name="latitude[]"]').value = petaLat;
-    petaRow.querySelector('input[name="longitude[]"]').value = petaLng;
+    petaRow.querySelector('input[name^="latitude"]').value = petaLat;
+    petaRow.querySelector('input[name^="longitude"]').value = petaLng;
     petaRow.querySelector('.koordinat-teks').textContent = petaLat + ', ' + petaLng;
     bootstrap.Modal.getInstance(petaModalEl).hide();
 });
@@ -690,47 +718,47 @@ document.getElementById('petaGunakan').addEventListener('click', function () {
     }
 
     function addArmadaRow() {
+        const idx = armadaIndexCounter++;
         const html = `
-        <div class="row-input row g-2 align-items-end">
+        <div class="row-input row g-2 align-items-end" data-index="${idx}">
             <div class="col-md-3">
-                <label class="field-label">Nama Armada</label>
-                <input type="text" name="nama_armada[]" class="form-control" placeholder="cth: KM Sinar Laut">
+                <label class="field-label">Nama Kapal</label>
+                <input type="text" name="nama_armada[${idx}]" class="form-control" placeholder="cth: KM Sinar Laut">
             </div>
-            <div class="col-md-4">
+            <div class="col-md-2">
+                <label class="field-label">Tanggal Berangkat</label>
+                <input type="date" name="tanggal_berangkat[${idx}]" class="form-control">
+            </div>
+            <div class="col-md-3">
                 <label class="field-label">Jenis Alat Tangkap / API</label>
-                <input type="text" name="jenis_alat_tangkap[]" class="form-control" placeholder="cth: Rawai Dasar">
+                <input type="text" name="jenis_alat_tangkap[${idx}]" class="form-control" placeholder="cth: Rawai Dasar">
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
+                <label class="field-label">Ukuran Kapal (GT)</label>
+                <input type="text" name="ukuran_kapal[${idx}]" class="form-control" placeholder="cth: < 5">
+            </div>
+            <div class="col-md-2">
+                <label class="field-label">Jumlah ABK (Org)</label>
+                <input type="number" step="0.01" name="jumlah_abk[${idx}]" class="form-control">
+            </div>
+
+            <div class="col-md-12">
+                <label class="field-label">Dokumen Trip (bebas diisi: SLO, SPB, CV, dll)</label>
+                <div class="dokumen-list"></div>
+                <button type="button" class="btn btn-sm btn-outline-secondary btn-tambah-dokumen mt-1">+ Tambah Dokumen</button>
+            </div>
+
+            <div class="col-md-4">
                 <label class="field-label">Titik Koordinat</label>
-                <input type="hidden" name="latitude[]">
-                <input type="hidden" name="longitude[]">
-                
+                <input type="hidden" name="latitude[${idx}]">
+                <input type="hidden" name="longitude[${idx}]">
                 <div class="d-flex align-items-center gap-2">
                     <button type="button" class="btn btn-outline-secondary btn-sm btn-pilih-peta">📍 Pilih di Peta</button>
                     <button type="button" class="btn btn-link btn-sm text-danger p-0 btn-hapus-titik">Hapus titik</button>
                 </div>
-                
+                <div class="small text-muted mt-1 koordinat-teks">Belum dipilih</div>
             </div>
-            <div class="col-md-3">
-                <label class="field-label">Ukuran Kapal (GT)</label>
-                <input type="text" name="ukuran_kapal[]" class="form-control" placeholder="cth: < 5">
-            </div>
-            <div class="col-md-3">
-                <label class="field-label">Jumlah Kapal (Unit)</label>
-                <input type="number" step="0.01" name="jumlah_kapal[]" class="form-control">
-            </div>
-            <div class="col-md-3">
-                <label class="field-label">Jumlah ABK (Org)</label>
-                <input type="number" step="0.01" name="jumlah_abk[]" class="form-control">
-            </div>
-            <div class="col-md-2">
-                <label class="field-label">Kelengkapan Dokumen</label>
-                <select name="status_dokumen[]" class="form-select">
-                    <option value="">-</option>
-                    <option value="Lengkap">Lengkap</option>
-                    <option value="Tidak Lengkap">Tidak Lengkap</option>
-                </select>
-            </div>
+
             <div class="col-md-1">
                 <button type="button" class="btn-remove-row" onclick="this.closest('.row-input').remove()">Hapus</button>
             </div>

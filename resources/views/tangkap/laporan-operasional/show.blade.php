@@ -87,17 +87,24 @@
         <div class="row">
             {{-- DATA ARMADA TANGKAP --}}
             <div class="col-12">
-                <div class="section-heading">Data Armada Tangkap</div>
+                <div class="section-heading">Data Armada Tangkap (Per Trip)</div>
+
+                <div class="d-flex gap-3 mb-2 flex-wrap">
+                    <div class="small"><strong>{{ $laporan->total_kapal }}</strong> kapal unik beroperasi</div>
+                    <div class="small"><strong>{{ $laporan->total_trip }}</strong> total trip bulan ini</div>
+                    <div class="small"><strong>{{ number_format($laporan->total_abk, 0, ',', '.') }}</strong> total ABK (dihitung per trip)</div>
+                </div>
+
                 <table class="recap">
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>Nama Armada</th>
+                            <th>Nama Kapal</th>
+                            <th>Tanggal Berangkat</th>
                             <th>Jenis Alat Tangkap</th>
-                            <th>Ukuran Kapal (GT)</th>
-                            <th>Jumlah Kapal (Unit)</th>
-                            <th>Jumlah ABK (Org)</th>
-                            <th>Kelengkapan Dokumen</th>
+                            <th>Ukuran (GT)</th>
+                            <th>ABK</th>
+                            <th>Dokumen</th>
                             <th>Koordinat</th>
                         </tr>
                     </thead>
@@ -106,11 +113,17 @@
                             <tr>
                                 <td class="text-center">{{ $i + 1 }}</td>
                                 <td>{{ $a->nama_armada ?? '-' }}</td>
+                                <td class="text-center">{{ optional($a->tanggal_berangkat)->translatedFormat('d M Y') ?? '-' }}</td>
                                 <td>{{ $a->jenis_alat_tangkap ?? '-' }}</td>
-                                <td>{{ $a->ukuran_kapal }}</td>
-                                <td class="num">{{ number_format($a->jumlah_kapal, 0, ',', '.') }}</td>
+                                <td class="text-center">{{ $a->ukuran_kapal }}</td>
                                 <td class="num">{{ number_format($a->jumlah_abk, 0, ',', '.') }}</td>
-                                <td class="text-center">{{ $a->status_dokumen ?? '-' }}</td>
+                                <td>
+                                    @forelse ($a->dokumens as $d)
+                                        <span class="badge bg-light text-dark border">{{ $d->nama_dokumen }}</span>
+                                    @empty
+                                        -
+                                    @endforelse
+                                </td>
                                 <td class="text-center">
                                     @if ($a->latitude !== null && $a->longitude !== null)
                                         <a href="https://www.google.com/maps?q={{ $a->latitude }},{{ $a->longitude }}" target="_blank" rel="noopener">{{ $a->latitude }}, {{ $a->longitude }}</a>
@@ -120,18 +133,28 @@
                                 </td>
                             </tr>
                         @empty
-                            <tr><td colspan="8" class="text-center text-muted">Belum ada data</td></tr>
+                            <tr><td colspan="8" class="text-center text-muted">Belum ada data trip</td></tr>
                         @endforelse
                     </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="4" class="text-center">Total</td>
-                            <td class="num">{{ number_format($laporan->total_kapal, 0, ',', '.') }}</td>
-                            <td class="num">{{ number_format($laporan->total_abk, 0, ',', '.') }}</td>
-                            <td colspan="2"></td>
-                        </tr>
-                    </tfoot>
                 </table>
+
+                @if ($laporan->rekap_kapal->isNotEmpty())
+                    <div class="section-heading mt-3">Rekap Kapal Beroperasi</div>
+                    <table class="recap" style="max-width: 500px;">
+                        <thead>
+                            <tr><th>Nama Kapal</th><th>Ukuran (GT)</th><th>Jumlah Trip Bulan Ini</th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($laporan->rekap_kapal as $namaKapal => $r)
+                                <tr>
+                                    <td>{{ $namaKapal }}</td>
+                                    <td class="text-center">{{ $r['ukuran_kapal'] }}</td>
+                                    <td class="text-center">{{ $r['jumlah_trip'] }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
             </div>
 
             {{-- PRODUKSI IKAN DOMINAN --}}
