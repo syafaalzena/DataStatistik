@@ -28,6 +28,7 @@
             padding: 14px 0; 
             margin-bottom: 1.5rem; 
         }
+        
         .brand-wrapper { 
             display: flex; 
             align-items: center; 
