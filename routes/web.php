@@ -228,6 +228,7 @@ Route::put('/tangkap/pelabuhan/{pelabuhan}', [PelabuhanController::class, 'updat
 Route::delete('/tangkap/pelabuhan/{pelabuhan}', [PelabuhanController::class, 'destroy'])->name('pelabuhan.destroy');
 
 Route::get('/tangkap/{kabupaten}/laporan-operasional', [LaporanOperasionalController::class, 'index'])->name('laporan-operasional.index');
+Route::post('/tangkap/{kabupaten}/laporan-operasional',[LaporanOperasionalController::class, 'store'])->name('laporan-operasional.store');
 
 // Trip Tangkap
 Route::get('/tangkap/{kabupaten}/trip', [TripTangkapController::class, 'input'])->name('tangkap.trip.input');
