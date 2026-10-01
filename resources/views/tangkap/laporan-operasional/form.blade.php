@@ -187,7 +187,7 @@
         <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
 
-        <form method="POST" action="{{ $laporan ? route('laporan-operasional.update', $laporan) : route('laporan-operasional.store', $kabupaten->id) }}">
+        <form method="POST" action="{{ $laporan ? route('laporan-operasional.update', $laporan) : route('laporan-operasional.store', $kabupaten->id) }}" enctype="multipart/form-data">
         @csrf
         @if ($laporan) @method('PUT') @endif
 
@@ -251,6 +251,8 @@
                         $lng = is_object($row) ? $row->longitude : old("longitude.$i");
                         $ukuran = is_object($row) ? $row->ukuran_kapal : ($row ?? old("ukuran_kapal.$i"));
                         $jmlAbk = is_object($row) ? $row->jumlah_abk : old("jumlah_abk.$i");
+                        $fotoLama = is_object($row) ? optional($row->foto)->foto : null;
+                        $lokasiFoto = is_object($row) ? optional($row->foto)->lokasi : old("lokasi_foto.$i");
                     @endphp
                     <div class="row-input row g-2 align-items-end" data-index="{{ $i }}">
                         <div class="col-md-3">
@@ -287,6 +289,22 @@
                                 @endif
                             </div>
                             <button type="button" class="btn btn-sm btn-outline-secondary btn-tambah-dokumen mt-1">+ Tambah Dokumen</button>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="field-label">Foto Kapal</label>
+                            <input type="file" name="foto[{{ $i }}]" class="form-control" accept="image/*">
+                            <input type="hidden" name="foto_lama[{{ $i }}]" value="{{ $fotoLama }}">
+                            @if ($fotoLama)
+                                <div class="small text-muted mt-1">
+                                    <img src="{{ Storage::url($fotoLama) }}" style="height:40px;border-radius:6px;" class="me-1">
+                                    Foto sudah ada, upload baru untuk mengganti.
+                                </div>
+                            @endif
+                        </div>
+                        <div class="col-md-3">
+                            <label class="field-label">Lokasi</label>
+                            <input type="text" name="lokasi_foto[{{ $i }}]" class="form-control" value="{{ $lokasiFoto }}" placeholder="cth: Dermaga Lampulo">
                         </div>
 
                         <div class="col-md-4">
@@ -406,6 +424,7 @@
                         $jenis = is_object($row) ? $row->jenis_ikan : ($row ?? old("jenis_ikan_pemasaran.$i"));
                         $qty = is_object($row) ? $row->quantity_kg : old("quantity_kg.$i");
                         $tujuan = is_object($row) ? $row->tujuan : old("tujuan.$i");
+                        $namaPt = is_object($row) ? $row->nama_pt : old("nama_pt.$i");
                     @endphp
                     <div class="row-input row g-2 align-items-end">
                         <div class="col-md-2">
@@ -424,9 +443,13 @@
                             <label class="field-label">Quantity (Kg)</label>
                             <input type="number" step="0.01" name="quantity_kg[]" class="form-control" value="{{ $qty }}">
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label class="field-label">Tujuan (Kabupaten/Provinsi/Negara)</label>
                             <input type="text" name="tujuan[]" class="form-control" value="{{ $tujuan }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="field-label">Nama PT (opsional)</label>
+                            <input type="text" name="nama_pt[]" class="form-control" value="{{ $namaPt }}" placeholder="cth: PT Samudra Jaya">
                         </div>
                         <div class="col-md-1">
                             <button type="button" class="btn-remove-row" onclick="this.closest('.row-input').remove()">Hapus</button>
@@ -700,6 +723,15 @@ document.getElementById('petaGunakan').addEventListener('click', function () {
             </div>
 
             <div class="col-md-4">
+                <label class="field-label">Foto Kapal</label>
+                <input type="file" name="foto[${idx}]" class="form-control" accept="image/*">
+            </div>
+            <div class="col-md-3">
+                <label class="field-label">Lokasi</label>
+                <input type="text" name="lokasi_foto[${idx}]" class="form-control" placeholder="cth: Dermaga Lampulo">
+            </div>
+
+            <div class="col-md-4">
                 <label class="field-label">Titik Koordinat</label>
                 <input type="hidden" name="latitude[${idx}]">
                 <input type="hidden" name="longitude[${idx}]">
@@ -792,9 +824,13 @@ document.getElementById('petaGunakan').addEventListener('click', function () {
                 <label class="field-label">Quantity (Kg)</label>
                 <input type="number" step="0.01" name="quantity_kg[]" class="form-control">
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <label class="field-label">Tujuan (Kabupaten/Provinsi/Negara)</label>
                 <input type="text" name="tujuan[]" class="form-control">
+            </div>
+            <div class="col-md-3">
+                <label class="field-label">Nama PT (opsional)</label>
+                <input type="text" name="nama_pt[]" class="form-control" placeholder="cth: PT Samudra Jaya">
             </div>
             <div class="col-md-1">
                 <button type="button" class="btn-remove-row" onclick="this.closest('.row-input').remove()">Hapus</button>

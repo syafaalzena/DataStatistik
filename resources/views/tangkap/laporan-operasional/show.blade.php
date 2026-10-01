@@ -155,6 +155,42 @@
                         </tbody>
                     </table>
                 @endif
+
+                {{-- DOKUMENTASI FOTO KAPAL --}}
+                <div class="col-12">
+                    <div class="section-heading mt-3">Dokumentasi Foto Kapal Per Trip</div>
+                    <table class="recap">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Nama Kapal</th>
+                                <th>Tanggal Berangkat</th>
+                                <th>Foto</th>
+                                <th>Lokasi</th>
+                                <th>Jam Upload</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php $tripDenganFoto = $laporan->armadaTangkap->filter(fn ($a) => $a->foto); @endphp
+                            @forelse ($tripDenganFoto as $i => $a)
+                                <tr>
+                                    <td class="text-center">{{ $i + 1 }}</td>
+                                    <td>{{ $a->nama_armada ?? '-' }}</td>
+                                    <td class="text-center">{{ optional($a->tanggal_berangkat)->translatedFormat('d M Y') ?? '-' }}</td>
+                                    <td class="text-center">
+                                        <a href="{{ $a->foto->url }}" target="_blank">
+                                            <img src="{{ $a->foto->url }}" style="height:60px;border-radius:6px;">
+                                        </a>
+                                    </td>
+                                    <td>{{ $a->foto->lokasi ?? '-' }}</td>
+                                    <td class="text-center">{{ $a->foto->jam_upload }}</td>
+                                </tr>
+                            @empty
+                                <tr><td colspan="6" class="text-center text-muted">Belum ada foto yang diupload</td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             {{-- PRODUKSI IKAN DOMINAN --}}
@@ -244,6 +280,7 @@
                             <th>Jenis Ikan</th>
                             <th>Quantity (Kg)</th>
                             <th>Tujuan</th>
+                            <th>Nama PT</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -254,6 +291,7 @@
                                 <td>{{ $pm->jenis_ikan }}</td>
                                 <td class="num">{{ number_format($pm->quantity_kg, 0, ',', '.') }}</td>
                                 <td>{{ $pm->tujuan ?? '-' }}</td>
+                                <td>{{$pm->nama_pt ?? '-'}}</td>
                             </tr>
                         @empty
                             <tr><td colspan="5" class="text-center text-muted">Belum ada data</td></tr>

@@ -36,4 +36,9 @@ class LaporanArmadaTangkap extends Model
     {
         return $this->hasMany(LaporanArmadaDokumen::class)->orderBy('urutan');
     }
+
+    public function foto()
+    {
+        return $this->hasOne(LaporanArmadaFoto::class);
+    }
 }

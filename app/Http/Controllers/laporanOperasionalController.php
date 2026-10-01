@@ -71,14 +71,14 @@ class LaporanOperasionalController extends Controller
 
     public function show(LaporanOperasional $laporanOperasional)
     {
-        $laporanOperasional->load(['pelabuhan.kabupatenIkan', 'armadaTangkap.dokumens', 'produksiIkan', 'logistik', 'pemasaran']);
+        $laporanOperasional->load(['pelabuhan.kabupatenIkan', 'armadaTangkap.dokumens', 'armadaTangkap.foto', 'produksiIkan', 'logistik', 'pemasaran']);
 
         return view('tangkap.laporan-operasional.show', ['laporan' => $laporanOperasional]);
     }
 
     public function edit(LaporanOperasional $laporanOperasional)
     {
-        $laporanOperasional->load(['armadaTangkap.dokumens', 'produksiIkan', 'logistik', 'pemasaran', 'pelabuhan.kabupatenIkan']);
+        $laporanOperasional->load(['armadaTangkap.dokumens', 'armadaTangkap.foto', 'produksiIkan', 'logistik', 'pemasaran', 'pelabuhan.kabupatenIkan']);
 
         $kabupaten = $laporanOperasional->pelabuhan->kabupatenIkan;
         $pelabuhanList = Pelabuhan::where('kabupaten_ikan_id', $kabupaten->id)->orderBy('nama')->get();
@@ -187,6 +187,12 @@ class LaporanOperasionalController extends Controller
             'dokumen_nama' => ['array'],
             'dokumen_nama.*' => ['array'],
             'dokumen_nama.*.*' => ['nullable', 'string', 'max:150'],
+            'foto' => ['array'],
+            'foto.*' => ['nullable', 'image', 'max:5120'], //5120 = 5mb perfoto
+            'foto_lama' => ['array'],
+            'foto_lama.*' => ['nullable', 'string'],
+            'lokasi_foto' => ['array'], 
+            'lokasi_foto.*' => ['nullable', 'string', 'max:150'],
 
             'jenis_ikan' => ['array'],
             'jenis_ikan.*' => ['nullable', 'string', 'max:150'],
@@ -214,6 +220,8 @@ class LaporanOperasionalController extends Controller
             'quantity_kg.*' => ['nullable', 'numeric', 'min:0'],
             'tujuan' => ['array'],
             'tujuan.*' => ['nullable', 'string', 'max:150'],
+            'nama_pt'=>['array'],
+            'nama_pt.*' => ['nullable', 'string', 'max:150'],
         ]);
     }
 
@@ -244,6 +252,21 @@ class LaporanOperasionalController extends Controller
                 $trip->dokumens()->create([
                     'nama_dokumen' => $namaDok,
                     'urutan' => $j,
+                ]);
+            }
+
+            // Foto kapal (1 foto per trip)
+            $fotoPath = null;
+            if ($request->hasFile("foto.$i")) {
+                $fotoPath = $request->file("foto.$i")->store('kapal-photos', 'public');
+            } elseif ($request->filled("foto_lama.$i")) {
+                $fotoPath = $request->input("foto_lama.$i");
+            }
+
+            if ($fotoPath) {
+                $trip->foto()->create([
+                    'foto' => $fotoPath,
+                    'lokasi' => $request->input("lokasi_foto.$i"),
                 ]);
             }
         }
@@ -298,6 +321,7 @@ class LaporanOperasionalController extends Controller
                 'jenis_ikan' => $jenis,
                 'quantity_kg' => (float) $request->input("quantity_kg.$i", 0),
                 'tujuan' => $request->input("tujuan.$i"),
+                'nama_pt' => $request->input("nama_pt.$i"),
                 'urutan' => $i,
             ]);
         }

@@ -15,6 +15,7 @@ class LaporanPemasaran extends Model
         'jenis_ikan',
         'quantity_kg',
         'tujuan',
+        'nama_pt',
         'urutan',
     ];
 
