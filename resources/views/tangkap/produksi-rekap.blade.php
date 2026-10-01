@@ -71,10 +71,6 @@
         </div>
     </div>
 
-    <div class="mb-3">
-        <h4 class="fw-bold">Data Produksi Tangkap &mdash; {{ $kabupaten->nama_kabupaten }}</h4>
-    </div>
-
     <form method="GET" class="panel-card mb-3 no-print">
     <div class="row g-2 align-items-end">
         <div class="col-6 col-md-3">

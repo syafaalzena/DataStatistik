@@ -118,16 +118,7 @@
                             <td>Rp {{ number_format($d->nilai_rp, 0, ',', '.') }}</td>
                             <td>
                                 <div class="d-flex justify-content-center align-items-center gap-2">
-                                    <button type="button"
-                                        onclick="bukaEdit(
-                                            {{ $d->id }},
-                                            {{ $d->bulan }},
-                                            {{ $d->tahun }},
-                                            {{ $d->volume_produksi_kg }},
-                                            {{ $d->harga_rp }},
-                                            '{{ addslashes($d->pelabuhan->nama ?? '-') }}',
-                                            '{{ addslashes($d->komoditasIkan->nama_ikan ?? '-') }}'
-                                        )" class="btn-delete-sm" style="color:#0f172a;">Edit</button>
+                                        <a href="{{ route('tangkap.produksi.edit', $d->id) }}" class="btn-delete-sm" style="color:#0f172a; text-decoration:none;">Edit</a>
                                     <form method="POST" action="{{ route('tangkap.produksi.destroy', $d->id) }}"
                                           onsubmit="return confirm('Hapus data ini?');" class="d-inline mb-0">
                                         @csrf
