@@ -7,8 +7,7 @@
        class="tab-item {{ request()->routeIs('tangkap.trip.*') ? 'active' : '' }}">
         Data Trip
     </a>
-    <a href="{{ route('tangkap.tahunan.input', $kabupaten->id) }}"
-       class="tab-item {{ request()->routeIs('tangkap.tahunan.*') ? 'active' : '' }}">
+    <span class="tab-item disabled" title="Segera hadir">
         Data Tahunan
-    </a>
+    </span>
 </div>

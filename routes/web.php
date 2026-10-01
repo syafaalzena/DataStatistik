@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\TangkapMenuController;
 use App\Http\Controllers\ProduksiTangkapController;
 use App\Http\Controllers\TripTangkapController;
+use App\Http\Controllers\TahunanTangkapController;
 use App\Http\Controllers\LaporanOperasionalController;
 use App\Http\Controllers\KomoditasIkanController;
 use App\Http\Controllers\PelabuhanController;
@@ -229,17 +230,29 @@ Route::delete('/tangkap/pelabuhan/{pelabuhan}', [PelabuhanController::class, 'de
 
 Route::get('/tangkap/{kabupaten}/laporan-operasional', [LaporanOperasionalController::class, 'index'])->name('laporan-operasional.index');
 
-// Trip Tangkap
-Route::get('/tangkap/{kabupaten}/trip', [TripTangkapController::class, 'input'])->name('tangkap.trip.input');
-Route::get('/tangkap/{kabupaten}/trip/create', [TripTangkapController::class, 'create'])->name('tangkap.trip.create');
-Route::post('/tangkap/{kabupaten}/trip', [TripTangkapController::class, 'store'])->name('tangkap.trip.store');
-Route::put('/tangkap/trip/{trip}', [TripTangkapController::class, 'update'])->name('tangkap.trip.update');
-Route::delete('/tangkap/trip/{trip}', [TripTangkapController::class, 'destroy'])->name('tangkap.trip.destroy');
-Route::get('/tangkap/{kabupaten}/laporan-operasional/create', [LaporanOperasionalController::class, 'create'])->name('laporan-operasional.create');
+// Trip Tangkap (dobel route sebelumnya dibersihkan, ini versi final tanpa duplikat)
 Route::get('/tangkap/{kabupaten}/trip', [TripTangkapController::class, 'input'])->name('tangkap.trip.input');
 Route::get('/tangkap/{kabupaten}/trip/create', [TripTangkapController::class, 'create'])->name('tangkap.trip.create');
 Route::get('/tangkap/{kabupaten}/trip/rekap', [TripTangkapController::class, 'rekap'])->name('tangkap.trip.rekap');
+Route::get('/tangkap/{kabupaten}/trip/export', [TripTangkapController::class, 'export'])->name('tangkap.trip.export');
+Route::get('/tangkap/{kabupaten}/trip/export-pdf', [TripTangkapController::class, 'exportPdf'])->name('tangkap.trip.exportPdf');
 Route::post('/tangkap/{kabupaten}/trip', [TripTangkapController::class, 'store'])->name('tangkap.trip.store');
+Route::get('/tangkap/trip/{trip}/edit', [TripTangkapController::class, 'edit'])->name('tangkap.trip.edit');
 Route::put('/tangkap/trip/{trip}', [TripTangkapController::class, 'update'])->name('tangkap.trip.update');
 Route::delete('/tangkap/trip/{trip}', [TripTangkapController::class, 'destroy'])->name('tangkap.trip.destroy');
+
+Route::get('/tangkap/produksi/{produksi}/edit', [ProduksiTangkapController::class, 'edit'])->name('tangkap.produksi.edit');
+
+Route::get('/tangkap/{kabupaten}/laporan-operasional/create', [LaporanOperasionalController::class, 'create'])->name('laporan-operasional.create');
+
+// Tahunan Tangkap
+Route::get('/tangkap/{kabupaten}/tahunan', [TahunanTangkapController::class, 'input'])->name('tangkap.tahunan.input');
+Route::get('/tangkap/{kabupaten}/tahunan/create', [TahunanTangkapController::class, 'create'])->name('tangkap.tahunan.create');
+Route::get('/tangkap/{kabupaten}/tahunan/rekap', [TahunanTangkapController::class, 'rekap'])->name('tangkap.tahunan.rekap');
+Route::get('/tangkap/{kabupaten}/tahunan/export', [TahunanTangkapController::class, 'export'])->name('tangkap.tahunan.export');
+Route::get('/tangkap/{kabupaten}/tahunan/export-pdf', [TahunanTangkapController::class, 'exportPdf'])->name('tangkap.tahunan.exportPdf');
+Route::post('/tangkap/{kabupaten}/tahunan', [TahunanTangkapController::class, 'store'])->name('tangkap.tahunan.store');
+Route::get('/tangkap/tahunan/{tahunan}/edit', [TahunanTangkapController::class, 'edit'])->name('tangkap.tahunan.edit');
+Route::put('/tangkap/tahunan/{tahunan}', [TahunanTangkapController::class, 'update'])->name('tangkap.tahunan.update');
+Route::delete('/tangkap/tahunan/{tahunan}', [TahunanTangkapController::class, 'destroy'])->name('tangkap.tahunan.destroy');
 });
