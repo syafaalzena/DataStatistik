@@ -236,16 +236,7 @@ Route::get('/tangkap/laporan-operasional/{laporanOperasional}/edit', [LaporanOpe
 Route::put('/tangkap/laporan-operasional/{laporanOperasional}', [LaporanOperasionalController::class, 'update'])->name('laporan-operasional.update');
 Route::delete('/tangkap/laporan-operasional/{laporanOperasional}', [LaporanOperasionalController::class, 'destroy'])->name('laporan-operasional.destroy');
 
-<<<<<<< HEAD
-// Trip Tangkap
-Route::get('/tangkap/{kabupaten}/trip', [TripTangkapController::class, 'input'])->name('tangkap.trip.input');
-Route::get('/tangkap/{kabupaten}/trip/create', [TripTangkapController::class, 'create'])->name('tangkap.trip.create');
-Route::post('/tangkap/{kabupaten}/trip', [TripTangkapController::class, 'store'])->name('tangkap.trip.store');
-Route::put('/tangkap/trip/{trip}', [TripTangkapController::class, 'update'])->name('tangkap.trip.update');
-Route::delete('/tangkap/trip/{trip}', [TripTangkapController::class, 'destroy'])->name('tangkap.trip.destroy');
-=======
 // Trip Tangkap (dobel route sebelumnya dibersihkan, ini versi final tanpa duplikat)
->>>>>>> d1850c38c53b592c8d0c043c84efb602a691ba76
 Route::get('/tangkap/{kabupaten}/trip', [TripTangkapController::class, 'input'])->name('tangkap.trip.input');
 Route::get('/tangkap/{kabupaten}/trip/create', [TripTangkapController::class, 'create'])->name('tangkap.trip.create');
 Route::get('/tangkap/{kabupaten}/trip/rekap', [TripTangkapController::class, 'rekap'])->name('tangkap.trip.rekap');
