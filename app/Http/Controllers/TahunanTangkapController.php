@@ -20,7 +20,6 @@ class TahunanTangkapController extends Controller
         $dataTahunan = TahunanTangkap::with(['pelabuhan', 'wppnri', 'jenisApi', 'kategoriUkuranKapal'])
             ->where('kabupaten_ikan_id', $kabupatenId)
             ->orderByDesc('tahun')
-            ->orderByDesc('bulan')
             ->get();
 
         return view('tangkap.tahunan', compact('kabupaten', 'dataTahunan'));
@@ -42,7 +41,6 @@ class TahunanTangkapController extends Controller
     public function store(Request $request, $kabupatenId)
     {
         $request->validate([
-            'bulan' => ['required', 'integer', 'between:1,12'],
             'tahun' => ['required', 'integer', 'digits:4'],
             'pelabuhan_id' => ['required', 'array', 'min:1'],
             'pelabuhan_id.*' => ['required', 'exists:pelabuhans,id'],
@@ -67,7 +65,6 @@ class TahunanTangkapController extends Controller
                 'jenis_lk' => $request->jenis_lk[$i],
                 'jenis_api_id' => $request->jenis_api_id[$i],
                 'kategori_ukuran_kapal_id' => $request->kategori_ukuran_kapal_id[$i],
-                'bulan' => $request->bulan,
                 'tahun' => $request->tahun,
                 'jumlah_rtp' => $rtp,
                 'jumlah_kapal' => $request->jumlah_kapal[$i],
@@ -101,7 +98,6 @@ class TahunanTangkapController extends Controller
             'jenis_lk' => ['required', 'in:Pelabuhan,Non Pelabuhan'],
             'jenis_api_id' => ['required', 'exists:jenis_apis,id'],
             'kategori_ukuran_kapal_id' => ['required', 'exists:kategori_ukuran_kapals,id'],
-            'bulan' => ['required', 'integer', 'between:1,12'],
             'tahun' => ['required', 'integer', 'digits:4'],
             'jumlah_rtp' => ['required', 'integer', 'min:0'],
             'jumlah_kapal' => ['required', 'integer', 'min:0'],
@@ -126,9 +122,9 @@ class TahunanTangkapController extends Controller
     public function rekap($kabupatenId, Request $request)
     {
         $kabupaten = KabupatenIkan::findOrFail($kabupatenId);
-        $rekapBulanan = $this->rekapQuery($kabupatenId, $request)->get();
+        $rekapTahunan = $this->rekapQuery($kabupatenId, $request)->get();
 
-        return view('tangkap.tahunan-rekap', compact('kabupaten', 'rekapBulanan'));
+        return view('tangkap.tahunan-rekap', compact('kabupaten', 'rekapTahunan'));
     }
 
     public function export($kabupatenId, Request $request)
@@ -144,9 +140,9 @@ class TahunanTangkapController extends Controller
     public function exportPdf($kabupatenId, Request $request)
     {
         $kabupaten = KabupatenIkan::findOrFail($kabupatenId);
-        $rekapBulanan = $this->rekapQuery($kabupatenId, $request)->get();
+        $rekapTahunan = $this->rekapQuery($kabupatenId, $request)->get();
 
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('exports.rekap_tahunan_tangkap', compact('kabupaten', 'rekapBulanan'))
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('exports.rekap_tahunan_tangkap', compact('kabupaten', 'rekapTahunan'))
             ->setPaper('a4', 'landscape');
 
         return $pdf->download('tahunan-tangkap-' . \Illuminate\Support\Str::slug($kabupaten->nama_kabupaten) . '.pdf');
@@ -164,14 +160,9 @@ class TahunanTangkapController extends Controller
         if ($request->filled('tahun')) {
             $query->where('tahunan_tangkaps.tahun', $request->tahun);
         }
-        if ($request->filled('semester')) {
-            $range = $request->semester == 1 ? [1, 6] : [7, 12];
-            $query->whereBetween('tahunan_tangkaps.bulan', $range);
-        }
 
         return $query->selectRaw('
                 tahunan_tangkaps.tahun as tahun,
-                tahunan_tangkaps.bulan as bulan,
                 pelabuhans.nama as nama_pelabuhan,
                 wppnris.kode as kode_wppnri,
                 tahunan_tangkaps.jenis_lk as jenis_lk,
@@ -185,9 +176,9 @@ class TahunanTangkapController extends Controller
                 SUM(tahunan_tangkaps.jumlah_nelayan) as total_nelayan
             ')
             ->groupBy(
-                'tahunan_tangkaps.tahun', 'tahunan_tangkaps.bulan', 'pelabuhans.nama', 'wppnris.kode',
+                'tahunan_tangkaps.tahun', 'pelabuhans.nama', 'wppnris.kode',
                 'tahunan_tangkaps.jenis_lk', 'jenis_apis.nama', 'kategori_ukuran_kapals.label'
             )
-            ->orderBy('tahunan_tangkaps.tahun')->orderBy('tahunan_tangkaps.bulan')->orderBy('pelabuhans.nama');
+            ->orderBy('tahunan_tangkaps.tahun')->orderBy('pelabuhans.nama');
     }
 }

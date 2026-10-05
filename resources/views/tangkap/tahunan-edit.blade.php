@@ -49,7 +49,7 @@
         <div>
             <span class="kab-badge">{{ $kabupaten->nama_kabupaten }}</span>
             <h2 class="fw-bold mb-1">Edit Data Tahunan</h2>
-            <p class="text-muted mb-0">Ubah rekap bulan ini.</p>
+            <p class="text-muted mb-0">Ubah rekap tahun ini.</p>
         </div>
     </div>
 
@@ -69,14 +69,6 @@
 
         <div class="form-card mb-4">
             <div class="row g-3">
-                <div class="col-md-4">
-                    <label class="form-label">Bulan</label>
-                    <select name="bulan" class="form-select" required>
-                        @foreach (['1'=>'Januari','2'=>'Februari','3'=>'Maret','4'=>'April','5'=>'Mei','6'=>'Juni','7'=>'Juli','8'=>'Agustus','9'=>'September','10'=>'Oktober','11'=>'November','12'=>'Desember'] as $val => $label)
-                            <option value="{{ $val }}" {{ old('bulan', $tahunan->bulan) == $val ? 'selected' : '' }}>{{ $label }}</option>
-                        @endforeach
-                    </select>
-                </div>
                 <div class="col-md-4">
                     <label class="form-label">Tahun</label>
                     <input type="number" name="tahun" class="form-control" value="{{ old('tahun', $tahunan->tahun) }}" required>

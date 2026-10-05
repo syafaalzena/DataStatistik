@@ -61,7 +61,7 @@
         <div>
             <span class="kab-badge">{{ $kabupaten->nama_kabupaten }}</span>
             <h2 class="fw-bold mb-1">Data Tahunan Tangkap</h2>
-            <p class="text-muted mb-0">Rekapitulasi RTP, kapal, alat tangkap, dan nelayan per bulan.</p>
+            <p class="text-muted mb-0">Rekapitulasi RTP, kapal, alat tangkap, dan nelayan per tahun.</p>
         </div>
     </div>
 
@@ -77,7 +77,7 @@
     </div>
 
     <div class="mb-3">
-        <input type="text" id="searchInput" class="form-control" placeholder="Cari pelabuhan, jenis API, bulan, tahun...">
+        <input type="text" id="searchInput" class="form-control" placeholder="Cari pelabuhan, jenis API, tahun...">
     </div>
 
     <div id="riwayatTahunan" class="riwayat-table mb-4">
@@ -88,7 +88,7 @@
             <table class="table table-hover text-center align-middle mb-0">
                 <thead>
                     <tr>
-                        <th>Bulan/Tahun</th>
+                        <th>Tahun</th>
                         <th>Pelabuhan</th>
                         <th>WPPNRI</th>
                         <th>Jenis LK</th>
@@ -105,7 +105,7 @@
                 <tbody>
                     @foreach ($dataTahunan as $d)
                         <tr>
-                            <td>{{ \Carbon\Carbon::create()->month($d->bulan)->translatedFormat('F') }} {{ $d->tahun }}</td>
+                            <td>{{ $d->tahun }}</td>
                             <td>{{ $d->pelabuhan->nama ?? '-' }}</td>
                             <td>{{ $d->wppnri->kode ?? '-' }}</td>
                             <td>{{ $d->jenis_lk }}</td>

@@ -16,7 +16,6 @@ class TahunanTangkap extends Model
         'jenis_lk',
         'jenis_api_id',
         'kategori_ukuran_kapal_id',
-        'bulan',
         'tahun',
         'jumlah_rtp',
         'jumlah_kapal',
@@ -48,15 +47,5 @@ class TahunanTangkap extends Model
     public function kategoriUkuranKapal()
     {
         return $this->belongsTo(KategoriUkuranKapal::class);
-    }
-
-    public function getTriwulanAttribute(): int
-    {
-        return (int) ceil($this->bulan / 3);
-    }
-
-    public function getSemesterAttribute(): int
-    {
-        return $this->bulan <= 6 ? 1 : 2;
     }
 }
