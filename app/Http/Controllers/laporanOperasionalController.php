@@ -76,6 +76,29 @@ class LaporanOperasionalController extends Controller
         return view('tangkap.laporan-operasional.show', ['laporan' => $laporanOperasional]);
     }
 
+    //untuk dw pdf dan excel
+
+    public function exportPdf(LaporanOperasional $laporanOperasional)
+    {
+        $laporanOperasional->load(['pelabuhan.kabupatenIkan', 'armadaTangkap.dokumens', 'armadaTangkap.foto', 'produksiIkan', 'logistik', 'pemasaran']);
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('tangkap.laporan-operasional.pdf', ['laporan' => $laporanOperasional])
+        ->setPaper('a4', 'portrait');
+
+        $namaFile = 'laporan-operasional-' . \Illuminate\Support\Str::slug($laporanOperasional->pelabuhan->nama) . '-' . \Illuminate\Support\Str::slug($laporanOperasional->nama_bulan) . '-' . $laporanOperasional->tahun . '.pdf';
+
+        return $pdf->download($namaFile);
+    }
+
+    public function exportExcel(LaporanOperasional $laporanOperasional)
+    {
+        $laporanOperasional->load(['pelabuhan.kabupatenIkan', 'armadaTangkap.dokumens', 'produksiIkan', 'logistik', 'pemasaran']);
+
+        $namaFile = 'laporan-operasional-' . \Illuminate\Support\Str::slug($laporanOperasional->pelabuhan->nama) . '-' . \Illuminate\Support\Str::slug($laporanOperasional->nama_bulan) . '-' . $laporanOperasional->tahun . '.xlsx';
+
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\LaporanOperasionalExport($laporanOperasional), $namaFile);
+    }
+
     public function edit(LaporanOperasional $laporanOperasional)
     {
         $laporanOperasional->load(['armadaTangkap.dokumens', 'armadaTangkap.foto', 'produksiIkan', 'logistik', 'pemasaran', 'pelabuhan.kabupatenIkan']);

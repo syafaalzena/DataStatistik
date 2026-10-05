@@ -235,6 +235,8 @@ Route::get('/tangkap/laporan-operasional/{laporanOperasional}', [LaporanOperasio
 Route::get('/tangkap/laporan-operasional/{laporanOperasional}/edit', [LaporanOperasionalController::class, 'edit'])->name('laporan-operasional.edit');
 Route::put('/tangkap/laporan-operasional/{laporanOperasional}', [LaporanOperasionalController::class, 'update'])->name('laporan-operasional.update');
 Route::delete('/tangkap/laporan-operasional/{laporanOperasional}', [LaporanOperasionalController::class, 'destroy'])->name('laporan-operasional.destroy');
+Route::get('/tangkap/laporan-operasional/{laporanOperasional}/pdf',[LaporanOperasionalController::class, 'exportPdf'])->name('laporan-operasional.pdf');
+Route::get('/tangkap/laporan-operasional/{laporanOperasional}/excel', [LaporanOperasionalController::class, 'exportExcel'])->name('laporan-operasional.excel');
 
 // Trip Tangkap (dobel route sebelumnya dibersihkan, ini versi final tanpa duplikat)
 Route::get('/tangkap/{kabupaten}/trip', [TripTangkapController::class, 'input'])->name('tangkap.trip.input');
