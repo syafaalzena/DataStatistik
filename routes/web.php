@@ -209,6 +209,8 @@ Route::get('/tangkap', [TangkapMenuController::class, 'index'])->name('tangkap.i
 Route::get('/tangkap/produksi', [ProduksiTangkapController::class, 'index'])->name('tangkap.produksi.index');
 Route::get('/tangkap/laporan-operasional', [LaporanOperasionalController::class, 'pilihKabupaten'])->name('laporan-operasional.pilih-kabupaten');
 Route::get('/tangkap/laporan-operasional/rekap', [LaporanOperasionalController::class, 'rekapTahunan'])->name('laporan-operasional.rekap');
+Route::get('/tangkap/laporan-operasional/rekap/pdf', [LaporanOperasionalController::class, 'rekapTahunanPdf'])->name('laporan-operasional.rekap.pdf');
+Route::get('/tangkap/laporan-operasional/rekap/excel', [LaporanOperasionalController::class, 'rekapTahunanExcel'])->name('laporan-operasional.rekap.excel');
 
 Route::get('/tangkap/{kabupaten}', [ProduksiTangkapController::class, 'input'])->name('tangkap.input');
 Route::get('/tangkap/{kabupaten}/produksi/create', [ProduksiTangkapController::class, 'create'])->name('tangkap.produksi.create');

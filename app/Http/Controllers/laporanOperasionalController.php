@@ -155,6 +155,33 @@ class LaporanOperasionalController extends Controller
 
     public function rekapTahunan(Request $request)
     {
+        $data = $this->dataRekapTahunan($request);
+
+        return view('tangkap.laporan-operasional.rekap', $data);
+    }
+
+    public function rekapTahunanPdf(Request $request)
+    {
+        $data = $this->dataRekapTahunan($request);
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('tangkap.laporan-operasional.rekap-pdf', $data)
+            ->setPaper('a4', 'landscape');
+
+        return $pdf->download('rekap-tahunan-' . $data['tahun'] . '.pdf');
+    }
+
+    public function rekapTahunanExcel(Request $request)
+    {
+        $data = $this->dataRekapTahunan($request);
+
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new \App\Exports\RekapTahunanOperasionalExport($data['laporans'], $data['tahun'], $data['grandTotalProduksi'], $data['grandTotalNilai']),
+            'rekap-tahunan-' . $data['tahun'] . '.xlsx'
+        );
+    }
+
+    private function dataRekapTahunan(Request $request): array
+    {
         $tahun = (int) $request->input('tahun', now()->year);
 
         $tahunTersedia = LaporanOperasional::select('tahun')->distinct()->orderByDesc('tahun')->pluck('tahun');
@@ -181,7 +208,7 @@ class LaporanOperasionalController extends Controller
             }
         }
 
-        return view('tangkap.laporan-operasional.rekap', compact('laporans', 'tahun', 'tahunTersedia', 'grandTotalProduksi', 'grandTotalNilai'));
+        return compact('laporans', 'tahun', 'tahunTersedia', 'grandTotalProduksi', 'grandTotalNilai');
     }
 
     private function validateData(Request $request): array
