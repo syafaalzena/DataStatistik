@@ -73,12 +73,6 @@
                 <p class="text-muted mb-0">Semua kabupaten & pelabuhan, dikelompokkan per tahun.</p>
             </div>
         </div>
-        <!-- <div class="d-flex gap-2">
-            <button onclick="window.print()" class="btn btn-outline-secondary">Cetak</button>
-            <a href="{{ route('laporan-operasional.rekap.pdf', ['tahun' => $tahun]) }}" class="btn-dark-custom">Download PDF</a>
-            <a href="{{ route('laporan-operasional.rekap.excel', ['tahun' => $tahun]) }}" class="btn-dark-custom">Download Excel</a>
-        </div> -->
-
         <div class="d-flex gap-2">
             <button onclick="window.print()" class="btn btn-outline-secondary">Cetak</button>
             <a href="{{ route('laporan-operasional.rekap.pdf', ['tahun' => $tahun]) }}" class="btn-dark-custom">PDF</a>
