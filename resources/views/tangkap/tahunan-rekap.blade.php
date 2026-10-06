@@ -15,6 +15,7 @@
 <nav class="navbar no-print">
     <div class="container d-flex justify-content-between align-items-center">
         <a href="{{ route('dashboard') }}" class="brand-wrapper">
+            <img src="{{ asset('images/pancacita.png') }}" alt="Logo Pancacita" class="brand-logo-img">
             <span class="brand-text">SIDKP</span>
         </a>
     </div>
@@ -22,26 +23,14 @@
 
 <div class="container pb-5">
 
-    {{-- ── HEADER ── --}}
-    <div class="page-header">
-        <div class="page-title-wrap">
-            <a href="{{ route('tangkap.tahunan.input', $kabupaten->id) }}" class="back-btn no-print">&larr;</a>
-            <div>
-                <span class="kab-badge">{{ $kabupaten->nama_kabupaten }}</span>
-                <h2 class="page-title">Rekap Tahunan</h2>
-                <p class="page-desc">RTP, Kapal, API, dan Nelayan dijumlahkan per tahun/pelabuhan/kombinasi.</p>
-            </div>
-        </div>
-
-        <div class="export-actions no-print">
-            <a href="{{ route('tangkap.tahunan.exportPdf', array_merge(['kabupaten' => $kabupaten->id], request()->query())) }}" class="btn-export btn-export-pdf">
-                <svg viewBox="0 0 16 16" fill="currentColor"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/></svg>
-                PDF
-            </a>
-            <a href="{{ route('tangkap.tahunan.export', array_merge(['kabupaten' => $kabupaten->id], request()->query())) }}" class="btn-export btn-export-excel">
-                <svg viewBox="0 0 16 16" fill="currentColor"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/></svg>
-                Excel
-            </a>
+    <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
+        <a href="{{ route('tangkap.tahunan.input', $kabupaten->id) }}" class="back-btn">
+            <img src="{{ asset('images/back.png') }}" alt="Back" width="22" height="22">
+        </a>
+        <div>
+            <span class="kab-badge">{{ $kabupaten->nama_kabupaten }}</span>
+            <h2 class="fw-bold mb-1">Rekap Tahunan</h2>
+            <p class="text-muted mb-0">RTP, Kapal, API, dan Nelayan dijumlahkan per tahun/pelabuhan/kombinasi.</p>
         </div>
     </div>
 
