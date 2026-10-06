@@ -35,6 +35,8 @@
             gap: 12px; t
             text-decoration: none; 
         }
+
+        .brand-logo-img { height: 40px; width: auto; }
         .brand-text { 
             font-weight: bold; 
             font-size: 26px; 
@@ -56,6 +58,9 @@
             background: #0f172a; 
             color: #fff; 
         }
+
+        .back-btn img { transition: filter .18s ease; }
+        .back-btn:hover img { filter: brightness(0) invert(1); }
         .btn-logout-icon { 
             background: transparent; 
             border: 1.5px solid rgba(248,250,252,.25);
@@ -156,6 +161,7 @@
 <nav class="navbar">
     <div class="container d-flex justify-content-between align-items-center">
         <a href="{{ route('dashboard') }}" class="brand-wrapper">
+            <img src="{{ asset('images/pancacita.png') }}" alt="Logo Pancacita" class="brand-logo-img">
             <span class="brand-text">SIDKP</span>
         </a>
         
@@ -164,7 +170,9 @@
 
 <div class="container pb-5">
     <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
-                <a href="{{ route('laporan-operasional.index', $kabupaten->id) }}" class="back-btn">&larr;</a>
+                <a href="{{ route('laporan-operasional.index', $kabupaten->id) }}" class="back-btn">
+                    <img src="{{ asset('images/back.png') }}" alt="Back" width="22" height="22">
+                </a>
         <div>
             <h2 class="fw-bold mb-1">{{ $laporan ? 'Edit' : 'Input' }} Laporan Operasional Pelabuhan</h2>
             <p class="text-muted mb-0">Isi rekapitulasi aktivitas harian pelabuhan perikanan untuk satu bulan.</p>
