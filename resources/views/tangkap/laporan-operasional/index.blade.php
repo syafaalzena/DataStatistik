@@ -135,12 +135,7 @@
             <img src="{{ asset('images/pancacita.png') }}" alt="Logo Pancacita" class="brand-logo-img">
             <span class="brand-text">SIDKP</span>
         </a>
-        <form method="POST" action="{{ route('logout') }}" class="mb-0">
-            @csrf
-            <button type="submit" class="btn-logout-icon" title="Logout">
-                <img src="{{ asset('images/logout.png') }}" alt="Logout" width="20" height="20">
-            </button>
-        </form>
+        
     </div>
 </nav>
 
@@ -196,7 +191,7 @@
                                     <a href="{{ route('laporan-operasional.show', $l) }}" class="btn-icon-sm text-primary">Lihat</a>
                                     <a href="{{ route('laporan-operasional.edit', $l) }}" class="btn-icon-sm text-warning">Edit</a>
                                     <form method="POST" action="{{ route('laporan-operasional.destroy', $l) }}" class="d-inline"
-                                          onsubmit="return confirm('Hapus laporan ini beserta seluruh datanya?');">
+                                        onsubmit="return confirm('Hapus laporan ini beserta seluruh datanya?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn-icon-sm text-danger">Hapus</button>
