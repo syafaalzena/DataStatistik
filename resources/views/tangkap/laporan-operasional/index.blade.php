@@ -37,6 +37,9 @@
             font-size: 26px; 
             color: #fff; 
         }
+
+        .brand-logo-img { height: 40px; width: auto; }
+
         .back-btn { 
             width: 48px; 
             height: 48px; 
@@ -53,6 +56,9 @@
             background: #0f172a; 
             color: #fff; 
         }
+
+        .back-btn img { transition: filter .18s ease; }
+        .back-btn:hover img { filter: brightness(0) invert(1); }
         .btn-logout-icon { 
             background: transparent; 
             border: 1.5px solid rgba(248,250,252,.25); 
@@ -115,6 +121,10 @@
             padding: 40px 20px; 
             color: #94a3b8; 
         }
+
+        .btn-dark-custom:hover { background: #1e293b; color: #fff; }
+        .btn-logout-icon img { filter: brightness(0) invert(1); transition: filter .18s ease; }
+        .btn-logout-icon:hover img { filter: none; }
     </style>
 </head>
 <body>
@@ -122,6 +132,7 @@
 <nav class="navbar">
     <div class="container d-flex justify-content-between align-items-center">
         <a href="{{ route('dashboard') }}" class="brand-wrapper">
+            <img src="{{ asset('images/pancacita.png') }}" alt="Logo Pancacita" class="brand-logo-img">
             <span class="brand-text">SIDKP</span>
         </a>
         
@@ -131,7 +142,9 @@
 <div class="container pb-5">
     <div class="d-flex align-items-center justify-content-between gap-3 mb-4 flex-wrap">
         <div class="d-flex align-items-center gap-3">
-            <a href="{{ route('laporan-operasional.pilih-kabupaten') }}" class="back-btn">&larr;</a>
+            <a href="{{ route('laporan-operasional.pilih-kabupaten') }}" class="back-btn">
+                <img src="{{ asset('images/back.png') }}" alt="Back" width="22" height="22">
+            </a>
             <div>
                 <h2 class="fw-bold mb-1">Laporan Operasional - {{ $kabupaten->nama_kabupaten }}</h2>
                 <p class="text-muted mb-0">Rekapitulasi aktivitas harian pelabuhan perikanan per bulan.</p>
@@ -178,7 +191,7 @@
                                     <a href="{{ route('laporan-operasional.show', $l) }}" class="btn-icon-sm text-primary">Lihat</a>
                                     <a href="{{ route('laporan-operasional.edit', $l) }}" class="btn-icon-sm text-warning">Edit</a>
                                     <form method="POST" action="{{ route('laporan-operasional.destroy', $l) }}" class="d-inline"
-                                          onsubmit="return confirm('Hapus laporan ini beserta seluruh datanya?');">
+                                        onsubmit="return confirm('Hapus laporan ini beserta seluruh datanya?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn-icon-sm text-danger">Hapus</button>
