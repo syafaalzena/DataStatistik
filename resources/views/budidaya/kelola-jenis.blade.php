@@ -15,33 +15,103 @@
         :root { --clr-bg: #F7F5F0; --clr-dark: #0f172a; --clr-blue-brand: #38bdf8; }
         body { background: var(--clr-bg); font-family: 'Inter', sans-serif; color: var(--clr-dark); }
 
-        .navbar { background: var(--clr-dark); color: white; padding: 14px 0; box-shadow: 0 4px 12px rgba(15,23,42,.05); margin-bottom: 1.5rem; }
-        .brand-wrapper { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-        .brand-text { font-weight: bold; font-size: 26px; color: #fff; }
-        .brand-logo-svg { width: 32px; height: 32px; fill: var(--clr-blue-brand); }
+        .navbar { 
+            background: var(--clr-dark); 
+            color: white; 
+            padding: 14px 0; 
+            box-shadow: 0 4px 12px rgba(15,23,42,.05); 
+            margin-bottom: 1.5rem; 
+        }
+
+        .brand-wrapper {
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            text-decoration: none; 
+        }
+        .brand-text { 
+            font-weight: 
+            bold; font-size: 26px; 
+            color: #fff; 
+        }
+        .brand-logo-svg { 
+            width: 32px; 
+            height: 32px; 
+            fill: var(--clr-blue-brand); 
+        }
 
         .back-btn {
-            width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;
-            background: #fff; border: 1px solid #e2e8f0; border-radius: 30px; text-decoration: none;
-            transition: all .2s ease; box-shadow: 0 2px 6px rgba(0,0,0,.05);
+            width: 48px; 
+            height: 48px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            background: #fff; 
+            border: 1px solid #e2e8f0; 
+            border-radius: 30px; 
+            text-decoration: none;
+            transition: all .2s ease; 
+            box-shadow: 0 2px 6px rgba(0,0,0,.05);
         }
-        .back-btn:hover { transform: translateY(-2px); background: #0f172a; border-color: #0f172a; }
-        .back-btn:hover img { filter: brightness(0) invert(1); }
+        .back-btn:hover { 
+            transform: translateY(-2px); 
+            background: #0f172a; 
+            border-color: #0f172a; 
+        }
+        .back-btn:hover img { 
+            filter: brightness(0) invert(1); 
+        }
 
         .btn-logout-icon {
-            background: transparent; border: 1.5px solid rgba(248,250,252,.25);
-            width: 44px; height: 44px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all .25s ease;
+            background: transparent; 
+            border: 1.5px solid rgba(248,250,252,.25);
+            width: 44px; 
+            height: 44px; 
+            border-radius: 50%;
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            cursor: pointer; 
+            transition: all .25s ease;
         }
-        .btn-logout-icon img { width: 20px; height: 20px; filter: brightness(0) invert(1); transition: transform .25s ease; }
-        .btn-logout-icon:hover { background: var(--clr-blue-brand); border-color: var(--clr-blue-brand); }
-        .btn-logout-icon:hover img { transform: translateX(2px); filter: none; }
+        .btn-logout-icon img { 
+            width: 20px; 
+            height: 20px; 
+            filter: brightness(0) invert(1); 
+            transition: transform .25s ease; 
+        }
+        .btn-logout-icon:hover { 
+            background: var(--clr-blue-brand); 
+            border-color: var(--clr-blue-brand); 
+        }
+        .btn-logout-icon:hover img { 
+            transform: translateX(2px); 
+            filter: none; 
+        }
 
-        .panel-card { background: #fff; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,.04); padding: 24px; }
-        .form-control { border-radius: 8px; border: 1px solid #e2e8f0; }
+        .panel-card { 
+            background: #fff; 
+            border-radius: 14px; 
+            box-shadow: 0 2px 8px rgba(0,0,0,.04); 
+            padding: 24px; 
+        }
+        .form-control { 
+            border-radius: 8px; 
+            border: 1px solid #e2e8f0; 
+        }
 
-        .btn-dark-custom { background: var(--clr-dark); color: #fff; border-radius: 8px; font-weight: 600; border: none; padding: 10px 22px; }
-        .btn-dark-custom:hover { background: #1e293b; color: #fff; }
+        .btn-dark-custom { 
+            background: var(--clr-dark); 
+            color: #fff; 
+            border-radius: 8px; 
+            font-weight: 600; 
+            border: none; 
+            padding: 10px 22px; 
+        }
+        .btn-dark-custom:hover { 
+            background: #1e293b; 
+            color: #fff;
+         }
 
         .jenis-list { border-radius: 10px; overflow: hidden; border: 1px solid #eef0e8; }
         .jenis-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid #eef0e8; background: #fff; }
@@ -125,7 +195,7 @@
                     <div class="jenis-item">
                         <span>{{ $j->nama_jenis }}</span>
                         <form method="POST" action="{{ route('budidaya.jenis.destroy', $j->id) }}"
-                              onsubmit="return confirm('Hapus jenis budidaya ini?');" class="mb-0">
+                            onsubmit="return confirm('Hapus jenis budidaya ini?');" class="mb-0">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn-delete-icon">Hapus</button>
