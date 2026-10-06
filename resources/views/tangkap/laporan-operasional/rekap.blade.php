@@ -48,6 +48,17 @@
             body { background: #fff; }
             .panel-card { box-shadow: none; padding: 0; }
         }
+
+        .btn-dark-custom {
+            background: var(--clr-dark);
+            color: #fff;
+            border-radius: 8px;
+            font-weight: 600;
+            border: none;
+            padding: 10px 22px;
+            text-decoration: none;
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
@@ -57,10 +68,7 @@
         <a href="{{ route('dashboard') }}" class="brand-wrapper">
             <span class="brand-text">SIDKP</span>
         </a>
-        <form method="POST" action="{{ route('logout') }}" class="mb-0">
-            @csrf
-            <button type="submit" class="btn-logout-icon" title="Logout"></button>
-        </form>
+        
     </div>
 </nav>
 

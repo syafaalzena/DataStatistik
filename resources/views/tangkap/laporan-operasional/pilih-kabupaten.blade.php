@@ -103,7 +103,17 @@
         .kab-item:hover { background: #f1f5f9; transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,.05); color: var(--clr-dark); }
         .kab-item .kab-name { font-weight: 600; font-size: 14px; }
         .kab-empty { text-align: center; padding: 30px; color: #94a3b8; display: none; }
-        .btn-dark-custom { background: var(--clr-dark); color: #fff; border-radius: 8px; font-weight: 600; border: none; padding: 10px 20px; text-decoration: none; display: inline-block; white-space: nowrap; }
+        .btn-dark-custom { 
+            background: var(--clr-dark); 
+            color: #fff; 
+            border-radius: 8px; 
+            font-weight: 600; 
+            border: none; 
+            padding: 10px 20px; 
+            text-decoration: none; 
+            display: inline-block; 
+            white-space: nowrap; 
+        }
         .btn-dark-custom:hover { background: #1e293b; color: #fff; }
         .btn-logout-icon img { filter: brightness(0) invert(1); transition: filter .18s ease; }
         .btn-logout-icon:hover img { filter: none; }
@@ -117,12 +127,7 @@
             <img src="{{ asset('images/pancacita.png') }}" alt="Logo Pancacita" class="brand-logo-img">
             <span class="brand-text">SIDKP</span>
         </a>
-        <form method="POST" action="{{ route('logout') }}" class="mb-0">
-            @csrf
-            <button type="submit" class="btn-logout-icon" title="Logout">
-                <img src="{{ asset('images/logout.png') }}" alt="Logout" width="20" height="20">
-            </button>
-        </form>
+        
     </div>
 </nav>
 
