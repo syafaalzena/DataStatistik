@@ -12,9 +12,16 @@
 </head>
 <body>
 
+<style>
+    .brand-logo-img { height: 40px; width: auto; }
+    .back-btn img { transition: filter .18s ease; }
+    .back-btn:hover img { filter: brightness(0) invert(1); }
+</style>
+
 <nav class="navbar no-print">
     <div class="container d-flex justify-content-between align-items-center">
         <a href="{{ route('dashboard') }}" class="brand-wrapper">
+            <img src="{{ asset('images/pancacita.png') }}" alt="Logo Pancacita" class="brand-logo-img">
             <span class="brand-text">SIDKP</span>
         </a>
     </div>
@@ -25,7 +32,9 @@
     {{-- ── HEADER ── --}}
     <div class="page-header">
         <div class="page-title-wrap">
-            <a href="{{ route('tangkap.input', $kabupaten->id) }}" class="back-btn no-print">&larr;</a>
+            <a href="{{ route('tangkap.input', $kabupaten->id) }}" class="back-btn no-print">
+                <img src="{{ asset('images/back.png') }}" alt="Back" width="22" height="22">
+            </a>
             <div>
                 <span class="kab-badge">{{ $kabupaten->nama_kabupaten }}</span>
                 <h2 class="page-title">Rekap Produksi Tangkap</h2>

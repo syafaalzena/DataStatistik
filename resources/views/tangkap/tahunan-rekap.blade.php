@@ -12,6 +12,12 @@
 </head>
 <body>
 
+<style>
+    .brand-logo-img { height: 40px; width: auto; }
+    .back-btn img { transition: filter .18s ease; }
+    .back-btn:hover img { filter: brightness(0) invert(1); }
+</style>
+
 <nav class="navbar no-print">
     <div class="container d-flex justify-content-between align-items-center">
         <a href="{{ route('dashboard') }}" class="brand-wrapper">
