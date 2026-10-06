@@ -73,7 +73,7 @@
 
     <div class="d-flex gap-2 flex-wrap mb-4">
         <a href="{{ route('tangkap.tahunan.create', $kabupaten->id) }}" class="btn-dark-custom">+ Tambah Data Tahunan</a>
-        <a href="{{ route('tangkap.tahunan.rekap', $kabupaten->id) }}" class="btn-outline-custom">📊 Rekap / Export</a>
+        <a href="{{ route('tangkap.tahunan.rekap', $kabupaten->id) }}" class="btn-outline-custom">Rekap & Cetak</a>
     </div>
 
     <div class="mb-3">

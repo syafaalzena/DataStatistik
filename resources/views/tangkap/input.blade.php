@@ -74,7 +74,7 @@
 
     <div class="d-flex gap-2 flex-wrap mb-4">
         <a href="{{ route('tangkap.produksi.create', $kabupaten->id) }}" class="btn-dark-custom">+ Tambah Data Produksi</a>
-        <a href="{{ route('tangkap.produksi.rekap', $kabupaten->id) }}" class="btn-outline-custom">Lihat & Cetak</a>
+        <a href="{{ route('tangkap.produksi.rekap', $kabupaten->id) }}" class="btn-outline-custom">Rekap & Cetak</a>
         <a href="{{ route('pelabuhan.index', $kabupaten->id) }}" class="btn-outline-custom">Kelola Pelabuhan</a>
     </div>
 

@@ -654,6 +654,8 @@
         }
     </style>
 
+    {{-- welcome.css harus di bawah <style> di atas supaya bisa menimpanya --}}
+    <link rel="stylesheet" href="{{ asset('css/welcome.css') }}">
 </head>
 <body>
 
@@ -918,6 +920,14 @@
     if (loginBtn) loginBtn.addEventListener('click', () => loginModal.classList.add('active'));
     const heroLoginBtn = document.getElementById('heroLoginBtn');
     if (heroLoginBtn) heroLoginBtn.addEventListener('click', () => loginModal.classList.add('active'));
+
+    // Tombol Register di bawah judul besar
+    const heroRegisterBtn = document.getElementById('heroRegisterBtn');
+    if (heroRegisterBtn) heroRegisterBtn.addEventListener('click', () => {
+        loginModal.classList.remove('active');
+        registerModal.classList.add('active');
+    });
+
     if (profileImg) profileImg.addEventListener('click', () => loginModal.classList.add('active'));
     openRegister.addEventListener('click',  () => { loginModal.classList.remove('active'); registerModal.classList.add('active'); });
     closeLogin.addEventListener('click',    () => loginModal.classList.remove('active'));
