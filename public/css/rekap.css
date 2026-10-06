@@ -1,0 +1,289 @@
+/* =========================================================
+   SIDKP — Style bersama halaman Rekap
+   File: public/css/rekap.css
+   Dipakai: trip-rekap, tahunan-rekap, produksi-rekap
+   ========================================================= */
+
+:root {
+    --clr-bg: #F7F5F0;
+    --clr-dark: #0f172a;
+    --clr-blue-brand: #38bdf8;
+    --clr-muted: #64748b;
+    --clr-border: #e2e8f0;
+}
+
+body {
+    background: var(--clr-bg);
+    font-family: 'Inter', sans-serif;
+    color: var(--clr-dark);
+}
+
+/* ---------- Navbar ---------- */
+
+.navbar {
+    background: var(--clr-dark);
+    color: #fff;
+    padding: 14px 0;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, .05);
+}
+
+.brand-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+}
+
+.brand-text {
+    font-weight: 700;
+    font-size: 26px;
+    color: #fff;
+}
+
+/* ---------- Header halaman ---------- */
+
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+}
+
+.page-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.back-btn {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border: 1px solid var(--clr-border);
+    border-radius: 30px;
+    color: var(--clr-dark);
+    text-decoration: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .05);
+    transition: .2s ease;
+}
+
+.back-btn:hover {
+    background: var(--clr-dark);
+    color: #fff;
+}
+
+.kab-badge {
+    display: inline-block;
+    background: #e0f2fe;
+    color: #0369a1;
+    font-weight: 600;
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 6px;
+}
+
+.page-title {
+    font-weight: 700;
+    font-size: 1.6rem;
+    margin: 0 0 4px;
+}
+
+.page-desc {
+    color: var(--clr-muted);
+    font-size: .9rem;
+    margin: 0;
+}
+
+/* ---------- Tombol Export (PDF / Excel) ---------- */
+
+.export-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-export {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 42px;
+    min-width: 112px;
+    padding: 0 18px;
+    border: 0;
+    border-radius: 10px;
+    color: #fff;
+    font-size: .88rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+.btn-export svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.btn-export:hover {
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(15, 23, 42, .15);
+}
+
+.btn-export-pdf { background: #dc2626; }
+.btn-export-pdf:hover { background: #b91c1c; }
+
+.btn-export-excel { background: #16a34a; }
+.btn-export-excel:hover { background: #15803d; }
+
+/* ---------- Kartu ---------- */
+
+.panel-card {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .04);
+    padding: 22px;
+}
+
+/* ---------- Filter ---------- */
+
+.filter-card {
+    margin-bottom: 1rem;
+    padding: 18px 22px;
+}
+
+.filter-card .form-label {
+    margin-bottom: 4px;
+    color: #475569;
+    font-size: .78rem;
+    font-weight: 600;
+}
+
+.filter-card .form-control,
+.filter-card .form-select {
+    height: 42px;
+    border-radius: 10px;
+    border: 1px solid var(--clr-border);
+    font-size: .88rem;
+}
+
+.filter-card .form-control:focus,
+.filter-card .form-select:focus {
+    border-color: var(--clr-blue-brand);
+    box-shadow: 0 0 0 4px rgba(56, 189, 248, .12);
+}
+
+.btn-filter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 42px;
+    padding: 0 20px;
+    border-radius: 10px;
+    font-size: .88rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: .2s ease;
+}
+
+.btn-filter-apply {
+    background: var(--clr-dark);
+    color: #fff;
+    border: 0;
+}
+
+.btn-filter-apply:hover {
+    background: #1e293b;
+    color: #fff;
+}
+
+.btn-filter-reset {
+    background: #fff;
+    color: #475569;
+    border: 1px solid var(--clr-border);
+}
+
+.btn-filter-reset:hover {
+    background: #f1f5f9;
+    color: var(--clr-dark);
+}
+
+/* ---------- Tabel ---------- */
+
+.rekap-table {
+    margin-bottom: 0;
+}
+
+.rekap-table thead th {
+    background: var(--clr-dark);
+    color: #fff;
+    border: 0;
+    padding: 12px 14px;
+    font-size: 12.5px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.rekap-table tbody td {
+    padding: 11px 14px;
+    font-size: 12.5px;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.rekap-table .num {
+    text-align: right;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #94a3b8;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 575.98px) {
+    .page-title {
+        font-size: 1.3rem;
+    }
+
+    .export-actions {
+        width: 100%;
+    }
+
+    .btn-export {
+        flex: 1;
+    }
+
+    .filter-card .btn-filter {
+        flex: 1;
+    }
+}
+
+/* ---------- Print ---------- */
+
+@media print {
+    .navbar,
+    .no-print {
+        display: none !important;
+    }
+
+    body {
+        background: #fff;
+    }
+
+    .panel-card {
+        box-shadow: none;
+        padding: 0;
+    }
+}
