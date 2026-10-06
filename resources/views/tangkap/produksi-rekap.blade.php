@@ -47,10 +47,7 @@
         <a href="{{ route('dashboard') }}" class="brand-wrapper">
             <span class="brand-text">SIDKP</span>
         </a>
-        <form method="POST" action="{{ route('logout') }}" class="mb-0">
-            @csrf
-            <button type="submit" class="btn-logout-icon" title="Logout"></button>
-        </form>
+        
     </div>
 </nav>
 

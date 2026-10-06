@@ -98,12 +98,7 @@
             <span class="brand-text">SIDKP</span>
         </a>
 
-        <form method="POST" action="{{ route('logout') }}" class="mb-0">
-            @csrf
-            <button type="submit" class="btn-logout-icon" title="Logout">
-                <img src="{{ asset('images/logout.png') }}" alt="Logout" width="20" height="20">
-            </button>
-        </form>
+        
     </div>
 </nav>
 
