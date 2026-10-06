@@ -47,7 +47,7 @@
         <a href="{{ route('dashboard') }}" class="brand-wrapper">
             <span class="brand-text">SIDKP</span>
         </a>
-        <
+        
     </div>
 </nav>
 
