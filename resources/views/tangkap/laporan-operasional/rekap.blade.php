@@ -48,6 +48,17 @@
             body { background: #fff; }
             .panel-card { box-shadow: none; padding: 0; }
         }
+
+        .btn-dark-custom {
+            background: var(--clr-dark);
+            color: #fff;
+            border-radius: 8px;
+            font-weight: 600;
+            border: none;
+            padding: 10px 22px;
+            text-decoration: none;
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
