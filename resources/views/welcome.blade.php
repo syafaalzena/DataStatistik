@@ -10,20 +10,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Croissant+One&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <style>
         :root {
-            --clr-bg: #fffcf3ff;
+            --clr-bg: #fffcf3;
             --clr-dark: #0f172a;
             --clr-blue-brand: #38bdf8;
             --clr-text-muted: #64748b;
             --clr-border: #e2e8f0;
         }
 
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
@@ -34,73 +38,118 @@
             overflow-x: hidden;
         }
 
-        /* ── NAVBAR ─────────────────────────────────── */
+        /* ================= NAVBAR ================= */
+
         .navbar {
-            background: var(--clr-dark);
-            padding: 14px 0;
-            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            position: fixed;
+            top: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(92%, 1360px);
+            padding: 6px 20px;
+            background: rgba(15, 23, 42, 0.90);
+            border: 1px solid rgba(255,255,255,.10);
+            border-radius: 16px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 8px 24px rgba(0,0,0,.13);
+            z-index: 1000;
         }
 
         .brand-wrapper {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 11px;
             text-decoration: none;
         }
 
         .brand-text {
-            font-size: 26px;
-            color: #ffffff;
+            font-size: 24px;
+            color: #fff;
             line-height: 1;
-            padding-top: 2px;
             font-weight: 700;
         }
 
-        .brand-logo-svg {
-            width: 32px;
-            height: 32px;
-            fill: var(--clr-blue-brand);
-            transition: transform 0.3s ease;
-        }
-
-        .brand-wrapper:hover .brand-logo-svg {
-            transform: rotate(10deg) scale(1.05);
+        .brand-logo-img {
+            height: 27px;
+            width: auto;
+            object-fit: contain;
         }
 
         .nav-right {
             display: flex;
             align-items: center;
-            gap: 16px; 
+            gap: 12px;
         }
 
-        /* ── PROFILE ICON NAVBAR ─────────────────────── */
+        #loginBtn {
+            border: 0;
+            color: #0f172a;
+            background: rgba(255,255,255,.94);
+            transition: .25s ease;
+        }
+
+        #loginBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255,255,255,.20);
+        }
+
         .nav-profile-img {
             width: 38px;
             height: 38px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid var(--clr-blue-brand);
+            border: 2px solid rgba(255,255,255,.8);
             cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: .25s ease;
         }
 
         .nav-profile-img:hover {
-            transform: scale(1.08);
-            box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+            transform: scale(1.07);
+            box-shadow: 0 0 18px rgba(125,211,252,.55);
         }
 
-        /* ── HERO ───────────────────────────────────── */
+        /* ================= HERO ================= */
+
         .hero {
-            background: var(--clr-bg);
-            min-height: calc(100vh - 68px);
+            position: relative;
+            min-height: 100vh;
             display: flex;
             align-items: center;
-            position: relative;
             overflow: hidden;
-            padding: 1.5rem 0 4rem 0;
+            padding: 92px 0 70px;
+            color: #fff;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(7, 31, 46, .80) 0%,
+                    rgba(10, 55, 72, .62) 36%,
+                    rgba(15, 23, 42, .22) 70%,
+                    rgba(15, 23, 42, .08) 100%
+                ),
+                url("https://images.unsplash.com/photo-1518837695005-2083093ee35b?auto=format&fit=crop&w=2400&q=90")
+                center center / cover no-repeat;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(
+                    180deg,
+                    rgba(0,0,0,.04) 0%,
+                    transparent 60%,
+                    rgba(3,20,30,.30) 100%
+                );
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .hero .container {
+            position: relative;
+            z-index: 3;
         }
 
         .hero-left {
@@ -109,57 +158,114 @@
 
         .hero-left .label {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: .85rem;
+            font-size: .82rem;
             font-weight: 700;
-            color: var(--clr-text-muted);
-            letter-spacing: 1px;
+            color: rgba(255,255,255,.82);
+            letter-spacing: 2px;
             text-transform: uppercase;
-            margin-bottom: .75rem;
+            margin-bottom: .9rem;
+            text-shadow: 0 2px 12px rgba(0,0,0,.25);
         }
 
         .hero-left h1 {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 3.2rem;
+            font-size: clamp(2.8rem, 5vw, 4.7rem);
             font-weight: 800;
-            color: var(--clr-dark);
-            line-height: 1.15;
-            margin-bottom: 1.25rem;
-            letter-spacing: -.5px;
+            color: #fff;
+            line-height: 1.04;
+            margin-bottom: 1.4rem;
+            letter-spacing: -2px;
+            max-width: 760px;
+            text-shadow: 0 5px 25px rgba(0,0,0,.25);
         }
 
         .text-switcher-container {
-            min-height: 80px;
-            margin-bottom: 2.5rem;
-            max-width: 480px;
+            min-height: 90px;
+            margin-bottom: 2rem;
+            max-width: 650px;
+            position: relative;
+            padding-left: 17px;
+        }
+
+        .text-switcher-container::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 2px;
+            bottom: 2px;
+            width: 3px;
+            border-radius: 20px;
+            background: rgba(255,255,255,.92);
+            box-shadow: 0 0 15px rgba(125,211,252,.4);
         }
 
         .hero-left p.switch-text {
-            font-size: 1.05rem;
-            color: var(--clr-text-muted);
-            line-height: 1.7;
+            font-size: 1rem;
+            color: rgba(255,255,255,.92);
+            line-height: 1.65;
             margin-bottom: 0;
-            opacity: 1;
-            transition: opacity 0.5s ease-in-out;
+            text-shadow: 0 2px 13px rgba(0,0,0,.28);
+            transition: opacity .5s ease-in-out;
         }
 
         .hero-left p.switch-text.fade-out {
             opacity: 0;
         }
 
-        /* ── HERO RIGHT (Card) ── */
+        /* Tombol dan sosial hanya tambahan visual; tidak mengubah fitur yang sudah ada. */
+        .hero-actions {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 26px;
+        }
+
+        .hero-action {
+            min-width: 185px;
+            padding: 13px 28px;
+            border-radius: 999px;
+            font-weight: 700;
+            text-decoration: none;
+            text-align: center;
+            transition: .25s ease;
+        }
+
+        .hero-action.primary {
+            color: #164e63;
+            background: #fff;
+            border: 1px solid #fff;
+        }
+
+        .hero-action.secondary {
+            color: #fff;
+            background: rgba(255,255,255,.08);
+            border: 2px solid rgba(255,255,255,.85);
+            backdrop-filter: blur(8px);
+        }
+
+        .hero-action:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(0,0,0,.18);
+        }
+
+        /* ================= DATA CARD ================= */
+
         .hero-card {
-            background: #ffffffff;
-            border: 1px solid var(--clr-border);
+            background: rgba(255,255,255,.94);
+            border: 1px solid rgba(255,255,255,.72);
             border-radius: 24px;
-            padding: 2.5rem;
+            padding: 2rem 2.1rem;
             width: 100%;
             max-width: 440px;
-            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
             margin-left: auto;
-            animation: fadeInUp 1.2s ease-out forwards, floating 4s ease-in-out infinite;
-            animation-delay: 0s, 1.2s;
+            box-shadow: 0 24px 60px rgba(2,31,48,.30);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            animation: fadeInUp 1.1s ease-out forwards, floating 5s ease-in-out infinite;
+            animation-delay: 0s, 1.1s;
             position: relative;
             overflow: hidden;
+            color: #0f172a;
         }
 
         .hero-card::before {
@@ -169,193 +275,218 @@
             left: 0;
             width: 100%;
             height: 4px;
-            background: linear-gradient(90deg, #38bdf8, #0284c7);
+            background: linear-gradient(90deg, #0f172a, #164e63, #38bdf8);
         }
 
-        .hero-card .card-title {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: .8rem;
-            font-weight: 700;
-            color: var(--clr-text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 1.5rem;
-        }
-
-        .stat-row {
-            display: flex;
-            justify-content: space-between;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-box {
-            background: linear-gradient(135deg, var(--clr-bg), #f0f9ff);
-            border: 1px solid var(--clr-border);
-            border-radius: 14px;
-            padding: 1.2rem .5rem;
-            flex: 1;
-            text-align: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .stat-box:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 20px rgba(56, 189, 248, 0.15);
-            border-color: #38bdf8;
-        }
-
-        .stat-box .stat-num {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 1.6rem;
+        .card-kicker {
+            margin: 0 0 .55rem;
+            color: #0e7490;
+            font-size: .72rem;
             font-weight: 800;
-            color: var(--clr-dark);
-            display: block;
+            letter-spacing: 1.6px;
         }
 
-        .stat-box .stat-label {
-            font-size: .75rem;
-            color: var(--clr-text-muted);
-            margin-top: .25rem;
-            display: block;
-            font-weight: 500;
+        .card-heading {
+            margin: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.55rem;
+            line-height: 1.2;
+            font-weight: 800;
+            color: #0f172a;
         }
 
-        .bar-chart {
-            display: flex;
-            align-items: flex-end;
-            gap: .5rem;
-            height: 100px;
-            margin-top: .5rem;
-            padding-bottom: 4px;
+        .card-description {
+            margin: .75rem 0 1.45rem;
+            color: #64748b;
+            font-size: .88rem;
+            line-height: 1.6;
         }
 
-        .bar {
-            flex: 1;
-            border-radius: 6px 6px 0 0;
-            background: linear-gradient(to top, #bae6fd, #7dd3fc);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
+        .mini-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: .65rem;
         }
 
-        .bar:hover {
-            background: linear-gradient(to top, #38bdf8, #0ea5e9);
-            filter: brightness(1.1);
-        }
-        
-        .bar.active { 
-            background: linear-gradient(to top, #0284c7, #38bdf8);
-            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.35);
-        }
-
-        .bar-labels {
-            display: flex;
-            gap: .5rem;
-            margin-top: .6rem;
-        }
-        
-        .bar-labels span {
-            flex: 1;
+        .mini-stat {
+            padding: .85rem .45rem;
             text-align: center;
+            background: #f7fbfd;
+            border: 1px solid #dceef5;
+            border-radius: 14px;
+        }
+
+        .mini-stat-num {
+            display: block;
+            color: #0f172a;
+            font-size: 1.35rem;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+
+        .mini-stat-label {
+            display: block;
+            margin-top: .35rem;
+            color: #64748b;
             font-size: .65rem;
-            color: var(--clr-text-muted);
+            line-height: 1.25;
+        }
+
+        .card-line {
+            height: 1px;
+            background: #e2e8f0;
+            margin: 1.4rem 0 1rem;
+        }
+
+        .card-footer-text {
+            display: flex;
+            align-items: center;
+            gap: .45rem;
+            color: #64748b;
+            font-size: .73rem;
             font-weight: 600;
         }
 
-        /* ── KEYFRAMES ──────────────────────────────── */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to   { opacity: 1; transform: translateY(0); }
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 0 4px rgba(34,197,94,.10);
         }
 
-        @keyframes floating {
-            0%   { transform: translateY(0px); }
-            50%  { transform: translateY(-12px); }
-            100% { transform: translateY(0px); }
-        }
+        /* ================= LOGIN / REGISTER ================= */
 
-        /* ── RESPONSIVE ─────────────────────────────── */
-        @media (max-width: 991.98px) {
-            .hero-card { margin: 3rem auto 0 auto; }
-            .hero-left h1 { font-size: 2.5rem; }
-            .text-switcher-container { min-height: auto; }
-        }
-
-        /* ── OCEAN WAVE ─────────────────────────────── */
-        .hero {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero .container {
-            position: relative;
-            z-index: 2;
-        }
-
-        .ocean {
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            width: 100%;
-            height: 32%;
-            overflow: hidden;
-            z-index: 1;
-        }
-
-        .wave {
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            width: 200%;
-            height: 100%;
-        }
-
-        .wave-back {
-            fill: #7dd3fc;
-            opacity: .6;
-            animation: waveMoveBack 18s linear infinite;
-        }
-
-        .wave-front {
-            fill: #38bdf8;
-            animation: waveMoveFront 10s linear infinite;
-        }
-
-        @keyframes waveMoveFront {
-            from { transform: translateX(0); }
-            to   { transform: translateX(-50%); }
-        }
-
-        @keyframes waveMoveBack {
-            from { transform: translateX(-50%); }
-            to   { transform: translateX(0); }
-        }
-
-        /* ── MODAL SLIDE ─────────────────────────────── */
         .login-modal-overlay {
             position: fixed;
-            top: 0; 
-            right: -50%; 
-            width: 50%; 
+            inset: 0;
+            width: 100%;
             height: 100%;
-            background: #fffcf3ff;
-            z-index: 1000;
-            box-shadow: -5px 0 20px rgba(0,0,0,0.1);
-            transition: right 0.5s ease-in-out;
-            padding: 40px;
-            overflow-y: auto; 
-            display: block;
+            padding: 24px;
+            background: rgba(7, 22, 32, .60);
+            backdrop-filter: blur(9px);
+            -webkit-backdrop-filter: blur(9px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            right: 0;
+            transition: opacity .28s ease, visibility .28s ease;
+        }
+
+        .login-modal-overlay.active {
+            right: 0;
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
         }
 
         .login-modal-overlay .w-100 {
-            max-width: 400px;
-            margin: 0 auto;
-            padding-bottom: 50px;
+            position: relative;
+            width: min(100%, 430px) !important;
+            max-width: 410px;
+            max-height: calc(100vh - 24px);
+            margin: 0;
+            padding: 22px 30px 20px;
+            overflow: hidden;
+            background: rgba(255,255,255,.98);
+            border: 1px solid rgba(255,255,255,.8);
+            border-radius: 22px;
+            box-shadow: 0 28px 80px rgba(0,0,0,.26);
         }
 
-        .login-modal-overlay.active { right: 0; }
+        .login-modal-overlay .w-100::before {
+            content: "SAMUDRA ACEH";
+            display: block;
+            margin-bottom: 1rem;
+            color: #0e7490;
+            font-size: .66rem;
+            font-weight: 800;
+            letter-spacing: 1.6px;
+        }
 
-        /* ── PASSWORD WRAPPER ───────────────────────── */
+        .login-modal-overlay h2 {
+            color: #0f172a;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.55rem;
+            line-height: 1.2;
+            margin-bottom: .4rem !important;
+        }
+
+        .login-modal-overlay h5 {
+            color: #64748b;
+            font-size: .88rem;
+            font-weight: 500;
+            margin-bottom: 1.4rem !important;
+        }
+
+        .login-modal-overlay .form-label {
+            color: #334155;
+            font-size: .76rem;
+            font-weight: 700;
+            margin-bottom: .4rem;
+        }
+
+        .login-modal-overlay .form-control {
+            min-height: 45px;
+            border: 1px solid #dbe4ea;
+            border-radius: 11px;
+            background: #fbfdfe;
+            color: #0f172a;
+            padding: .65rem .82rem;
+            font-size: .84rem;
+            transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+        }
+
+        .login-modal-overlay .form-control::placeholder {
+            color: #94a3b8;
+        }
+
+        .login-modal-overlay .form-control:focus {
+            background: #fff;
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 4px rgba(56,189,248,.11);
+        }
+
+        .login-modal-overlay .btn[type="submit"] {
+            width: 100%;
+            min-height: 44px;
+            margin-top: .35rem;
+            border: 0 !important;
+            border-radius: 11px !important;
+            background: #0f172a !important;
+            color: #fff !important;
+            font-size: .84rem !important;
+            font-weight: 700;
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+        .login-modal-overlay .btn[type="submit"]:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 22px rgba(15,23,42,.18);
+        }
+
+        .login-modal-overlay a,
+        .login-modal-overlay button {
+            cursor: pointer;
+        }
+
+        .login-modal-overlay #openRegister,
+        .login-modal-overlay #switchToLogin {
+            color: #0e7490 !important;
+            text-decoration: none !important;
+        }
+
+        .login-modal-overlay #closeLogin,
+        .login-modal-overlay #closeRegister {
+            color: #94a3b8 !important;
+            text-decoration: none !important;
+            font-size: .78rem !important;
+        }
+
         .password-wrapper {
             position: relative;
             display: flex;
@@ -367,16 +498,17 @@
             right: 12px;
             top: 50%;
             transform: translateY(-50%);
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             cursor: pointer;
             z-index: 10;
-            opacity: 0.7;
+            opacity: .55;
         }
 
-        .toggle-password:hover { opacity: 1; }
+        .toggle-password:hover {
+            opacity: .9;
+        }
 
-        /* ── TOAST NOTIFIKASI ───────────────────────── */
         .toast-notif {
             position: fixed;
             top: 20px;
@@ -385,23 +517,143 @@
             min-width: 300px;
             border-radius: 12px;
             padding: 14px 18px;
-            font-size: 0.9rem;
+            font-size: .9rem;
             font-weight: 500;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-            animation: slideInRight 0.4s ease;
+            box-shadow: 0 8px 20px rgba(0,0,0,.12);
+            animation: slideInRight .4s ease;
         }
 
         @keyframes slideInRight {
             from { opacity: 0; transform: translateX(40px); }
-            to   { opacity: 1; transform: translateX(0); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
-        .brand-logo-img {
-            height: 30px;      
-            width: auto;       
-            object-fit: contain;
+
+        .login-modal-overlay form .mb-3 {
+            margin-bottom: .48rem !important;
+        }
+
+        .login-modal-overlay form .form-label {
+            font-size: .82rem;
+            margin-bottom: .18rem;
+        }
+
+        .login-modal-overlay form .form-control {
+            height: 37px;
+            min-height: 37px;
+            padding: .35rem .72rem;
+            font-size: .84rem;
+        }
+
+        .login-modal-overlay form .text-center.mt-2 {
+            margin-top: .45rem !important;
+        }
+
+        .login-modal-overlay form .text-center:not(.mt-2) {
+            margin-top: .35rem !important;
+        }
+
+        #registerModal .login-modal-overlay .w-100 {
+            max-width: 400px;
+        }
+
+        #registerModal .w-100 h2 {
+            margin-bottom: .7rem !important;
+        }
+
+        #registerModal .toggle-password {
+            width: 18px;
+            height: 18px;
+        }
+
+        #registerModal .invalid-feedback,
+        #registerModal .text-danger {
+            font-size: .72rem !important;
+            margin-top: 1px !important;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 991.98px) {
+            .navbar {
+                top: 16px;
+                width: 94%;
+            }
+
+            .hero {
+                padding-top: 130px;
+                padding-bottom: 70px;
+            }
+
+            .hero-card {
+                margin: 3rem auto 0;
+            }
+
+            .hero-left h1 {
+                font-size: 3rem;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .navbar {
+                padding: 11px 15px;
+                border-radius: 17px;
+            }
+
+            .brand-text {
+                font-size: 20px;
+            }
+
+            .nav-right {
+                gap: 7px;
+            }
+
+            #loginBtn {
+                padding-left: 15px !important;
+                padding-right: 15px !important;
+            }
+
+            .hero {
+                background-position: 62% center;
+            }
+
+            .hero-left h1 {
+                font-size: 2.35rem;
+                letter-spacing: -1px;
+            }
+
+            .hero-action {
+                width: 100%;
+            }
+
+            .hero-card {
+                padding: 1.5rem;
+                border-radius: 20px;
+            }
+
+            .login-modal-overlay {
+                padding: 14px;
+            }
+
+            .login-modal-overlay .w-100 {
+                width: 100% !important;
+                padding: 20px 18px 16px;
+                border-radius: 19px;
+                max-height: calc(100vh - 16px);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: .01ms !important;
+            }
         }
     </style>
+
 </head>
 <body>
 
@@ -427,8 +679,8 @@
 <nav class="navbar">
     <div class="container d-flex justify-content-between align-items-center">
         <a href="#" class="brand-wrapper">
-            <img src="{{ asset('images/pancacita.png') }}" alt="Logo Pancacita" class="brand-logo-img">
-            <span class="brand-text">SIDKP</span>
+            <img src="{{ asset('images/pancacita.png') }}" alt="Logo Samudra Aceh" class="brand-logo-img">
+            <span class="brand-text">SAMUDRA ACEH</span>
         </a>
         
         <div class="nav-right">
@@ -586,72 +838,66 @@
 
 {{-- ── HERO SECTION ────────────────────────────────────────────── --}}
 <section class="hero">
-
-    <div class="ocean">
-        <svg class="wave wave-back" viewBox="0 0 1200 120" preserveAspectRatio="none">
-            <path d="M0,60 C150,20 300,100 450,60 C600,20 750,100 900,60 C1050,20 1200,100 1350,60 L1350,120 L0,120 Z"/>
-        </svg>
-        <svg class="wave wave-front" viewBox="0 0 1200 120" preserveAspectRatio="none">
-            <path d="M0,70 C150,30 300,110 450,70 C600,30 750,110 900,70 C1050,30 1200,110 1350,70 L1350,120 L0,120 Z"/>
-        </svg>
-    </div>
-
-    <div class="container">
+<div class="container">
         <div class="row align-items-center">
 
-            <div class="col-lg-6 hero-left">
-                <p class="label">SIDKP Data Platform</p>
-                <h1>Sistem Informasi Dinas Kelautan dan Perikanan Aceh</h1>
-                
+            <div class="col-lg-7 hero-left">
+                <p class="label">DATA KELAUTAN & PERIKANAN ACEH</p>
+
+                <h1>
+                    Samudra Aceh
+                </h1>
+
                 <div class="text-switcher-container">
                     <p class="switch-text" id="changing-text">
                         Kelola dan pantau data produksi garam, perikanan, dan budidaya laut seluruh kabupaten di Provinsi Aceh dalam satu sistem terintegrasi.
                     </p>
                 </div>
-            </div>
 
-            <div class="col-lg-6">
-                <div class="hero-card">
-                    <p class="card-title">Statistik Hasil Laut</p>
+                {{-- Tombol tambahan visual; tidak mengubah fitur Login/Register --}}
+                <div class="hero-actions">
+                    <button type="button" class="hero-action primary" id="heroLoginBtn">
+                        Login
+                    </button>
 
-                    <div class="stat-row">
-                        <div class="stat-box">
-                            <span class="stat-num">23</span>
-                            <span class="stat-label">Kabupaten</span>
-                        </div>
-                        <div class="stat-box">
-                            <span class="stat-num">12</span>
-                            <span class="stat-label">Bulan</span>
-                        </div>
-                        <div class="stat-box">
-                            <span class="stat-num">∞</span>
-                            <span class="stat-label">Data</span>
-                        </div>
-                    </div>
-
-                    <p class="card-title">Total Produksi per Bulan</p>
-                    <div class="bar-chart">
-                        <div class="bar" style="height:40%"></div>
-                        <div class="bar" style="height:60%"></div>
-                        <div class="bar" style="height:45%"></div>
-                        <div class="bar" style="height:80%"></div>
-                        <div class="bar" style="height:65%"></div>
-                        <div class="bar active" style="height:100%"></div>
-                        <div class="bar" style="height:70%"></div>
-                        <div class="bar" style="height:55%"></div>
-                        <div class="bar" style="height:85%"></div>
-                        <div class="bar" style="height:50%"></div>
-                        <div class="bar" style="height:75%"></div>
-                        <div class="bar" style="height:90%"></div>
-                    </div>
-                    <div class="bar-labels">
-                        <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span>
-                        <span>Mei</span><span>Jun</span><span>Jul</span><span>Agt</span>
-                        <span>Sep</span><span>Okt</span><span>Nov</span><span>Des</span>
-                    </div>
+                    <button type="button" class="hero-action secondary" id="heroRegisterBtn">
+                        Register
+                    </button>
                 </div>
             </div>
 
+            <div class="col-lg-5" id="statistik">
+                <div class="hero-card">
+                    <p class="card-kicker">SAMUDRA ACEH</p>
+                    <h3 class="card-heading">Data Kelautan &amp; Perikanan</h3>
+                    <p class="card-description">
+                        Satu ruang untuk mengelola, memantau, dan melihat informasi kelautan dan perikanan Aceh.
+                    </p>
+
+                    <div class="mini-stats">
+                        <div class="mini-stat">
+                            <span class="mini-stat-num">23</span>
+                            <span class="mini-stat-label">Kabupaten/Kota</span>
+                        </div>
+                        <div class="mini-stat">
+                            <span class="mini-stat-num">4</span>
+                            <span class="mini-stat-label">Bidang Data</span>
+                        </div>
+                        <div class="mini-stat">
+                            <span class="mini-stat-num">12</span>
+                            <span class="mini-stat-label">Periode</span>
+                        </div>
+                    </div>
+
+                    <div class="card-line"></div>
+
+                    <div class="card-footer-text">
+                        <span>Terintegrasi</span>
+                        <span class="status-dot"></span>
+                        <span>Data Aceh</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -670,6 +916,8 @@
     const switchToLogin = document.getElementById('switchToLogin');
 
     if (loginBtn) loginBtn.addEventListener('click', () => loginModal.classList.add('active'));
+    const heroLoginBtn = document.getElementById('heroLoginBtn');
+    if (heroLoginBtn) heroLoginBtn.addEventListener('click', () => loginModal.classList.add('active'));
     if (profileImg) profileImg.addEventListener('click', () => loginModal.classList.add('active'));
     openRegister.addEventListener('click',  () => { loginModal.classList.remove('active'); registerModal.classList.add('active'); });
     closeLogin.addEventListener('click',    () => loginModal.classList.remove('active'));

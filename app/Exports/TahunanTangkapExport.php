@@ -26,8 +26,6 @@ class TahunanTangkapExport implements FromCollection, WithHeadings, WithStyles, 
 
     public function collection()
     {
-        $namaBulan = [1=>'Januari',2=>'Februari',3=>'Maret',4=>'April',5=>'Mei',6=>'Juni',7=>'Juli',8=>'Agustus',9=>'September',10=>'Oktober',11=>'November',12=>'Desember'];
-
         $query = DB::table('tahunan_tangkaps')
             ->join('pelabuhans', 'pelabuhans.id', '=', 'tahunan_tangkaps.pelabuhan_id')
             ->join('wppnris', 'wppnris.id', '=', 'tahunan_tangkaps.wppnri_id')
@@ -38,14 +36,9 @@ class TahunanTangkapExport implements FromCollection, WithHeadings, WithStyles, 
         if (!empty($this->filters['tahun'])) {
             $query->where('tahunan_tangkaps.tahun', $this->filters['tahun']);
         }
-        if (!empty($this->filters['semester'])) {
-            $range = $this->filters['semester'] == 1 ? [1, 6] : [7, 12];
-            $query->whereBetween('tahunan_tangkaps.bulan', $range);
-        }
 
         $rows = $query->selectRaw('
                 tahunan_tangkaps.tahun as tahun,
-                tahunan_tangkaps.bulan as bulan,
                 pelabuhans.nama as nama_pelabuhan,
                 wppnris.kode as kode_wppnri,
                 tahunan_tangkaps.jenis_lk as jenis_lk,
@@ -58,15 +51,15 @@ class TahunanTangkapExport implements FromCollection, WithHeadings, WithStyles, 
                 SUM(tahunan_tangkaps.jumlah_nelayan) as total_nelayan
             ')
             ->groupBy(
-                'tahunan_tangkaps.tahun', 'tahunan_tangkaps.bulan', 'pelabuhans.nama', 'wppnris.kode',
+                'tahunan_tangkaps.tahun', 'pelabuhans.nama', 'wppnris.kode',
                 'tahunan_tangkaps.jenis_lk', 'jenis_apis.nama', 'kategori_ukuran_kapals.label'
             )
-            ->orderBy('tahunan_tangkaps.tahun')->orderBy('tahunan_tangkaps.bulan')->orderBy('pelabuhans.nama')
+            ->orderBy('tahunan_tangkaps.tahun')->orderBy('pelabuhans.nama')
             ->get();
 
-        return $rows->map(function ($r) use ($namaBulan) {
+        return $rows->map(function ($r) {
             return [
-                $r->tahun, $namaBulan[$r->bulan] ?? $r->bulan, $r->nama_pelabuhan, $r->kode_wppnri,
+                $r->tahun, $r->nama_pelabuhan, $r->kode_wppnri,
                 $r->jenis_lk, $r->nama_jenis_api, $r->label_kategori,
                 $r->total_rtp, $r->total_kapal, $r->total_api, $r->total_nelayan_buruh, $r->total_nelayan,
             ];
@@ -75,7 +68,7 @@ class TahunanTangkapExport implements FromCollection, WithHeadings, WithStyles, 
 
     public function headings(): array
     {
-        return ['Tahun', 'Bulan', 'Pelabuhan', 'WPPNRI', 'Jenis LK', 'Jenis API', 'Ukuran Kapal', 'Jumlah RTP', 'Jumlah Kapal', 'Jumlah API', 'Nelayan Buruh', 'Total Nelayan'];
+        return ['Tahun', 'Pelabuhan', 'WPPNRI', 'Jenis LK', 'Jenis API', 'Ukuran Kapal', 'Jumlah RTP', 'Jumlah Kapal', 'Jumlah API', 'Nelayan Buruh', 'Total Nelayan'];
     }
 
     public function title(): string
@@ -96,6 +89,6 @@ class TahunanTangkapExport implements FromCollection, WithHeadings, WithStyles, 
 
     public function columnWidths(): array
     {
-        return ['A' => 8, 'B' => 12, 'C' => 20, 'D' => 10, 'E' => 14, 'F' => 16, 'G' => 16, 'H' => 12, 'I' => 12, 'J' => 12, 'K' => 14, 'L' => 14];
+        return ['A' => 8, 'B' => 20, 'C' => 10, 'D' => 14, 'E' => 16, 'F' => 16, 'G' => 12, 'H' => 12, 'I' => 12, 'J' => 14, 'K' => 14];
     }
 }

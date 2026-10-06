@@ -47,17 +47,12 @@
         <div>
             <span class="kab-badge">{{ $kabupaten->nama_kabupaten }}</span>
             <h2 class="fw-bold mb-1">Rekap Tahunan</h2>
-            <p class="text-muted mb-0">RTP, Kapal, API, dan Nelayan dijumlahkan per bulan/pelabuhan/kombinasi.</p>
+            <p class="text-muted mb-0">RTP, Kapal, API, dan Nelayan dijumlahkan per tahun/pelabuhan/kombinasi.</p>
         </div>
     </div>
 
-    <form method="GET" class="d-flex gap-2 mb-3 flex-wrap" style="max-width:520px;">
-        <input type="number" name="tahun" class="form-control" placeholder="Tahun (kosongkan = semua)" value="{{ request('tahun') }}" style="max-width:200px;">
-        <select name="semester" class="form-select" style="max-width:200px;">
-            <option value="">Semua Semester</option>
-            <option value="1" {{ request('semester') == '1' ? 'selected' : '' }}>Semester 1 (Jan-Jun)</option>
-            <option value="2" {{ request('semester') == '2' ? 'selected' : '' }}>Semester 2 (Jul-Des)</option>
-        </select>
+    <form method="GET" class="d-flex gap-2 mb-3 flex-wrap" style="max-width:320px;">
+        <input type="number" name="tahun" class="form-control" placeholder="Tahun (kosongkan = semua)" value="{{ request('tahun') }}">
         <button type="submit" class="btn btn-dark">Terapkan</button>
     </form>
 
@@ -67,7 +62,7 @@
     </div>
 
     <div class="panel-card">
-        @if($rekapBulanan->isEmpty())
+        @if($rekapTahunan->isEmpty())
             <div class="empty-state">Belum ada data tahunan untuk direkap.</div>
         @else
             <div class="table-responsive">
@@ -75,7 +70,6 @@
                     <thead>
                         <tr>
                             <th>Tahun</th>
-                            <th>Bulan</th>
                             <th>Pelabuhan</th>
                             <th>WPPNRI</th>
                             <th>Jenis LK</th>
@@ -89,10 +83,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($rekapBulanan as $r)
+                        @foreach($rekapTahunan as $r)
                             <tr>
                                 <td>{{ $r->tahun }}</td>
-                                <td>{{ \Carbon\Carbon::create()->month($r->bulan)->translatedFormat('F') }}</td>
                                 <td>{{ $r->nama_pelabuhan }}</td>
                                 <td>{{ $r->kode_wppnri }}</td>
                                 <td>{{ $r->jenis_lk }}</td>

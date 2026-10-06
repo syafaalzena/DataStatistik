@@ -67,7 +67,9 @@
         </div>
         <div class="d-flex gap-2">
             <a href="{{ route('laporan-operasional.edit', $laporan) }}" class="btn btn-outline-secondary">Edit</a>
-            <button onclick="window.print()" class="btn-dark-custom">Cetak / PDF</button>
+            <button onclick="window.print()" class="btn btn-outline-secondary">Cetak</button>
+            <a href="{{ route('laporan-operasional.pdf', $laporan) }}" class="btn-dark-custom">Download PDF</a>
+            <a href="{{ route('laporan-operasional.excel', $laporan) }}" class="btn-dark-custom">Download Excel</a>
         </div>
     </div>
 
