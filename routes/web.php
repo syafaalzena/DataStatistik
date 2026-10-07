@@ -25,6 +25,7 @@ use App\Http\Controllers\TahunanTangkapController;
 use App\Http\Controllers\LaporanOperasionalController;
 use App\Http\Controllers\KomoditasIkanController;
 use App\Http\Controllers\PelabuhanController;
+use App\Http\Controllers\RekapTangkapController;
 
 /*
 |--------------------------------------------------------------------------
@@ -265,4 +266,12 @@ Route::post('/tangkap/{kabupaten}/tahunan', [TahunanTangkapController::class, 's
 Route::get('/tangkap/tahunan/{tahunan}/edit', [TahunanTangkapController::class, 'edit'])->name('tangkap.tahunan.edit');
 Route::put('/tangkap/tahunan/{tahunan}', [TahunanTangkapController::class, 'update'])->name('tangkap.tahunan.update');
 Route::delete('/tangkap/tahunan/{tahunan}', [TahunanTangkapController::class, 'destroy'])->name('tangkap.tahunan.destroy');
+
+Route::get('/tangkap/rekap/bulanan', [RekapTangkapController::class, 'bulanan'])->name('tangkap.rekap.bulanan');
+Route::get('/tangkap/rekap/bulanan/export', [RekapTangkapController::class, 'exportBulanan'])->name('tangkap.rekap.bulanan.export');
+Route::get('/tangkap/rekap/bulanan/export-pdf', [RekapTangkapController::class, 'exportPdfBulanan'])->name('tangkap.rekap.bulanan.exportPdf');
+
+Route::get('/tangkap/rekap/tahunan', [RekapTangkapController::class, 'tahunan'])->name('tangkap.rekap.tahunan');
+Route::get('/tangkap/rekap/tahunan/export', [RekapTangkapController::class, 'exportTahunan'])->name('tangkap.rekap.tahunan.export');
+Route::get('/tangkap/rekap/tahunan/export-pdf', [RekapTangkapController::class, 'exportPdfTahunan'])->name('tangkap.rekap.tahunan.exportPdf');
 });
