@@ -15,8 +15,11 @@
         .navbar { background: var(--clr-dark); color: white; padding: 14px 0; box-shadow: 0 4px 12px rgba(15,23,42,.05); margin-bottom: 1.5rem; }
         .brand-wrapper { display: flex; align-items: center; gap: 12px; text-decoration: none; }
         .brand-text { font-weight: bold; font-size: 26px; color: #fff; }
+        .brand-logo-img { height: 40px; width: auto; }
         .back-btn { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: #fff; border: 1px solid #e2e8f0; border-radius: 30px; text-decoration: none; box-shadow: 0 2px 6px rgba(0,0,0,.05); }
         .back-btn:hover { background: #0f172a; color: #fff; }
+        .back-btn img { transition: filter .18s ease; }
+        .back-btn:hover img { filter: brightness(0) invert(1); }
         .btn-logout-icon { background: transparent; border: 1.5px solid rgba(248,250,252,.25); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .btn-logout-icon:hover { background: var(--clr-blue-brand); border-color: var(--clr-blue-brand); }
         .kab-badge { display: inline-block; background: #e0f2fe; color: #0369a1; font-weight: 600; font-size: 12px; padding: 4px 12px; border-radius: 20px; margin-bottom: 6px; }
@@ -33,6 +36,7 @@
 <nav class="navbar">
     <div class="container d-flex justify-content-between align-items-center">
         <a href="{{ route('dashboard') }}" class="brand-wrapper">
+            <img src="{{ asset('images/pancacita.png') }}" alt="Logo Pancacita" class="brand-logo-img">
             <span class="brand-text">SIDKP</span>
         </a>
         
@@ -42,7 +46,9 @@
 <div class="container pb-5">
 
     <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
-        <a href="{{ route('tangkap.input', $kabupaten->id) }}" class="back-btn">&larr;</a>
+        <a href="{{ route('tangkap.input', $kabupaten->id) }}" class="back-btn">
+            <img src="{{ asset('images/back.png') }}" alt="Back" width="22" height="22">
+        </a>
         <div>
             <span class="kab-badge">{{ $kabupaten->nama_kabupaten }}</span>
             <h2 class="fw-bold mb-1">Edit Data Produksi</h2>
