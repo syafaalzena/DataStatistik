@@ -32,7 +32,7 @@
         .brand-wrapper { 
             display: flex; 
             align-items: center; 
-            gap: 12px; t
+            gap: 12px; 
             text-decoration: none; 
         }
 
@@ -41,6 +41,7 @@
             font-weight: bold; 
             font-size: 26px; 
             color: #fff; 
+            text-decoration: none;
         }
         .back-btn { 
             width: 48px; 
