@@ -82,7 +82,7 @@
     </div>
 
     <div class="kab-empty" id="kabEmpty">Tidak ada kabupaten yang cocok dengan pencarian.</div>
-</div>
+
 
 {{-- REKAP PROVINSI --}}
 <div class="card border-0 shadow-sm mb-4 mt-4" style="background: linear-gradient(145deg, #1e293b, #0f172a); border-radius: 16px;">
@@ -126,6 +126,7 @@
             </div>
         </div>
     </div>
+</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
