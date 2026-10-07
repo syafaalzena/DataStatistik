@@ -253,7 +253,7 @@
                                 {{ $d->tahun }},
                                 {{ $d->hasil_produksi }},
                                 '{{ addslashes($d->komoditas->nama_komoditas ?? '-') }}',
-                                '{{ addslashes($d->jenis->nama_jenis ?? '-') }}',
+                                '{{ addslashes($d->jenis->nama_jenis ?? '-') }}'
                                 '{{ addslashes($d->keterangan ?? '') }}'
                             )"
                             style="background:none; border:none; padding:0; cursor:pointer; display:flex; align-items:center;">
@@ -362,7 +362,7 @@
                                         {{ $d->jumlah_rtp }},
                                         {{ $d->jumlah_pembudidaya ?? 0 }},
                                         {{ $d->luas_lahan ?? 0 }},
-                                        '{{ addslashes($s->jenis->nama_jenis ?? '-') }}'
+                                        '{{ addslashes($d->jenis->nama_jenis ?? '-') }}'
                                     )"
                                     style="background:none; border:none; padding:0; cursor:pointer; display:flex; align-items:center;">
                                     <img src="{{ asset('images/pencil.png') }}" alt="Edit" width="20" height="20">

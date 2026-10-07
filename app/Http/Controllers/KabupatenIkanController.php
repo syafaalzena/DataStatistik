@@ -10,11 +10,12 @@ use Illuminate\Validation\Rule;
 class KabupatenIkanController extends Controller
 {
     public function index()
-{
-    $kabupatenIkans = KabupatenIkan::orderBy('nama_kabupaten')->get();
+    {
+        $kabupatenIkans = KabupatenIkan::orderBy('nama_kabupaten')->get();
 
-    return view('budidaya.index', compact('kabupatenIkans'));
-}
+        return view('budidaya.index', compact('kabupatenIkans'));
+    }
+    
     public function store(Request $request)
     {
         $validated = $request->validate([

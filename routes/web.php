@@ -141,7 +141,7 @@ Route::middleware('auth')->group(function () {
     |----------------------------------------------------------------------
     */
 
-    Route::get('/budidaya/{kabupaten}', [KabupatenIkanController::class, 'input'])
+    Route::get('/budidaya/{kabupaten}', [DataBulananBudidayaController::class, 'input'])
         ->name('budidaya.input');
 
 
