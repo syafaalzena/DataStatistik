@@ -16,8 +16,11 @@
         .navbar { background: var(--clr-dark); color: white; padding: 14px 0; box-shadow: 0 4px 12px rgba(15,23,42,.05); margin-bottom: 1.5rem; }
         .brand-wrapper { display: flex; align-items: center; gap: 12px; text-decoration: none; }
         .brand-text { font-weight: bold; font-size: 26px; color: #fff; }
+        .brand-logo-img { height: 40px; width: auto; }
         .back-btn { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: #fff; border: 1px solid #e2e8f0; border-radius: 30px; text-decoration: none; box-shadow: 0 2px 6px rgba(0,0,0,.05); }
         .back-btn:hover { background: #0f172a; color: #fff; }
+        .back-btn img { transition: filter .18s ease; }
+        .back-btn:hover img { filter: brightness(0) invert(1); }
         .btn-logout-icon { background: transparent; border: 1.5px solid rgba(248,250,252,.25); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .btn-logout-icon:hover { background: var(--clr-blue-brand); border-color: var(--clr-blue-brand); }
         .page-title { font-size: 30px; font-weight: 800; margin-bottom: 4px; }
@@ -60,12 +63,9 @@
 <nav class="navbar">
     <div class="container d-flex justify-content-between align-items-center">
         <a href="{{ route('dashboard') }}" class="brand-wrapper">
+            <img src="{{ asset('images/pancacita.png') }}" alt="Logo Pancacita" class="brand-logo-img">
             <span class="brand-text">SIDKP</span>
         </a>
-        <form method="POST" action="{{ route('logout') }}" class="mb-0">
-            @csrf
-            <button type="submit" class="btn-logout-icon" title="Logout"></button>
-        </form>
     </div>
 </nav>
 
@@ -73,7 +73,9 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="d-flex align-items-center gap-3">
-            <a href="{{ route('tangkap.produksi.index') }}" class="back-btn">&larr;</a>
+            <a href="{{ route('tangkap.produksi.index') }}" class="back-btn">
+                <img src="{{ asset('images/back.png') }}" alt="Back" width="22" height="22">
+            </a>
             <div>
                 <div class="page-title">Rekap Data Tahunan</div>
                 <div class="page-sub">RTP, kapal, API, dan nelayan seluruh kabupaten per tahun.</div>
