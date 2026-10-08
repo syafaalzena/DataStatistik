@@ -320,8 +320,8 @@
                             <div class="d-flex align-items-center gap-2">
                                 <button type="button" class="btn btn-outline-secondary btn-sm btn-pilih-peta">📍 Pilih di Peta</button>
                                 <button type="button" class="btn btn-link btn-sm text-danger p-0 btn-hapus-titik">Hapus titik</button>
+                                <div class="small text-muted mt-1 koordinat-teks">{{ ($lat !== null && $lat !== '' && $lng !== null && $lng !== '') ? $lat . ', ' . $lng : 'Belum dipilih' }}</div>
                             </div>
-                            <div class="small text-muted mt-1 koordinat-teks">{{ ($lat !== null && $lat !== '' && $lng !== null && $lng !== '') ? $lat . ', ' . $lng : 'Belum dipilih' }}</div>
                         </div>
 
                         <div class="col-md-1">
