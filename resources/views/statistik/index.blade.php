@@ -498,7 +498,7 @@
                                 Data Budidaya Ikan
                             </h2>
                             <p style="color: var(--clr-text-muted); line-height: 1.7; font-size: 14px;">
-                                Kelola data budidaya garam dan informasi pendukung untuk kebutuhan pelaporan.
+                                Kelola data budidaya Ikan dan informasi pendukung untuk kebutuhan pelaporan.
                             </p>
                         </div>
                         <div class="mt-4 text-center">

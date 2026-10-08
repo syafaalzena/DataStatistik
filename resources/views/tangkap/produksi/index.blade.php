@@ -119,8 +119,8 @@
         <div class="card border-0 shadow-sm" style="border-radius: 12px;">
             <div class="card-body p-4 d-flex align-items-center justify-content-between">
                 <div>
-                    <h5 class="fw-bold text-dark mb-1">Rekap Tahunan Provinsi</h5>
-                    <p class="text-muted small m-0">RTP, kapal, API, nelayan pilih 1 tahun atau lebih</p>
+    <h5 class="fw-bold text-dark mb-1">Rekap Tahunan Provinsi</h5>
+    <p class="text-muted small m-0">RTP, kapal, API, dan nelayan per tahun</p>
                 </div>
                 <a href="{{ route('tangkap.rekap.tahunan') }}" class="btn btn-dark px-4 py-2 fw-semibold" style="border-radius: 8px;">Buka Rekap</a>
             </div>

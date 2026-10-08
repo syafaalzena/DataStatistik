@@ -18,18 +18,15 @@ class RekapTangkapController extends Controller
         return view('tangkap.rekap-bulanan', $data);
     }
 
-    public function exportBulanan(Request $request)
-    {
-        $data = $this->dataBulanan($request);
+   public function exportBulanan(Request $request)
+{
+    $data = $this->dataBulanan($request);
 
-        $namaFile = 'rekap-produksi-tangkap-bulanan.xls';
-        $headers = [
-            'Content-Type' => 'application/vnd.ms-excel',
-            'Content-Disposition' => "attachment; filename=\"$namaFile\"",
-        ];
-
-        return response()->view('exports.rekap_produksi_tangkap_provinsi', $data, 200, $headers);
-    }
+    return \Maatwebsite\Excel\Facades\Excel::download(
+        new \App\Exports\RekapTangkapProvinsiExport($data, 'exports.rekap_produksi_tangkap_provinsi'),
+        'rekap-produksi-tangkap-bulanan.xlsx'
+    );
+}
 
     public function exportPdfBulanan(Request $request)
     {
@@ -48,17 +45,14 @@ class RekapTangkapController extends Controller
     }
 
     public function exportTahunan(Request $request)
-    {
-        $data = $this->dataTahunan($request);
+{
+    $data = $this->dataTahunan($request);
 
-        $namaFile = 'rekap-tahunan-tangkap.xls';
-        $headers = [
-            'Content-Type' => 'application/vnd.ms-excel',
-            'Content-Disposition' => "attachment; filename=\"$namaFile\"",
-        ];
-
-        return response()->view('exports.rekap_tahunan_tangkap_provinsi', $data, 200, $headers);
-    }
+    return \Maatwebsite\Excel\Facades\Excel::download(
+        new \App\Exports\RekapTangkapProvinsiExport($data, 'exports.rekap_tahunan_tangkap_provinsi'),
+        'rekap-tahunan-tangkap.xlsx'
+    );
+}
 
     public function exportPdfTahunan(Request $request)
     {
@@ -163,9 +157,9 @@ class RekapTangkapController extends Controller
 
     private function dataTahunan(Request $request): array
     {
-        $tahunAwal = (int) $request->input('tahun_awal', now()->year);
-        $tahunAkhir = (int) $request->input('tahun_akhir', now()->year);
-        [$tLo, $tHi] = [min($tahunAwal, $tahunAkhir), max($tahunAwal, $tahunAkhir)];
+       $tahun = (int) $request->input('tahun', now()->year);
+$tahunAwal = $tahunAkhir = $tahun;
+[$tLo, $tHi] = [$tahun, $tahun];
         $kabupatenId = $request->input('kabupaten_id');
 
         $query = TahunanTangkap::with(['kabupatenIkan', 'pelabuhan'])
