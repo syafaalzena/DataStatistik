@@ -33,7 +33,7 @@
 <nav class="navbar">
     <div class="container d-flex justify-content-between align-items-center">
         <a href="{{ route('dashboard') }}" class="brand-wrapper">
-            <span class="brand-text">SIDKP</span>
+            <span class="brand-text">SAMUDRA ACEH</span>
         </a>
         
     </div>

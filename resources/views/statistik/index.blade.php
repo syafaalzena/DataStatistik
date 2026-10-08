@@ -414,7 +414,7 @@
     <div class="container d-flex justify-content-between align-items-center">
         <a href="#" class="brand-wrapper">
             <img src="{{ asset('images/pancacita.png') }}" alt="Logo Pancacita" class="brand-logo-img">
-            <span class="brand-text">SIDKP</span>
+            <span class="brand-text">SAMUDRA ACEH</span>
         </a>
 
         <button type="button" class="btn-logout-icon" title="Logout" id="openLogoutModal">
