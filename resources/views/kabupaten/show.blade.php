@@ -17,6 +17,8 @@
             --clr-border:   #E2DED6;   /* garis halus */
             --clr-white:    #FFFFFF;
             --clr-gold:     #C68B2F;   /* aksen harga / angka penting */
+            --clr-dark: #0f172a;
+            --clr-blue-brand: #38bdf8;
 
             --radius-card:  14px;
             --shadow-card:  0 2px 16px rgba(26,107,114,.08);
@@ -33,28 +35,31 @@
         }
 
         /* ── Header strip ─────────────────────────────── */
-        .page-header {
-            background: linear-gradient(135deg, var(--clr-sea) 0%, #0F4A50 100%);
-            border-radius: 0 0 28px 28px;
-            padding: 2rem 0 2.4rem;
+        .navbar {
+            background: var(--clr-dark);
+            color: white;
+            padding: 14px 0;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
             margin-bottom: 2rem;
-            position: relative;
-            overflow: hidden;
+        }
+        /* Garis tipis seperti kristal garam — signature element */
+        .brand-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
         }
 
-        /* Garis tipis seperti kristal garam — signature element */
-        .page-header::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: repeating-linear-gradient(
-                105deg,
-                transparent,
-                transparent 38px,
-                rgba(255,255,255,.04) 38px,
-                rgba(255,255,255,.04) 39px
-            );
-            pointer-events: none;
+        .brand-text {
+            font-weight: bold;
+            font-size: 26px;
+            color: #ffffff;
+        }
+
+        .brand-logo-img {
+            height: 30px;
+            width: auto;
+            object-fit: contain;
         }
 
         /* Style Tombol Back disamakan persis dengan halaman utama */
@@ -82,20 +87,6 @@
         /* Efek membalik warna gambar back.png jadi putih saat di-hover */
         .btn-back:hover img {
             filter: brightness(0) invert(1);
-        }
-
-        .page-header h2 {
-            color: #fff;
-            font-size: 1.75rem;
-            font-weight: 700;
-            margin: 0;
-            letter-spacing: -.3px;
-        }
-
-        .page-header .subtitle {
-            color: rgba(255,255,255,.65);
-            font-size: .88rem;
-            margin: 0;
         }
 
         /* ── Cards ────────────────────────────────────── */
@@ -242,30 +233,35 @@
 </head>
 <body>
 
-{{-- HEADER --}}
-<div class="page-header">
-    <div class="container">
-        <div class="d-flex align-items-center gap-3">
-            <a href="{{ route('kabupaten.index') }}" class="btn-back">
-                <img src="{{ asset('images/back.png') }}" alt="Kembali" width="24" height="24">
-            </a>
-            
-            <div>
-                <h2 class="m-0">{{ $kabupaten->nama_kabupaten }}</h2>
-                <p class="subtitle mt-1">Data statistik garam wilayah ini</p>
+<nav class="navbar">
+    <div class="container d-flex justify-content-between align-items-center">
+        <a href="#" class="brand-wrapper">
+            <img src="{{ asset('images/pancacita.png') }}" alt="Logo Pancacita" class="brand-logo-img">
+            <span class="brand-text">SAMUDRA ACEH</span>
+        </a>
+    </div>
+</nav>
+
+<div class="container pb-5">
+
+    <div class="row mb-4 align-items-center">
+        <div class="col-12">
+            <div class="d-flex align-items-center gap-3 flex-wrap">
+                <a href="{{ route('kabupaten.index') }}" class="btn-back">
+                    <img src="{{ asset('images/back.png') }}" alt="Kembali" width="24" height="24">
+                </a>
+                <div class="flex-grow-1">
+                    <h2 class="fw-bold text-dark mb-1">{{ $kabupaten->nama_kabupaten }}</h2>
+                    <p class="text-muted mb-0">Data statistik garam wilayah ini</p>
+                </div>
+                <a href="{{ route('data-bulanan.create', $kabupaten->id) }}"
+                   class="btn btn-dark px-4 py-2 fw-semibold"
+                   style="border-radius: 8px;">
+                    + Tambah Data Produksi
+                </a>
             </div>
         </div>
     </div>
-    <div style="margin-left:60px; margin-top:14px;">
-        <a href="{{ route('data-bulanan.create', $kabupaten->id) }}"
-           class="btn btn-sm"
-           style="background:white; color:black; border-radius:8px; font-size:.99rem; font-weight:600;">
-            + Tambah Data Produksi
-        </a>
-    </div>
-</div>
-
-<div class="container pb-5">
 
     @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show"
