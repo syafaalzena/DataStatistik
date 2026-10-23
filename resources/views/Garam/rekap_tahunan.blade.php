@@ -353,7 +353,7 @@
             <div class="data-card">
                 <div class="data-card-body text-center">
                     <h6 class="text-muted">Total Produksi</h6>
-                    <h3 class="fw-bold">{{ $data->sum('produksi') }} Ton</h3>
+                    <h3 class="fw-bold">{{ $data->sum('produksi') }} Kg</h3>
                 </div>
             </div>
         </div>
@@ -466,7 +466,7 @@
                                 <th>Kabupaten</th>
                                 <th>Bulan</th>
                                 <th>Jenis Produksi</th>
-                                <th>Produksi (Ton)</th>
+                                <th>Produksi (Kg)</th>
                                 <th>Lokasi</th>
                                 <th>Jumlah Petani</th>
                                 <th>Nama Kelompok</th>
@@ -528,7 +528,7 @@
             labels: labels,
 
             datasets: [{
-                label: 'Total Produksi (Ton)',
+                label: 'Total Produksi (Kg)',
                 data: produksi,
                 backgroundColor: 'rgba(13, 27, 42, 0.7)',
                 borderRadius: 6,
@@ -547,7 +547,7 @@
 
                 tooltip: {
                     callbacks: {
-                        label: ctx => ` ${ctx.parsed.y} Ton`
+                        label: ctx => ` ${ctx.parsed.y} Kg`
                     }
                 }
             },

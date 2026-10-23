@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\JenisApi;
 use App\Models\KabupatenIkan;
+use App\Models\KomoditasIkan;
 use App\Models\LaporanOperasional;
 use App\Models\Pelabuhan;
 use Illuminate\Http\Request;
@@ -34,8 +36,9 @@ class LaporanOperasionalController extends Controller
         $kabupaten = KabupatenIkan::findOrFail($kabupatenId);
         $pelabuhanList = Pelabuhan::where('kabupaten_ikan_id', $kabupatenId)->orderBy('nama')->get();
         $laporan = null;
+        [$jenisApiList, $ikanList] = $this->opsiForm();
 
-        return view('tangkap.laporan-operasional.form', compact('pelabuhanList', 'laporan', 'kabupaten'));
+        return view('tangkap.laporan-operasional.form', compact('pelabuhanList', 'laporan', 'kabupaten', 'jenisApiList', 'ikanList'));
     }
 
     public function store(Request $request, $kabupatenId)
@@ -106,8 +109,9 @@ class LaporanOperasionalController extends Controller
         $kabupaten = $laporanOperasional->pelabuhan->kabupatenIkan;
         $pelabuhanList = Pelabuhan::where('kabupaten_ikan_id', $kabupaten->id)->orderBy('nama')->get();
         $laporan = $laporanOperasional;
+        [$jenisApiList, $ikanList] = $this->opsiForm();
 
-        return view('tangkap.laporan-operasional.form', compact('pelabuhanList', 'laporan', 'kabupaten'));
+        return view('tangkap.laporan-operasional.form', compact('pelabuhanList', 'laporan', 'kabupaten', 'jenisApiList', 'ikanList'));
     }
 
     public function update(Request $request, LaporanOperasional $laporanOperasional)
@@ -211,9 +215,18 @@ class LaporanOperasionalController extends Controller
         return compact('laporans', 'tahun', 'tahunTersedia', 'grandTotalProduksi', 'grandTotalNilai');
     }
 
+    // Daftar pilihan untuk form: Jenis API (sama dengan portal Produksi) & nama ikan (untuk saran + cek typo)
+    private function opsiForm(): array
+    {
+        $jenisApiList = JenisApi::orderBy('nama')->pluck('nama');
+        $ikanList = KomoditasIkan::query()->distinct()->orderBy('nama_ikan')->pluck('nama_ikan');
+
+        return [$jenisApiList, $ikanList];
+    }
+
     private function validateData(Request $request): array
     {
-        return $request->validate([
+        $validated = $request->validate([
             'pelabuhan_id' => ['required', 'exists:pelabuhans,id'],
             'bulan' => ['required', 'integer', 'between:1,12'],
             'tahun' => ['required', 'integer', 'digits:4'],
@@ -224,6 +237,8 @@ class LaporanOperasionalController extends Controller
             'nama_armada.*' => ['nullable', 'string', 'max:150'],
             'tanggal_berangkat' => ['array'],
             'tanggal_berangkat.*' => ['nullable', 'date'],
+            'tanggal_pulang' => ['array'],
+            'tanggal_pulang.*' => ['nullable', 'date'],
             'jenis_alat_tangkap' => ['array'],
             'jenis_alat_tangkap.*' => ['nullable', 'string', 'max:150'],
             'ukuran_kapal' => ['array'],
@@ -273,6 +288,19 @@ class LaporanOperasionalController extends Controller
             'nama_pt'=>['array'],
             'nama_pt.*' => ['nullable', 'string', 'max:150'],
         ]);
+
+        // Tanggal pulang tidak boleh sebelum tanggal berangkat
+        foreach ((array) $request->input('tanggal_pulang', []) as $i => $pulang) {
+            $berangkat = $request->input("tanggal_berangkat.$i");
+            if ($pulang && $berangkat && $pulang < $berangkat) {
+                $nama = $request->input("nama_armada.$i") ?: 'trip ke-' . ((int) $i + 1);
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    "tanggal_pulang.$i" => "Tanggal pulang ($nama) tidak boleh lebih awal dari tanggal berangkat.",
+                ]);
+            }
+        }
+
+        return $validated;
     }
 
     private function syncDetails(LaporanOperasional $laporan, Request $request): void
@@ -286,6 +314,7 @@ class LaporanOperasionalController extends Controller
             $trip = $laporan->armadaTangkap()->create([
                 'nama_armada' => $request->input("nama_armada.$i"),
                 'tanggal_berangkat' => $request->input("tanggal_berangkat.$i") ?: null,
+                'tanggal_pulang' => $request->input("tanggal_pulang.$i") ?: null,
                 'jenis_alat_tangkap' => $request->input("jenis_alat_tangkap.$i"),
                 'latitude' => $request->filled("latitude.$i") ? $request->input("latitude.$i") : null,
                 'longitude' => $request->filled("longitude.$i") ? $request->input("longitude.$i") : null,

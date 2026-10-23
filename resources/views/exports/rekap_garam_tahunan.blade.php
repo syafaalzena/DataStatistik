@@ -11,7 +11,7 @@
         <td style="font-weight:bold;">Total Data</td>
         <td>{{ $data->count() }}</td>
         <td style="font-weight:bold;">Total Produksi</td>
-        <td>{{ $data->sum('produksi') }} Ton</td>
+        <td>{{ $data->sum('produksi') }} Kg</td>
         <td style="font-weight:bold;">Total Harga</td>
         <td colspan="4">Rp {{ number_format($data->sum('harga'), 0, ',', '.') }}</td>
     </tr>
@@ -21,7 +21,7 @@
         <th>Kabupaten</th>
         <th>Bulan</th>
         <th>Jenis Produksi</th>
-        <th>Produksi (Ton)</th>
+        <th>Produksi (Kg)</th>
         <th>Lokasi</th>
         <th>Jumlah Petani</th>
         <th>Nama Kelompok</th>

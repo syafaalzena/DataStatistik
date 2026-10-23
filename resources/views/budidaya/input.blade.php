@@ -253,7 +253,7 @@
                                 {{ $d->tahun }},
                                 {{ $d->hasil_produksi }},
                                 '{{ addslashes($d->komoditas->nama_komoditas ?? '-') }}',
-                                '{{ addslashes($d->jenis->nama_jenis ?? '-') }}'
+                                '{{ addslashes($d->jenis->nama_jenis ?? '-') }}',
                                 '{{ addslashes($d->keterangan ?? '') }}'
                             )"
                             style="background:none; border:none; padding:0; cursor:pointer; display:flex; align-items:center;">

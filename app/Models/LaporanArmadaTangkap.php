@@ -13,6 +13,7 @@ class LaporanArmadaTangkap extends Model
         'laporan_operasional_id',
         'nama_armada',
         'tanggal_berangkat',
+        'tanggal_pulang',
         'jenis_alat_tangkap',
         'latitude',
         'longitude',
@@ -23,6 +24,7 @@ class LaporanArmadaTangkap extends Model
 
     protected $casts = [
         'tanggal_berangkat' => 'date',
+        'tanggal_pulang' => 'date',
         'latitude' => 'float',
         'longitude' => 'float',
     ];

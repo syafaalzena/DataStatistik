@@ -163,7 +163,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Produksi (Ton)</label>
+                        <label class="form-label">Produksi (Kg)</label>
                         <input type="number" name="produksi" class="form-control" value="{{ $dataBulanan->produksi }}" step="any" required>
                     </div>
 

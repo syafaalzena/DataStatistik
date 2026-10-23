@@ -27,7 +27,7 @@
     <table class="recap">
         <thead>
             <tr>
-                <th>No</th><th>Nama Kapal</th><th>Tanggal</th><th>Jenis Alat</th>
+                <th>No</th><th>Nama Kapal</th><th>Tgl Berangkat</th><th>Tgl Pulang</th><th>Jenis Alat</th>
                 <th>Ukuran (GT)</th><th>ABK</th><th>Dokumen</th>
             </tr>
         </thead>
@@ -37,13 +37,14 @@
                     <td>{{ $i + 1 }}</td>
                     <td>{{ $a->nama_armada ?? '-' }}</td>
                     <td>{{ optional($a->tanggal_berangkat)->format('d-m-Y') ?? '-' }}</td>
+                    <td>{{ optional($a->tanggal_pulang)->format('d-m-Y') ?? '-' }}</td>
                     <td>{{ $a->jenis_alat_tangkap ?? '-' }}</td>
                     <td>{{ $a->ukuran_kapal }}</td>
                     <td class="num">{{ $a->jumlah_abk }}</td>
                     <td>{{ $a->dokumens->pluck('nama_dokumen')->join(', ') ?: '-' }}</td>
                 </tr>
             @empty
-                <tr><td colspan="7" style="text-align:center;">Belum ada data</td></tr>
+                <tr><td colspan="8" style="text-align:center;">Belum ada data</td></tr>
             @endforelse
         </tbody>
     </table>

@@ -100,6 +100,7 @@
                             <th>No</th>
                             <th>Nama Kapal</th>
                             <th>Tanggal Berangkat</th>
+                            <th>Tanggal Pulang</th>
                             <th>Jenis Alat Tangkap</th>
                             <th>Ukuran (GT)</th>
                             <th>ABK</th>
@@ -113,6 +114,7 @@
                                 <td class="text-center">{{ $i + 1 }}</td>
                                 <td>{{ $a->nama_armada ?? '-' }}</td>
                                 <td class="text-center">{{ optional($a->tanggal_berangkat)->translatedFormat('d M Y') ?? '-' }}</td>
+                                <td class="text-center">{{ optional($a->tanggal_pulang)->translatedFormat('d M Y') ?? '-' }}</td>
                                 <td>{{ $a->jenis_alat_tangkap ?? '-' }}</td>
                                 <td class="text-center">{{ $a->ukuran_kapal }}</td>
                                 <td class="num">{{ number_format($a->jumlah_abk, 0, ',', '.') }}</td>
@@ -132,7 +134,7 @@
                                 </td>
                             </tr>
                         @empty
-                            <tr><td colspan="8" class="text-center text-muted">Belum ada data trip</td></tr>
+                            <tr><td colspan="9" class="text-center text-muted">Belum ada data trip</td></tr>
                         @endforelse
                     </tbody>
                 </table>

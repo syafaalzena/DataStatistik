@@ -332,7 +332,7 @@
                             <th>Tahun</th>
                             <th>Bulan</th>
                             <th>Jenis Produksi</th>
-                            <th>Produksi (Ton)</th>
+                            <th>Produksi (Kg)</th>
                             <th>Lokasi</th>
                             <th>Jumlah Petani</th>
                             <th>Nama Kelompok</th>

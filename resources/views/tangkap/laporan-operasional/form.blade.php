@@ -143,6 +143,9 @@
             background: #f1f5f9; 
         }
 
+        .warn-inline { font-size: 11.5px; color: #b45309; margin-top: 2px; display: none; }
+        .is-suspect { border-color: #f59e0b !important; background: #fffbeb; }
+        #tabelRingkasan th, #tabelRingkasan td { font-size: 13px; padding: 4px 8px; }
         .btn-dark-custom { 
             background: var(--clr-dark); 
             color: #fff; 
@@ -193,7 +196,12 @@
         <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
 
-        <form method="POST" action="{{ $laporan ? route('laporan-operasional.update', $laporan) : route('laporan-operasional.store', $kabupaten->id) }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ $laporan ? route('laporan-operasional.update', $laporan) : route('laporan-operasional.store', $kabupaten->id) }}" enctype="multipart/form-data" id="formLaporan" novalidate>
+        <datalist id="daftarIkan">
+            @foreach ($ikanList as $ikan)
+                <option value="{{ $ikan }}"></option>
+            @endforeach
+        </datalist>
         @csrf
         @if ($laporan) @method('PUT') @endif
 
@@ -252,6 +260,7 @@
                     @php
                         $namaArmada = is_object($row) ? $row->nama_armada : old("nama_armada.$i");
                         $tglBerangkat = is_object($row) ? optional($row->tanggal_berangkat)->format('Y-m-d') : old("tanggal_berangkat.$i");
+                        $tglPulang = is_object($row) ? optional($row->tanggal_pulang)->format('Y-m-d') : old("tanggal_pulang.$i");
                         $jenisAlat = is_object($row) ? $row->jenis_alat_tangkap : old("jenis_alat_tangkap.$i");
                         $lat = is_object($row) ? $row->latitude : old("latitude.$i");
                         $lng = is_object($row) ? $row->longitude : old("longitude.$i");
@@ -261,25 +270,40 @@
                         $lokasiFoto = is_object($row) ? optional($row->foto)->lokasi : old("lokasi_foto.$i");
                     @endphp
                     <div class="row-input row g-2 align-items-end" data-index="{{ $i }}">
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <label class="field-label">Nama Kapal</label>
                             <input type="text" name="nama_armada[{{ $i }}]" class="form-control" value="{{ $namaArmada }}" placeholder="cth: KM Sinar Laut">
                         </div>
                         <div class="col-md-2">
                             <label class="field-label">Tanggal Berangkat</label>
-                            <input type="date" name="tanggal_berangkat[{{ $i }}]" class="form-control" value="{{ $tglBerangkat }}">
+                            <input type="date" name="tanggal_berangkat[{{ $i }}]" class="form-control input-berangkat" value="{{ $tglBerangkat }}">
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
+                            <label class="field-label">Tanggal Pulang</label>
+                            <input type="date" name="tanggal_pulang[{{ $i }}]" class="form-control input-pulang" value="{{ $tglPulang }}" min="{{ $tglBerangkat }}">
+                            <div class="warn-inline"></div>
+                        </div>
+                        <div class="col-md-2">
                             <label class="field-label">Jenis Alat Tangkap / API</label>
-                            <input type="text" name="jenis_alat_tangkap[{{ $i }}]" class="form-control" value="{{ $jenisAlat }}" placeholder="cth: Rawai Dasar">
+                            <select name="jenis_alat_tangkap[{{ $i }}]" class="form-select input-api">
+                                <option value="">-- Pilih API --</option>
+                                @foreach ($jenisApiList as $api)
+                                    <option value="{{ $api }}" @selected($jenisAlat == $api)>{{ $api }}</option>
+                                @endforeach
+                                @if ($jenisAlat && ! $jenisApiList->contains($jenisAlat))
+                                    <option value="{{ $jenisAlat }}" selected>{{ $jenisAlat }} (data lama)</option>
+                                @endif
+                            </select>
                         </div>
                         <div class="col-md-2">
                             <label class="field-label">Ukuran Kapal (GT)</label>
-                            <input type="text" name="ukuran_kapal[{{ $i }}]" class="form-control" value="{{ $ukuran }}" placeholder="cth: < 5">
+                            <input type="text" name="ukuran_kapal[{{ $i }}]" class="form-control input-ukuran" value="{{ $ukuran }}" placeholder="cth: < 5">
+                            <div class="warn-inline"></div>
                         </div>
                         <div class="col-md-2">
                             <label class="field-label">Jumlah ABK (Org)</label>
-                            <input type="number" step="0.01" name="jumlah_abk[{{ $i }}]" class="form-control" value="{{ $jmlAbk }}">
+                            <input type="number" step="0.01" name="jumlah_abk[{{ $i }}]" class="form-control input-abk" value="{{ $jmlAbk }}">
+                            <div class="warn-inline"></div>
                         </div>
 
                         <div class="col-md-12">
@@ -349,15 +373,18 @@
                     <div class="row-input row g-2 align-items-end produksi-row">
                         <div class="col-md-4">
                             <label class="field-label">Jenis Ikan</label>
-                            <input type="text" name="jenis_ikan[]" class="form-control" value="{{ $jenis }}">
+                            <input type="text" name="jenis_ikan[]" class="form-control input-ikan" list="daftarIkan" autocomplete="off" value="{{ $jenis }}" placeholder="ketik / pilih nama ikan">
+                            <div class="warn-inline"></div>
                         </div>
                         <div class="col-md-3">
                             <label class="field-label">Produksi (Kg)</label>
                             <input type="number" step="0.01" name="produksi_kg[]" class="form-control produksi-kg" value="{{ $produksiKg }}" oninput="hitungNilai(this)">
+                            <div class="warn-inline"></div>
                         </div>
                         <div class="col-md-2">
                             <label class="field-label">Harga Ikan (Rp)</label>
                             <input type="number" step="0.01" name="harga_rp[]" class="form-control produksi-harga" value="{{ $harga }}" oninput="hitungNilai(this)">
+                            <div class="warn-inline"></div>
                         </div>
                         <div class="col-md-2">
                             <label class="field-label">Nilai Produksi (Rp)</label>
@@ -443,11 +470,13 @@
                         </div>
                         <div class="col-md-3">
                             <label class="field-label">Jenis Ikan</label>
-                            <input type="text" name="jenis_ikan_pemasaran[]" class="form-control" value="{{ $jenis }}">
+                            <input type="text" name="jenis_ikan_pemasaran[]" class="form-control input-ikan" list="daftarIkan" autocomplete="off" value="{{ $jenis }}" placeholder="ketik / pilih nama ikan">
+                            <div class="warn-inline"></div>
                         </div>
                         <div class="col-md-2">
                             <label class="field-label">Quantity (Kg)</label>
-                            <input type="number" step="0.01" name="quantity_kg[]" class="form-control" value="{{ $qty }}">
+                            <input type="number" step="0.01" name="quantity_kg[]" class="form-control produksi-kg" value="{{ $qty }}">
+                            <div class="warn-inline"></div>
                         </div>
                         <div class="col-md-3">
                             <label class="field-label">Tujuan (Kabupaten/Provinsi/Negara)</label>
@@ -497,6 +526,32 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
                 <button type="button" class="btn btn-dark" id="petaGunakan" disabled>Gunakan Titik Ini</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalKonfirmasi" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Apakah pengisian sudah benar?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="small text-muted mb-2">Periksa kembali ukuran kapal, produksi (Kg), harga, dan nama ikan. Data yang sudah disimpan menjadi dasar laporan resmi.</p>
+                <div id="konfirmPeringatan"></div>
+                <div id="tabelRingkasan" class="table-responsive"></div>
+                <div class="form-check mt-3">
+                    <input class="form-check-input" type="checkbox" id="cekBenar">
+                    <label class="form-check-label small" for="cekBenar">
+                        Saya menyatakan data di atas sudah saya periksa dan benar sesuai kondisi sebenarnya.
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Periksa Lagi</button>
+                <button type="button" class="btn btn-dark" id="btnSimpanFinal" disabled>Ya, Data Sudah Benar &amp; Simpan</button>
             </div>
         </div>
     </div>
@@ -683,6 +738,241 @@ document.getElementById('petaGunakan').addEventListener('click', function () {
     bootstrap.Modal.getInstance(petaModalEl).hide();
 });
 
+    // ================= Pilihan API (sama dengan portal Produksi) =================
+    const DAFTAR_API = @json($jenisApiList);
+    function apiOptionsHtml() {
+        return '<option value="">-- Pilih API --</option>' +
+            DAFTAR_API.map(n => `<option value="${String(n).replace(/"/g, '&quot;')}">${n}</option>`).join('');
+    }
+
+    // ================= Validasi & peringatan pengisian =================
+    const BATAS = {
+        gtMax: 200,            // GT di atas ini dianggap tidak wajar untuk kapal ikan
+        abkMax: 60,
+        lamaTripMaxHari: 60,
+        kgMax: 10000,          // per baris, 10 ton
+        hargaMin: 1000, hargaMax: 500000,   // Rp/kg
+        nilaiMax: 1000000000,  // Rp 1 miliar per baris
+    };
+    const rp = n => 'Rp ' + Number(n).toLocaleString('id-ID');
+
+    function daftarIkanValid() {
+        return Array.from(document.querySelectorAll('#daftarIkan option')).map(o => o.value);
+    }
+    function jarak(a, b) { // Levenshtein sederhana untuk menebak salah ketik
+        const m = a.length, n = b.length, d = [];
+        for (let i = 0; i <= m; i++) d[i] = [i];
+        for (let j = 1; j <= n; j++) d[0][j] = j;
+        for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++)
+            d[i][j] = Math.min(d[i-1][j] + 1, d[i][j-1] + 1, d[i-1][j-1] + (a[i-1] === b[j-1] ? 0 : 1));
+        return d[m][n];
+    }
+    function tebakIkan(nama) {
+        const q = nama.toLowerCase();
+        let terbaik = null, skor = 99;
+        daftarIkanValid().forEach(v => {
+            const s = jarak(q, v.toLowerCase());
+            if (s < skor) { skor = s; terbaik = v; }
+        });
+        return skor <= Math.max(2, Math.floor(q.length / 4)) ? terbaik : null;
+    }
+
+    function tandai(input, pesan) {
+        const box = input.parentElement.querySelector('.warn-inline');
+        input.classList.toggle('is-suspect', !!pesan);
+        if (box) { box.textContent = pesan ? '⚠ ' + pesan : ''; box.style.display = pesan ? 'block' : 'none'; }
+    }
+
+    function cekUkuran(v) {
+        v = v.trim();
+        if (!v) return null;
+        const angka = (v.match(/\d+([.,]\d+)?/g) || []).map(x => parseFloat(x.replace(',', '.')));
+        if (!angka.length) return 'Ukuran kapal tidak berisi angka. Pastikan sudah benar (cth: 5, < 5, 6 - 10).';
+        const maks = Math.max(...angka);
+        if (maks === 0) return 'Ukuran kapal 0 GT, apakah sudah benar?';
+        if (maks > BATAS.gtMax) return `Ukuran ${maks} GT sangat besar untuk kapal ikan. Apakah sudah benar?`;
+        return null;
+    }
+    function cekAbk(v) {
+        const n = parseFloat(v);
+        if (isNaN(n)) return null;
+        if (n > BATAS.abkMax) return `${n} ABK sangat banyak. Apakah sudah benar?`;
+        return null;
+    }
+    function cekKg(v) {
+        const n = parseFloat(v);
+        if (isNaN(n)) return null;
+        if (n === 0) return 'Produksi 0 Kg. Apakah sudah benar?';
+        if (n > BATAS.kgMax) return `${n.toLocaleString('id-ID')} Kg (${(n/1000).toLocaleString('id-ID')} ton) sangat besar untuk satu jenis ikan. Cek apakah ada angka nol berlebih.`;
+        return null;
+    }
+    function cekHarga(v) {
+        const n = parseFloat(v);
+        if (isNaN(n)) return null;
+        if (n < BATAS.hargaMin) return `Harga ${rp(n)}/Kg terlalu murah. Apakah sudah benar?`;
+        if (n > BATAS.hargaMax) return `Harga ${rp(n)}/Kg terlalu mahal. Apakah sudah benar?`;
+        return null;
+    }
+    function cekIkan(v) {
+        v = v.trim();
+        if (!v) return null;
+        if (daftarIkanValid().some(x => x.toLowerCase() === v.toLowerCase())) return null;
+        const saran = tebakIkan(v);
+        return saran
+            ? `"${v}" tidak ada di daftar ikan. Maksud Anda "${saran}"?`
+            : `"${v}" tidak ada di daftar ikan. Periksa ejaan nama ikan.`;
+    }
+    function cekTanggal(row) {
+        const b = row.querySelector('.input-berangkat').value;
+        const p = row.querySelector('.input-pulang').value;
+        if (!b || !p) return null;
+        if (p < b) return { fatal: true, pesan: 'Tanggal pulang lebih awal dari tanggal berangkat.' };
+        const hari = (new Date(p) - new Date(b)) / 86400000;
+        if (hari > BATAS.lamaTripMaxHari) return { fatal: false, pesan: `Trip berlangsung ${hari} hari. Apakah sudah benar?` };
+        return null;
+    }
+
+    // Peringatan langsung saat mengisi
+    document.addEventListener('input', function (e) {
+        const t = e.target, row = t.closest('.row-input');
+        if (!row) return;
+        if (t.matches('.input-ukuran')) tandai(t, cekUkuran(t.value));
+        else if (t.matches('.input-abk')) tandai(t, cekAbk(t.value));
+        else if (t.matches('.produksi-kg')) tandai(t, cekKg(t.value));
+        else if (t.matches('.produksi-harga')) tandai(t, cekHarga(t.value));
+        else if (t.matches('.input-ikan')) tandai(t, cekIkan(t.value));
+    });
+    document.addEventListener('change', function (e) {
+        const t = e.target, row = t.closest('.row-input');
+        if (!row) return;
+        if (t.matches('.input-berangkat, .input-pulang')) {
+            const b = row.querySelector('.input-berangkat'), p = row.querySelector('.input-pulang');
+            p.min = b.value || '';
+            const r = cekTanggal(row);
+            tandai(p, r ? r.pesan : null);
+        }
+    });
+
+    // Kumpulkan semua data + peringatan untuk dialog konfirmasi
+    function kumpulkan() {
+        const peringatan = [], armada = [], produksi = [];
+        let fatal = false;
+
+        document.querySelectorAll('#armadaContainer .row-input').forEach((row, n) => {
+            const nama = row.querySelector('[name^="nama_armada"]').value.trim() || ('Trip ' + (n + 1));
+            const ukuran = row.querySelector('.input-ukuran').value.trim();
+            const abk = row.querySelector('.input-abk').value;
+            const b = row.querySelector('.input-berangkat').value, p = row.querySelector('.input-pulang').value;
+            const api = row.querySelector('.input-api').value;
+            if (!ukuran) return;
+            armada.push({ nama, b, p, api, ukuran, abk });
+            [[cekUkuran(ukuran), 'Ukuran kapal'], [cekAbk(abk), 'ABK']].forEach(([m, label]) => {
+                if (m) peringatan.push(`<b>${nama}</b> – ${m}`);
+            });
+            const tgl = cekTanggal(row);
+            if (tgl) { peringatan.push(`<b>${nama}</b> – ${tgl.pesan}`); if (tgl.fatal) fatal = true; }
+        });
+
+        const sudah = {};
+        document.querySelectorAll('#produksiContainer .produksi-row').forEach(row => {
+            const ikan = row.querySelector('.input-ikan').value.trim();
+            const kg = row.querySelector('.produksi-kg').value;
+            const harga = row.querySelector('.produksi-harga').value;
+            if (!ikan) return;
+            const nilai = (parseFloat(kg) || 0) * (parseFloat(harga) || 0);
+            produksi.push({ ikan, kg, harga, nilai });
+
+            const k = ikan.toLowerCase();
+            if (sudah[k]) peringatan.push(`<b>${ikan}</b> – diisi lebih dari satu kali. Apakah ada yang dobel?`);
+            sudah[k] = true;
+
+            if (kg === '' || harga === '') peringatan.push(`<b>${ikan}</b> – produksi (Kg) atau harga belum diisi, nilai produksi akan menjadi 0.`);
+            [cekIkan(ikan), cekKg(kg), cekHarga(harga)].forEach(m => { if (m) peringatan.push(`<b>${ikan}</b> – ${m}`); });
+            if (nilai > BATAS.nilaiMax) peringatan.push(`<b>${ikan}</b> – nilai produksi ${rp(nilai)} sangat besar. Cek Kg dan harganya.`);
+        });
+
+        // Total produksi per jenis ikan (untuk dibandingkan dengan pemasaran)
+        const totalProduksi = {};
+        produksi.forEach(p => { const k = p.ikan.toLowerCase(); totalProduksi[k] = (totalProduksi[k] || 0) + (parseFloat(p.kg) || 0); });
+
+        const pemasaran = [], totalPemasaran = {};
+        document.querySelectorAll('#pemasaranContainer .row-input').forEach(row => {
+            const kategori = row.querySelector('[name^="kategori_pemasaran"]').value;
+            const ikan = row.querySelector('.input-ikan').value.trim();
+            const qty = row.querySelector('.produksi-kg').value;
+            const tujuan = row.querySelector('[name^="tujuan"]').value.trim();
+            if (!ikan && qty === '' && !tujuan) return;
+            const label = ikan || '(jenis ikan kosong)';
+            pemasaran.push({ kategori, ikan: label, qty, tujuan });
+
+            if (!ikan) peringatan.push(`Pemasaran – jenis ikan belum diisi (tujuan: ${tujuan || '-'}).`);
+            if (qty === '') peringatan.push(`<b>${label}</b> (pemasaran) – quantity (Kg) belum diisi.`);
+            if (!tujuan) peringatan.push(`<b>${label}</b> (pemasaran) – tujuan belum diisi.`);
+            [cekIkan(ikan), cekKg(qty)].forEach(m => { if (m) peringatan.push(`<b>${label}</b> (pemasaran) – ${m}`); });
+
+            const k = ikan.toLowerCase();
+            totalPemasaran[k] = (totalPemasaran[k] || 0) + (parseFloat(qty) || 0);
+        });
+        Object.keys(totalPemasaran).forEach(k => {
+            if (!k) return;
+            if (!(k in totalProduksi)) {
+                if (produksi.length) peringatan.push(`<b>${k}</b> (pemasaran) – tidak ada di tabel produksi ikan dominan. Apakah sudah benar?`);
+            } else if (totalPemasaran[k] > totalProduksi[k]) {
+                peringatan.push(`<b>${k}</b> (pemasaran) – total ${totalPemasaran[k].toLocaleString('id-ID')} Kg melebihi produksi ${totalProduksi[k].toLocaleString('id-ID')} Kg.`);
+            }
+        });
+
+        return { peringatan, armada, produksi, pemasaran, fatal };
+    }
+
+    function isiModalKonfirmasi(d) {
+        const w = document.getElementById('konfirmPeringatan');
+        w.innerHTML = d.peringatan.length
+            ? `<div class="alert alert-warning py-2 small"><b>Mohon dicek, ada ${d.peringatan.length} isian yang tampak tidak biasa:</b><ul class="mb-0 mt-1">` +
+              d.peringatan.map(x => `<li>${x}</li>`).join('') + '</ul></div>'
+            : '<div class="alert alert-success py-2 small mb-2">Tidak ada isian yang mencurigakan, tetapi tetap periksa ringkasan di bawah.</div>';
+
+        let html = '';
+        if (d.armada.length) {
+            html += '<div class="fw-semibold small mt-2">Armada</div><table class="table table-sm table-bordered"><thead><tr><th>Kapal</th><th>Berangkat</th><th>Pulang</th><th>API</th><th>Ukuran (GT)</th><th>ABK</th></tr></thead><tbody>' +
+                d.armada.map(a => `<tr><td>${a.nama}</td><td>${a.b || '-'}</td><td>${a.p || '-'}</td><td>${a.api || '-'}</td><td>${a.ukuran}</td><td>${a.abk || '-'}</td></tr>`).join('') + '</tbody></table>';
+        }
+        if (d.produksi.length) {
+            let total = 0;
+            html += '<div class="fw-semibold small mt-2">Produksi Ikan</div><table class="table table-sm table-bordered"><thead><tr><th>Jenis Ikan</th><th class="text-end">Produksi (Kg)</th><th class="text-end">Harga/Kg</th><th class="text-end">Nilai</th></tr></thead><tbody>' +
+                d.produksi.map(p => { total += p.nilai; return `<tr><td>${p.ikan}</td><td class="text-end">${(parseFloat(p.kg)||0).toLocaleString('id-ID')}</td><td class="text-end">${rp(parseFloat(p.harga)||0)}</td><td class="text-end">${rp(p.nilai)}</td></tr>`; }).join('') +
+                `<tr class="fw-bold"><td colspan="3" class="text-end">Total Nilai</td><td class="text-end">${rp(total)}</td></tr></tbody></table>`;
+        }
+        if (d.pemasaran.length) {
+            html += '<div class="fw-semibold small mt-2">Pemasaran</div><table class="table table-sm table-bordered"><thead><tr><th>Kategori</th><th>Jenis Ikan</th><th class="text-end">Quantity (Kg)</th><th>Tujuan</th></tr></thead><tbody>' +
+                d.pemasaran.map(m => `<tr><td>${m.kategori}</td><td>${m.ikan}</td><td class="text-end">${(parseFloat(m.qty)||0).toLocaleString('id-ID')}</td><td>${m.tujuan || '-'}</td></tr>`).join('') + '</tbody></table>';
+        }
+        document.getElementById('tabelRingkasan').innerHTML = html || '<div class="small text-muted">Belum ada data armada/produksi yang diisi.</div>';
+        document.getElementById('cekBenar').checked = false;
+        document.getElementById('btnSimpanFinal').disabled = true;
+    }
+
+    let sudahKonfirmasi = false;
+    document.getElementById('formLaporan').addEventListener('submit', function (e) {
+        if (sudahKonfirmasi) return;
+        e.preventDefault();
+        if (!this.reportValidity()) return;
+        const d = kumpulkan();
+        if (d.fatal) {
+            alert('Tanggal pulang tidak boleh lebih awal dari tanggal berangkat. Perbaiki dulu sebelum menyimpan.');
+            return;
+        }
+        isiModalKonfirmasi(d);
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('modalKonfirmasi')).show();
+    });
+    document.getElementById('cekBenar').addEventListener('change', function () {
+        document.getElementById('btnSimpanFinal').disabled = !this.checked;
+    });
+    document.getElementById('btnSimpanFinal').addEventListener('click', function () {
+        sudahKonfirmasi = true;
+        document.getElementById('formLaporan').submit();
+    });
+
     function hitungNilai(input) {
         const row = input.closest('.produksi-row');
         const kg = parseFloat(row.querySelector('.produksi-kg').value) || 0;
@@ -701,25 +991,32 @@ document.getElementById('petaGunakan').addEventListener('click', function () {
         const idx = armadaIndexCounter++;
         const html = `
         <div class="row-input row g-2 align-items-end" data-index="${idx}">
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <label class="field-label">Nama Kapal</label>
                 <input type="text" name="nama_armada[${idx}]" class="form-control" placeholder="cth: KM Sinar Laut">
             </div>
             <div class="col-md-2">
                 <label class="field-label">Tanggal Berangkat</label>
-                <input type="date" name="tanggal_berangkat[${idx}]" class="form-control">
+                <input type="date" name="tanggal_berangkat[${idx}]" class="form-control input-berangkat">
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
+                <label class="field-label">Tanggal Pulang</label>
+                <input type="date" name="tanggal_pulang[${idx}]" class="form-control input-pulang">
+                <div class="warn-inline"></div>
+            </div>
+            <div class="col-md-2">
                 <label class="field-label">Jenis Alat Tangkap / API</label>
-                <input type="text" name="jenis_alat_tangkap[${idx}]" class="form-control" placeholder="cth: Rawai Dasar">
+                <select name="jenis_alat_tangkap[${idx}]" class="form-select input-api">${apiOptionsHtml()}</select>
             </div>
             <div class="col-md-2">
                 <label class="field-label">Ukuran Kapal (GT)</label>
-                <input type="text" name="ukuran_kapal[${idx}]" class="form-control" placeholder="cth: < 5">
+                <input type="text" name="ukuran_kapal[${idx}]" class="form-control input-ukuran" placeholder="cth: < 5">
+                <div class="warn-inline"></div>
             </div>
             <div class="col-md-2">
                 <label class="field-label">Jumlah ABK (Org)</label>
-                <input type="number" step="0.01" name="jumlah_abk[${idx}]" class="form-control">
+                <input type="number" step="0.01" name="jumlah_abk[${idx}]" class="form-control input-abk">
+                <div class="warn-inline"></div>
             </div>
 
             <div class="col-md-12">
@@ -760,15 +1057,18 @@ document.getElementById('petaGunakan').addEventListener('click', function () {
         <div class="row-input row g-2 align-items-end produksi-row">
             <div class="col-md-4">
                 <label class="field-label">Jenis Ikan</label>
-                <input type="text" name="jenis_ikan[]" class="form-control">
+                <input type="text" name="jenis_ikan[]" class="form-control input-ikan" list="daftarIkan" autocomplete="off" placeholder="ketik / pilih nama ikan">
+                <div class="warn-inline"></div>
             </div>
             <div class="col-md-3">
                 <label class="field-label">Produksi (Kg)</label>
                 <input type="number" step="0.01" name="produksi_kg[]" class="form-control produksi-kg" oninput="hitungNilai(this)">
+                <div class="warn-inline"></div>
             </div>
             <div class="col-md-2">
                 <label class="field-label">Harga Ikan (Rp)</label>
                 <input type="number" step="0.01" name="harga_rp[]" class="form-control produksi-harga" oninput="hitungNilai(this)">
+                <div class="warn-inline"></div>
             </div>
             <div class="col-md-2">
                 <label class="field-label">Nilai Produksi (Rp)</label>
@@ -824,11 +1124,13 @@ document.getElementById('petaGunakan').addEventListener('click', function () {
             </div>
             <div class="col-md-3">
                 <label class="field-label">Jenis Ikan</label>
-                <input type="text" name="jenis_ikan_pemasaran[]" class="form-control">
+                <input type="text" name="jenis_ikan_pemasaran[]" class="form-control input-ikan" list="daftarIkan" autocomplete="off" placeholder="ketik / pilih nama ikan">
+                <div class="warn-inline"></div>
             </div>
             <div class="col-md-2">
                 <label class="field-label">Quantity (Kg)</label>
-                <input type="number" step="0.01" name="quantity_kg[]" class="form-control">
+                <input type="number" step="0.01" name="quantity_kg[]" class="form-control produksi-kg">
+                <div class="warn-inline"></div>
             </div>
             <div class="col-md-3">
                 <label class="field-label">Tujuan (Kabupaten/Provinsi/Negara)</label>
