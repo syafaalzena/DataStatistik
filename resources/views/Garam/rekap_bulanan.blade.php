@@ -255,9 +255,7 @@
     {{-- GRAFIK --}}
     <div class="data-card">
         <div class="data-card-header">
-            <div class="card-icon">
-                <img src="{{ asset('images/statistik.png') }}" alt="Statistik" width="20" height="20">
-            </div>
+            
             <h5>Tren Produksi Bulanan {{ $tahunDipilih }}</h5>
         </div>
         <div class="data-card-body">
@@ -268,9 +266,7 @@
     {{-- TABEL --}}
     <div class="data-card">
         <div class="data-card-header">
-            <div class="card-icon">
-                <img src="{{ asset('images/kalender.png') }}" alt="Kalender" width="20" height="20">
-            </div>
+            
             <h5>Data {{ $bulanList[$bulanDipilih] }} {{ $tahunDipilih }} — Semua Kabupaten</h5>
         </div>
         <div class="data-card-body">

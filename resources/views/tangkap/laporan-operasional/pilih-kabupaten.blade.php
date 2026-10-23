@@ -142,7 +142,7 @@
                 <p class="text-muted mb-0">Pilih kabupaten/kota untuk melihat atau menambah laporan.</p>
             </div>
         </div>
-        <a href="{{ route('laporan-operasional.rekap') }}" class="btn-dark-custom">📊 Rekap Tahunan (Semua Kabupaten)</a>
+        <a href="{{ route('laporan-operasional.rekap') }}" class="btn-dark-custom">Rekap Tahunan (Semua Kabupaten)</a>
     </div>
 
     <div class="search-wrapper">

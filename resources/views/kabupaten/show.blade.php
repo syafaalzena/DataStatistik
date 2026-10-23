@@ -287,12 +287,7 @@
     <div class="data-card">
         <div class="data-card-header" style="display:flex; justify-content:space-between; align-items:center;">
             <div style="display:flex; align-items:center; gap:.6rem;">
-                <div class="card-icon">
-                    <img src="{{ asset('images/kalender.png') }}"
-                        alt="Kalender"
-                        width="20"
-                        height="20">
-                </div>
+                
                 <h5>Data Bulanan</h5>
             </div>
         </div>

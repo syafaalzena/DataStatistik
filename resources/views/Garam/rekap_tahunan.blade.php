@@ -103,18 +103,7 @@
             gap: .6rem;
         }
 
-        .card-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 9px;
-            background: var(--clr-sea-lt);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            flex-shrink: 0;
-        }
-
+        
         .data-card-header h5 {
             font-size: 1rem;
             font-weight: 700;
@@ -385,14 +374,7 @@
     {{-- GRAFIK --}}
     <div class="data-card">
         <div class="data-card-header">
-            <div class="card-icon">
-                <img
-                    src="{{ asset('images/statistik.png') }}"
-                    alt="Statistik"
-                    width="20"
-                    height="20"
-                >
-            </div>
+            
 
             <h5>Grafik Total Produksi per Kabupaten — {{ $tahunDipilih }}</h5>
         </div>
@@ -413,12 +395,8 @@
     <div class="data-card">
         <div class="data-card-header">
             <div class="card-icon">
-                <img
-                    src="{{ asset('images/kalender.png') }}"
-                    alt="Kalender"
-                    width="20"
-                    height="20"
-                >
+                
+                
             </div>
 
             <h5>

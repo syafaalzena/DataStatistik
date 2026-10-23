@@ -213,7 +213,7 @@
                     <div class="card-body p-4 d-flex align-items-center justify-content-between">
                         <div>
                             <h5 class="fw-bold text-dark mb-1 d-flex align-items-center gap-2">
-                                <img src="{{ asset('images/kalender.png') }}" alt="Kalender" width="24" height="24">
+                            
                                 Rekap Bulanan Provinsi
                             </h5>
                             <p class="text-muted small m-0">Lihat total grafik bulanan se-Aceh</p>
@@ -227,7 +227,7 @@
                     <div class="card-body p-4 d-flex align-items-center justify-content-between">
                         <div>
                             <h5 class="fw-bold text-dark mb-1 d-flex align-items-center gap-2">
-                                <img src="{{ asset('images/statistik.png') }}" alt="Statistik" width="24" height="24">
+                               
                                 Rekap Tahunan Provinsi
                             </h5>
                             <p class="text-muted small m-0">Lihat perbandingan total tahunan semua wilayah</p>
