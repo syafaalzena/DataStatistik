@@ -25,24 +25,40 @@
 
         body { background: var(--clr-salt); font-family: var(--font-base); color: var(--clr-stone); }
 
-        .page-header {
-            background: linear-gradient(135deg, var(--clr-sea) 0%, #0F4A50 100%);
-            border-radius: 0 0 28px 28px;
-            padding: 2rem 0 2.4rem;
-            margin-bottom: 2rem;
-            position: relative;
-            overflow: hidden;
-        }
-        .page-header::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: repeating-linear-gradient(105deg, transparent, transparent 38px, rgba(255,255,255,.04) 38px, rgba(255,255,255,.04) 39px);
-            pointer-events: none;
-        }
         
-        .page-header h2 { color: #fff; font-size: 1.75rem; font-weight: 700; margin: 0; }
-        .page-header .subtitle { color: rgba(255,255,255,.65); font-size: .88rem; margin: 0; }
+        
+/* Header disamakan dengan halaman kanan */
+.navbar {
+    background: var(--clr-dark, #0f172a);
+    color: white;
+    padding: 14px 0;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+    margin-bottom: 2rem;
+}
+
+.brand-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+}
+
+.brand-text {
+    font-weight: bold;
+    font-size: 26px;
+    color: #ffffff;
+}
+
+.brand-logo-img {
+    height: 30px;
+    width: auto;
+    object-fit: contain;
+}
+
+
+
+
+
         
         .btn-back {
             width: 48px;
@@ -145,22 +161,46 @@
 </head>
 <body>
 
-<div class="page-header">
-    <div class="container">
-        <div class="d-flex align-items-center gap-3">
-            <a href="{{ route('kabupaten.index') }}" class="btn-back">
-                <img src="{{ asset('images/back.png') }}" alt="Kembali" width="24" height="24">
-            </a>
-            
-            <div>
-                <h2 class="m-0">Rekap Bulanan Provinsi</h2>
-                <p class="subtitle mt-1">Total produksi garam seluruh kabupaten per bulan</p>
+
+<nav class="navbar">
+    <div class="container d-flex justify-content-between align-items-center">
+        <a href="#" class="brand-wrapper">
+            <img src="{{ asset('images/pancacita.png') }}"
+                 alt="Logo Pancacita"
+                 class="brand-logo-img">
+            <span class="brand-text">SAMUDRA ACEH</span>
+        </a>
+    </div>
+</nav>
+
+
+<div class="container pb-5">
+
+    {{-- HEADER JUDUL --}}
+    <div class="row mb-4 align-items-center">
+        <div class="col-12">
+            <div class="d-flex align-items-center gap-3 flex-wrap">
+                <a href="{{ route('kabupaten.index') }}" class="btn-back">
+                    <img src="{{ asset('images/back.png') }}"
+                         alt="Kembali"
+                         width="24"
+                         height="24">
+                </a>
+
+                <div class="flex-grow-1">
+                    <h2 class="fw-bold text-dark mb-1">
+                        Rekap Bulanan Provinsi
+                    </h2>
+                    <p class="text-muted mb-0">
+                        Total produksi garam seluruh kabupaten per bulan
+                    </p>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="container pb-5">
+    {{-- FILTER --}}
+
 
     {{-- FILTER --}}
     <form method="GET">
