@@ -142,8 +142,7 @@
                 <p class="text-muted mb-0">Pilih kabupaten/kota untuk melihat atau menambah laporan.</p>
             </div>
         </div>
-        <a href="{{ route('laporan-operasional.rekap') }}" class="btn-dark-custom">📊 Rekap Tahunan (Semua Kabupaten)</a>
-    </div>
+            </div>
 
     <div class="search-wrapper">
         <div class="search-box">
@@ -165,7 +164,17 @@
     </div>
 
     <div class="kab-empty" id="kabEmpty">Tidak ada kabupaten yang cocok dengan pencarian.</div>
-</div>
+
+    <div class="d-flex justify-content-between align-items-center gap-3 bg-white shadow-sm p-4 mt-4"
+        style="border-radius: 16px; border: 1px solid #eef0e8;">
+        <div>
+            <h5 class="fw-bold text-dark mb-1">Rekap Tahunan Provinsi</h5>
+            <p class="text-muted small m-0">Total produksi, kapal, ABK, dan logistik semua kabupaten per tahun</p>
+        </div>
+        <a href="{{ route('laporan-operasional.rekap') }}"
+        class="btn btn-dark px-4 py-2 fw-semibold"
+        style="border-radius: 8px; white-space: nowrap;">Buka Rekap</a>
+    </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
