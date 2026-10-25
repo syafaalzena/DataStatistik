@@ -89,18 +89,40 @@
         </div>
         <div class="d-flex gap-2">
             <button onclick="window.print()" class="btn btn-outline-secondary">Cetak</button>
-            <a href="{{ route('laporan-operasional.rekap.pdf', ['tahun' => $tahun]) }}" class="btn-dark-custom">PDF</a>
-            <a href="{{ route('laporan-operasional.rekap.excel', ['tahun' => $tahun]) }}" class="btn-dark-custom">Excel</a>
-        </div>
+            <a href="{{ route('laporan-operasional.rekap.pdf', ['tahun' => $tahun, 'ukuran' => $ukuran, 'dari' => $dari, 'sampai' => $sampai]) }}" class="btn-dark-custom">PDF</a>
+            <a href="{{ route('laporan-operasional.rekap.excel', ['tahun' => $tahun, 'ukuran' => $ukuran, 'dari' => $dari, 'sampai' => $sampai]) }}" class="btn-dark-custom">Excel</a>        </div>
     </div>
 
-    <form method="GET" class="d-flex align-items-center gap-2 mb-4 no-print" style="max-width: 260px;">
-        <label class="fw-semibold">Tahun:</label>
-        <select name="tahun" class="form-select" onchange="this.form.submit()">
-            @foreach ($tahunTersedia as $t)
-                <option value="{{ $t }}" @selected($t == $tahun)>{{ $t }}</option>
-            @endforeach
-        </select>
+    <form method="GET" class="row g-2 align-items-end mb-4 no-print">
+        <div class="col-auto">
+            <label class="small fw-semibold">Tahun</label>
+            <select name="tahun" class="form-select">
+                @foreach ($tahunTersedia as $t)
+                    <option value="{{ $t }}" @selected($t == $tahun)>{{ $t }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-auto">
+            <label class="small fw-semibold">Ukuran Kapal (GT)</label>
+            <select name="ukuran" class="form-select">
+                <option value="">Semua ukuran</option>
+                @foreach ($ukuranTersedia as $u)
+                    <option value="{{ $u }}" @selected($u === $ukuran)>{{ $u }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-auto">
+            <label class="small fw-semibold">Berangkat dari</label>
+            <input type="date" name="dari" value="{{ $dari }}" class="form-control">
+        </div>
+        <div class="col-auto">
+            <label class="small fw-semibold">sampai</label>
+            <input type="date" name="sampai" value="{{ $sampai }}" class="form-control">
+        </div>
+        <div class="col-auto d-flex gap-2">
+            <button type="submit" class="btn btn-dark">Terapkan</button>
+            <a href="{{ route('laporan-operasional.rekap', ['tahun' => $tahun]) }}" class="btn btn-outline-secondary">Reset</a>
+        </div>
     </form>
 
     <div class="panel-card">
@@ -117,41 +139,76 @@
                 <div class="label">Total Nilai Produksi (Rp)</div>
                 <div class="value">{{ number_format($grandTotalNilai, 0, ',', '.') }}</div>
             </div>
-        </div>
+            <div class="summary-card">
+                <div class="label">Jumlah Trip</div>
+                <div class="value">{{ $totalTrip }}</div>
+            </div>
+            <div class="summary-card">
+                <div class="label">Kapal Berbeda</div>
+                <div class="value">{{ $totalKapal }}</div>
+            </div>
+            @if ($keterangan)
+                <div class="small text-muted mb-3">Filter aktif: {{ $keterangan }}</div>
+            @endif
+                </div>
 
         @forelse ($laporans as $namaKabupaten => $group)
-            <div class="kabupaten-heading">{{ $namaKabupaten }}</div>
+        <div class="kabupaten-heading">{{ $namaKabupaten }}</div>
+        <div class="table-responsive">
             <table class="recap">
                 <thead>
                     <tr>
                         <th>Pelabuhan</th>
                         <th>Bulan</th>
-                        <th>Jumlah Kapal</th>
-                        <th>Jumlah ABK</th>
+                        <th>Nama Kapal</th>
+                        <th>Ukuran (GT)</th>
+                        <th>Berangkat</th>
+                        <th>Pulang</th>
+                        <th>ABK</th>
                         <th>Produksi (Kg)</th>
                         <th>Nilai Produksi (Rp)</th>
-                        <th>Total Logistik (Rp)</th>
+                        <th>Logistik (Rp)</th>
                         <th class="no-print">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($group as $l)
+                    @foreach ($group as $r)
                         <tr>
-                            <td>{{ $l->pelabuhan->nama ?? '-' }}</td>
-                            <td>{{ $l->nama_bulan }}</td>
-                            <td class="num">{{ number_format($l->total_kapal, 0, ',', '.') }}</td>
-                            <td class="num">{{ number_format($l->total_abk, 0, ',', '.') }}</td>
-                            <td class="num">{{ number_format($l->total_produksi_kg, 0, ',', '.') }}</td>
-                            <td class="num">{{ number_format($l->total_nilai_produksi, 0, ',', '.') }}</td>
-                            <td class="num">{{ number_format($l->total_logistik, 0, ',', '.') }}</td>
-                            <td class="no-print"><a href="{{ route('laporan-operasional.show', $l) }}">Lihat</a></td>
+                            <td>{{ $r->pelabuhan }}</td>
+                            <td>{{ $r->bulan }}</td>
+                            <td>{{ $r->nama_kapal }}</td>
+                            <td class="text-center">{{ $r->ukuran }}</td>
+                            <td class="text-center">{{ $r->berangkat }}</td>
+                            <td class="text-center">{{ $r->pulang }}</td>
+                            <td class="num">{{ number_format($r->abk, 0, ',', '.') }}</td>
+                            <td class="num">{{ number_format($r->produksi_kg, 0, ',', '.') }}</td>
+                            <td class="num">{{ number_format($r->nilai_rp, 0, ',', '.') }}</td>
+                            <td class="num">{{ number_format($r->logistik_rp, 0, ',', '.') }}</td>
+                            <td class="no-print"><a href="{{ route('laporan-operasional.show', $r->laporan_id) }}">Lihat</a></td>
                         </tr>
                     @endforeach
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="6" class="text-center">Subtotal {{ $namaKabupaten }}</td>
+                        <td class="num">{{ number_format($group->sum('abk'), 0, ',', '.') }}</td>
+                        <td class="num">{{ number_format($group->sum('produksi_kg'), 0, ',', '.') }}</td>
+                        <td class="num">{{ number_format($group->sum('nilai_rp'), 0, ',', '.') }}</td>
+                        <td class="num">{{ number_format($group->sum('logistik_rp'), 0, ',', '.') }}</td>
+                        <td class="no-print"></td>
+                    </tr>
+                </tfoot>
             </table>
-        @empty
-            <div class="text-center text-muted py-4">Belum ada laporan untuk tahun {{ $tahun }}.</div>
-        @endforelse
+        </div>
+    @empty
+        <div class="text-center text-muted py-4">
+            @if ($keterangan)
+                Tidak ada trip yang cocok dengan filter ini di tahun {{ $tahun }}.
+            @else
+                Belum ada laporan untuk tahun {{ $tahun }}.
+            @endif
+        </div>
+    @endforelse
     </div>
 </div>
 

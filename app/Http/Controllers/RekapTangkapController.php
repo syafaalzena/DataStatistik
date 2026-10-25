@@ -6,6 +6,8 @@ use App\Models\KabupatenIkan;
 use App\Models\ProduksiTangkap;
 use App\Models\TripTangkap;
 use App\Models\TahunanTangkap;
+use App\Models\LaporanArmadaTangkap;
+use App\Models\LaporanProduksiIkan;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -65,29 +67,41 @@ class RekapTangkapController extends Controller
 
     private function dataBulanan(Request $request): array
     {
-        $bulanAwal = (int) $request->input('bulan_awal', 1);
-        $tahunAwal = (int) $request->input('tahun_awal', now()->year);
+        $bulanAwal  = (int) $request->input('bulan_awal', 1);
+        $tahunAwal  = (int) $request->input('tahun_awal', now()->year);
         $bulanAkhir = (int) $request->input('bulan_akhir', now()->month);
         $tahunAkhir = (int) $request->input('tahun_akhir', now()->year);
         $kabupatenId = $request->input('kabupaten_id');
         $includeTrip = $request->boolean('include_trip');
 
-        $awal = $tahunAwal * 12 + $bulanAwal;
+        $awal  = $tahunAwal * 12 + $bulanAwal;
         $akhir = $tahunAkhir * 12 + $bulanAkhir;
         [$lo, $hi] = [min($awal, $akhir), max($awal, $akhir)];
 
-        $query = ProduksiTangkap::with(['kabupatenIkan', 'komoditasIkan']);
-        if ($kabupatenId) {
-            $query->where('kabupaten_ikan_id', $kabupatenId);
-        }
+        // Satu aturan pembatas laporan (periode + kabupaten), dipakai ulang untuk produksi & trip
+        $filterLaporan = function ($q) use ($lo, $hi, $kabupatenId) {
+            $q->whereRaw('(tahun * 12 + bulan) between ? and ?', [$lo, $hi]);
+            if ($kabupatenId) {
+                $q->whereHas('pelabuhan', fn ($p) => $p->where('kabupaten_ikan_id', $kabupatenId));
+            }
+        };
 
-        $produksi = $query->get()->filter(function ($r) use ($lo, $hi) {
-            $k = $r->tahun * 12 + $r->bulan;
-            return $k >= $lo && $k <= $hi;
-        });
+        // Sumber data: produksi ikan dari laporan operasional, diseragamkan jadi objek sederhana
+        $produksi = LaporanProduksiIkan::with('laporanOperasional.pelabuhan.kabupatenIkan')
+            ->whereHas('laporanOperasional', $filterLaporan)
+            ->get()
+            ->map(fn ($p) => (object) [
+                'kabupaten_ikan_id' => $p->laporanOperasional->pelabuhan->kabupaten_ikan_id,
+                'kabupaten'  => $p->laporanOperasional->pelabuhan->kabupatenIkan->nama_kabupaten ?? '-',
+                'periode'    => $p->laporanOperasional->tahun * 12 + $p->laporanOperasional->bulan,
+                // Seragamkan huruf supaya "tongkol" dan "Tongkol" tidak jadi dua baris
+                'jenis_ikan' => mb_convert_case(trim($p->jenis_ikan), MB_CASE_TITLE, 'UTF-8'),
+                'volume'     => (float) $p->produksi_kg,
+                'nilai'      => (float) $p->nilai_rp,
+            ]);
 
         $bulanNama = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
-        $periodKeys = $produksi->map(fn ($r) => $r->tahun * 12 + $r->bulan)->unique()->sort()->values();
+        $periodKeys = $produksi->pluck('periode')->unique()->sort()->values();
         $periodLabels = $periodKeys->map(function ($k) use ($bulanNama) {
             $tahun = intdiv($k - 1, 12);
             $bulan = ($k - 1) % 12 + 1;
@@ -95,52 +109,46 @@ class RekapTangkapController extends Controller
         });
 
         $rekap = $produksi->groupBy('kabupaten_ikan_id')->map(function ($rows) use ($periodKeys) {
-            $perIkan = $rows->groupBy('komoditas_ikan_id')->map(function ($r2) use ($periodKeys) {
+            $perIkan = $rows->groupBy('jenis_ikan')->map(function ($r2) use ($periodKeys) {
                 $perPeriode = [];
                 foreach ($periodKeys as $pk) {
-                    $perPeriode[$pk] = $r2->filter(fn ($r) => ($r->tahun * 12 + $r->bulan) === $pk)
-                        ->sum('volume_produksi_kg');
+                    $perPeriode[$pk] = $r2->where('periode', $pk)->sum('volume');
                 }
                 return [
-                    'jenis_ikan' => $r2->first()->komoditasIkan->nama_ikan ?? '-',
-                    'total_volume' => $r2->sum('volume_produksi_kg'),
-                    'total_nilai' => $r2->sum('nilai_rp'),
-                    'per_periode' => $perPeriode,
+                    'jenis_ikan'   => $r2->first()->jenis_ikan,
+                    'total_volume' => $r2->sum('volume'),
+                    'total_nilai'  => $r2->sum('nilai'),
+                    'per_periode'  => $perPeriode,
                 ];
             })->sortByDesc('total_volume')->values();
 
             return [
                 'kabupaten_id' => $rows->first()->kabupaten_ikan_id,
-                'kabupaten' => $rows->first()->kabupatenIkan->nama_kabupaten ?? '-',
-                'per_ikan' => $perIkan,
-                'total_volume_kabupaten' => $rows->sum('volume_produksi_kg'),
-                'total_nilai_kabupaten' => $rows->sum('nilai_rp'),
+                'kabupaten'    => $rows->first()->kabupaten,
+                'per_ikan'     => $perIkan,
+                'total_volume_kabupaten' => $rows->sum('volume'),
+                'total_nilai_kabupaten'  => $rows->sum('nilai'),
             ];
         })->sortBy('kabupaten')->values();
 
-        $grandVolume = $produksi->sum('volume_produksi_kg');
-        $grandNilai = $produksi->sum('nilai_rp');
+        $grandVolume = $produksi->sum('volume');
+        $grandNilai  = $produksi->sum('nilai');
 
+        // Trip = jumlah baris armada di laporan operasional pada periode itu
         $rekapTrip = collect();
         $grandTrip = 0;
         if ($includeTrip) {
-            $tripQuery = TripTangkap::with('kabupatenIkan');
-            if ($kabupatenId) {
-                $tripQuery->where('kabupaten_ikan_id', $kabupatenId);
-            }
-            $trip = $tripQuery->get()->filter(function ($t) use ($lo, $hi) {
-                $k = $t->tahun * 12 + $t->bulan;
-                return $k >= $lo && $k <= $hi;
-            });
+            $trip = LaporanArmadaTangkap::with('laporanOperasional.pelabuhan.kabupatenIkan')
+                ->whereHas('laporanOperasional', $filterLaporan)
+                ->get();
 
-            $rekapTrip = $trip->groupBy('kabupaten_ikan_id')->map(function ($rows) {
-                return [
-                    'kabupaten' => $rows->first()->kabupatenIkan->nama_kabupaten ?? '-',
-                    'total_trip' => $rows->sum('jumlah_trip'),
-                ];
-            })->sortBy('kabupaten')->values();
+            $rekapTrip = $trip->groupBy(fn ($t) => $t->laporanOperasional->pelabuhan->kabupaten_ikan_id)
+                ->map(fn ($rows) => [
+                    'kabupaten'  => $rows->first()->laporanOperasional->pelabuhan->kabupatenIkan->nama_kabupaten ?? '-',
+                    'total_trip' => $rows->count(),
+                ])->sortBy('kabupaten')->values();
 
-            $grandTrip = $trip->sum('jumlah_trip');
+            $grandTrip = $trip->count();
         }
 
         $namaBulan = ['','Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];

@@ -19,6 +19,10 @@
     <div class="judul">Rekap Tahunan Laporan Operasional Pelabuhan Perikanan</div>
     <div class="sub">Tahun {{ $tahun }}</div>
 
+    @if ($keterangan)
+        <div class="sub">Filter: {{ $keterangan }}</div>
+    @endif
+
     <table class="ringkasan">
         <tr>
             <td><strong>Total Produksi:</strong> {{ number_format($grandTotalProduksi, 0, ',', '.') }} Kg</td>
@@ -31,22 +35,38 @@
         <table class="recap">
             <thead>
                 <tr>
-                    <th>Pelabuhan</th><th>Bulan</th><th>Jumlah Kapal</th><th>Jumlah ABK</th>
-                    <th>Produksi (Kg)</th><th>Nilai Produksi (Rp)</th><th>Total Logistik (Rp)</th>
+                    <th>Pelabuhan</th><th>Bulan</th><th>Nama Kapal</th><th>Ukuran (GT)</th>
+                    <th>Berangkat</th><th>Pulang</th><th>ABK</th>
+                    <th>Produksi (Kg)</th><th>Nilai Produksi (Rp)</th><th>Logistik (Rp)</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($group as $l)
+                @foreach ($group as $r)
                     <tr>
-                        <td>{{ $l->pelabuhan->nama ?? '-' }}</td>
-                        <td>{{ $l->nama_bulan }}</td>
-                        <td class="num">{{ number_format($l->total_kapal, 0, ',', '.') }}</td>
-                        <td class="num">{{ number_format($l->total_abk, 0, ',', '.') }}</td>
-                        <td class="num">{{ number_format($l->total_produksi_kg, 0, ',', '.') }}</td>
-                        <td class="num">{{ number_format($l->total_nilai_produksi, 0, ',', '.') }}</td>
-                        <td class="num">{{ number_format($l->total_logistik, 0, ',', '.') }}</td>
+                        <td>{{ $r->pelabuhan }}</td>
+                        <td>{{ $r->bulan }}</td>
+                        <td>{{ $r->nama_kapal }}</td>
+                        <td>{{ $r->ukuran }}</td>
+                        <td>{{ $r->berangkat }}</td>
+                        <td>{{ $r->pulang }}</td>
+                        <td class="num">{{ number_format($r->abk, 0, ',', '.') }}</td>
+                        <td class="num">{{ number_format($r->produksi_kg, 0, ',', '.') }}</td>
+                        <td class="num">{{ number_format($r->nilai_rp, 0, ',', '.') }}</td>
+                        <td class="num">{{ number_format($r->logistik_rp, 0, ',', '.') }}</td>
                     </tr>
                 @endforeach
+                <tr>
+                    <td colspan="6" style="text-align:center;"><strong>Subtotal {{ $namaKabupaten }}</strong></td>
+                    <td class="num"><strong>{{ number_format($group->sum('abk'), 0, ',', '.') }}</strong></td>
+                    <td class="num"><strong>{{ number_format($group->sum('produksi_kg'), 0, ',', '.') }}</strong></td>
+                    <td class="num"><strong>{{ number_format($group->sum('nilai_rp'), 0, ',', '.') }}</strong></td>
+                    <td class="num"><strong>{{ number_format($group->sum('logistik_rp'), 0, ',', '.') }}</strong></td>
+                </tr>
+            </tbody>
+        </table>
+    @empty
+        <p style="text-align:center; margin-top:20px;">Tidak ada data untuk tahun {{ $tahun }} dengan filter ini.</p>
+    @endforelse
             </tbody>
         </table>
     @empty

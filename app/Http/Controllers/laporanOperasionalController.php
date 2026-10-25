@@ -183,40 +183,112 @@ class LaporanOperasionalController extends Controller
         $data = $this->dataRekapTahunan($request);
 
         return \Maatwebsite\Excel\Facades\Excel::download(
-            new \App\Exports\RekapTahunanOperasionalExport($data['laporans'], $data['tahun'], $data['grandTotalProduksi'], $data['grandTotalNilai']),
+            new \App\Exports\RekapTahunanOperasionalExport($data['laporans'], $data['tahun'], $data['grandTotalProduksi'], $data['grandTotalNilai'], $data['keterangan']),
             'rekap-tahunan-' . $data['tahun'] . '.xlsx'
         );
     }
 
     private function dataRekapTahunan(Request $request): array
     {
+        $request->validate([
+            'tahun' => ['nullable', 'integer'],
+            'ukuran' => ['nullable', 'string', 'max:100'],
+            'dari' => ['nullable', 'date'],
+            'sampai' => ['nullable', 'date'],
+        ]);
+
         $tahun = (int) $request->input('tahun', now()->year);
+        $ukuran = trim((string) $request->input('ukuran', ''));
+        $dari = $request->input('dari');
+        $sampai = $request->input('sampai');
 
         $tahunTersedia = LaporanOperasional::select('tahun')->distinct()->orderByDesc('tahun')->pluck('tahun');
         if ($tahunTersedia->isEmpty()) {
             $tahunTersedia = collect([$tahun]);
         }
 
-        $laporans = LaporanOperasional::with(['pelabuhan.kabupatenIkan', 'produksiIkan', 'armadaTangkap', 'logistik'])
-            ->where('tahun', $tahun)
-            ->get()
-            ->sortBy([
-                fn ($l) => $l->pelabuhan->kabupatenIkan->nama_kabupaten ?? '',
-                fn ($l) => $l->pelabuhan->nama ?? '',
-                fn ($l) => $l->bulan,
-            ])
-            ->groupBy(fn ($l) => $l->pelabuhan->kabupatenIkan->nama_kabupaten ?? '-');
+        $laporanTahun = LaporanOperasional::with([
+            'pelabuhan.kabupatenIkan',
+            'armadaTangkap.produksiIkan',
+            'armadaTangkap.logistik',
+        ])->where('tahun', $tahun)->get();
 
-        $grandTotalProduksi = 0;
-        $grandTotalNilai = 0;
-        foreach ($laporans as $group) {
-            foreach ($group as $l) {
-                $grandTotalProduksi += $l->total_produksi_kg;
-                $grandTotalNilai += $l->total_nilai_produksi;
+        // Daftar ukuran untuk dropdown (diambil sebelum difilter, supaya pilihannya lengkap)
+        $ukuranTersedia = $laporanTahun
+            ->flatMap(fn ($l) => $l->armadaTangkap)
+            ->pluck('ukuran_kapal')
+            ->map(fn ($u) => trim((string) $u))
+            ->filter()
+            ->unique()
+            ->sort(SORT_NATURAL)
+            ->values();
+
+        // Satu baris = satu trip kapal
+        $baris = collect();
+        foreach ($laporanTahun as $l) {
+            foreach ($l->armadaTangkap as $a) {
+                $u = trim((string) $a->ukuran_kapal);
+                if ($ukuran !== '' && $u !== $ukuran) {
+                    continue;
+                }
+
+                $berangkat = $a->tanggal_berangkat?->format('Y-m-d');
+                if ($dari && (! $berangkat || $berangkat < $dari)) {
+                    continue;
+                }
+                if ($sampai && (! $berangkat || $berangkat > $sampai)) {
+                    continue;
+                }
+
+                $baris->push((object) [
+                    'laporan_id' => $l->id,
+                    'kabupaten' => $l->pelabuhan->kabupatenIkan->nama_kabupaten ?? '-',
+                    'pelabuhan' => $l->pelabuhan->nama ?? '-',
+                    'bulan_no' => (int) $l->bulan,
+                    'bulan' => $l->nama_bulan,
+                    'nama_kapal' => $a->nama_armada ?: '-',
+                    'ukuran' => $u !== '' ? $u : '-',
+                    'berangkat' => $a->tanggal_berangkat?->format('d-m-Y') ?? '-',
+                    'pulang' => $a->tanggal_pulang?->format('d-m-Y') ?? '-',
+                    'urut_tanggal' => $berangkat ?? '',
+                    'abk' => (float) $a->jumlah_abk,
+                    'produksi_kg' => (float) $a->produksiIkan->sum('produksi_kg'),
+                    'nilai_rp' => (float) $a->produksiIkan->sum('nilai_rp'),
+                    'logistik_rp' => (float) $a->logistik->sum('total_rp'),
+                ]);
             }
         }
 
-        return compact('laporans', 'tahun', 'tahunTersedia', 'grandTotalProduksi', 'grandTotalNilai');
+        $laporans = $baris
+            ->sortBy([
+                ['kabupaten', 'asc'],
+                ['pelabuhan', 'asc'],
+                ['bulan_no', 'asc'],
+                ['urut_tanggal', 'asc'],
+            ])
+            ->groupBy('kabupaten');
+
+        $grandTotalProduksi = (float) $baris->sum('produksi_kg');
+        $grandTotalNilai = (float) $baris->sum('nilai_rp');
+        $totalTrip = $baris->count();
+        $totalKapal = $baris->pluck('nama_kapal')->reject(fn ($n) => $n === '-')->unique()->count();
+
+        $ket = [];
+        if ($ukuran !== '') {
+            $ket[] = "Ukuran kapal: $ukuran GT";
+        }
+        if ($dari || $sampai) {
+            $ket[] = 'Berangkat: '
+                . ($dari ? \Carbon\Carbon::parse($dari)->format('d-m-Y') : '...')
+                . ' s/d '
+                . ($sampai ? \Carbon\Carbon::parse($sampai)->format('d-m-Y') : '...');
+        }
+        $keterangan = implode(' | ', $ket);
+
+        return compact(
+            'laporans', 'tahun', 'tahunTersedia', 'ukuranTersedia', 'ukuran', 'dari', 'sampai',
+            'grandTotalProduksi', 'grandTotalNilai', 'totalTrip', 'totalKapal', 'keterangan'
+        );
     }
 
     // Daftar pilihan untuk form: Jenis API (sama dengan portal Produksi) & nama ikan (untuk saran + cek typo)

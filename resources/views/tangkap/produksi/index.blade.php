@@ -70,8 +70,7 @@
 
     <div class="kab-list" id="kabList">
         @forelse($kabupatenIkans as $kab)
-            <a href="{{ route('tangkap.input', $kab->id) }}" class="kab-item" data-name="{{ strtolower($kab->nama_kabupaten) }}">
-                <span class="kab-name">{{ $kab->nama_kabupaten }}</span>
+            <a href="{{ route('tangkap.rekap.bulanan', ['kabupaten_id' => $kab->id]) }}" class="kab-item" data-name="{{ strtolower($kab->nama_kabupaten) }}">                <span class="kab-name">{{ $kab->nama_kabupaten }}</span>
                 <span>&rarr;</span>
             </a>
         @empty

@@ -23,6 +23,7 @@ class RekapTahunanOperasionalExport implements FromArray, ShouldAutoSize, WithEv
         protected int $tahun,
         protected float $grandTotalProduksi,
         protected float $grandTotalNilai,
+        protected string $keterangan = '',
     ) {
     }
 
@@ -36,25 +37,31 @@ class RekapTahunanOperasionalExport implements FromArray, ShouldAutoSize, WithEv
         };
 
         $this->judulRows[] = $tambah(['REKAP TAHUNAN LAPORAN OPERASIONAL PELABUHAN PERIKANAN - TAHUN ' . $this->tahun]);
+        if ($this->keterangan !== '') {
+            $tambah(['Filter: ' . $this->keterangan]);
+        }
         $tambah(['Total Produksi (Kg)', $this->grandTotalProduksi]);
         $tambah(['Total Nilai Produksi (Rp)', $this->grandTotalNilai]);
         $tambah(['']);
 
         foreach ($this->laporans as $namaKabupaten => $group) {
             $this->kabupatenRows[] = $tambah([$namaKabupaten]);
-            $this->tableHeaderRows[] = $tambah(['Pelabuhan', 'Bulan', 'Jumlah Kapal', 'Jumlah ABK', 'Produksi (Kg)', 'Nilai Produksi (Rp)', 'Total Logistik (Rp)']);
+            $this->tableHeaderRows[] = $tambah([
+                'Pelabuhan', 'Bulan', 'Nama Kapal', 'Ukuran (GT)', 'Berangkat', 'Pulang',
+                'ABK', 'Produksi (Kg)', 'Nilai Produksi (Rp)', 'Logistik (Rp)',
+            ]);
 
-            foreach ($group as $l) {
+            foreach ($group as $r) {
                 $tambah([
-                    $l->pelabuhan->nama ?? '-',
-                    $l->nama_bulan,
-                    $l->total_kapal,
-                    $l->total_abk,
-                    $l->total_produksi_kg,
-                    $l->total_nilai_produksi,
-                    $l->total_logistik,
+                    $r->pelabuhan, $r->bulan, $r->nama_kapal, $r->ukuran, $r->berangkat, $r->pulang,
+                    $r->abk, $r->produksi_kg, $r->nilai_rp, $r->logistik_rp,
                 ]);
             }
+
+            $tambah([
+                'Subtotal ' . $namaKabupaten, '', '', '', '', '',
+                $group->sum('abk'), $group->sum('produksi_kg'), $group->sum('nilai_rp'), $group->sum('logistik_rp'),
+            ]);
             $tambah(['']);
         }
 
@@ -70,26 +77,25 @@ class RekapTahunanOperasionalExport implements FromArray, ShouldAutoSize, WithEv
                 $sheet = $event->sheet->getDelegate();
 
                 foreach ($this->judulRows as $row) {
-                    $sheet->mergeCells("A{$row}:G{$row}");
+                    $sheet->mergeCells("A{$row}:J{$row}");
                     $sheet->getStyle("A{$row}")->getFont()->setBold(true)->setSize(13);
                     $sheet->getStyle("A{$row}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
                 }
 
                 foreach ($this->kabupatenRows as $row) {
-                    $sheet->mergeCells("A{$row}:G{$row}");
+                    $sheet->mergeCells("A{$row}:J{$row}");
                     $style = $sheet->getStyle("A{$row}");
                     $style->getFont()->setBold(true)->getColor()->setRGB('FFFFFF');
                     $style->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('0F172A');
                 }
 
                 foreach ($this->tableHeaderRows as $row) {
-                    $style = $sheet->getStyle("A{$row}:G{$row}");
+                    $style = $sheet->getStyle("A{$row}:J{$row}");
                     $style->getFont()->setBold(true);
                     $style->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('F1F5F9');
-                    $style->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
                 }
 
-                $sheet->getStyle("A1:G{$this->lastRow}")->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+                $sheet->getStyle("A1:J{$this->lastRow}")->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
             },
         ];
     }
