@@ -70,8 +70,8 @@
     <div class="kategori-grid">
         <a href="{{ route('tangkap.produksi.index') }}" class="kategori-card">
             <div class="kategori-icon"><img src="{{ asset('images/fish3.png') }}" alt="Ikan" width="32" height="32" class="card-icon"></div>
-            <div class="kategori-title">Produksi Tangkap per Kabupaten</div>
-            <div class="kategori-sub">Input data produksi tangkap per komoditas, WPPNRI, alat tangkap, dan ukuran kapal per kabupaten/kota.</div>
+            <div class="kategori-title">Rekap Perikanan Tangkap Provinsi Aceh</div>
+            <div class="kategori-sub">Lihat Rekap Data dari Laporan Data Operasional disini. </div>
             <span class="kategori-count">{{ $totalProduksiKabupaten }} Kabupaten/Kota</span>
         </a>
 
