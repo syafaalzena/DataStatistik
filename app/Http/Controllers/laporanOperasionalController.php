@@ -7,6 +7,7 @@ use App\Models\KabupatenIkan;
 use App\Models\KomoditasIkan;
 use App\Models\LaporanOperasional;
 use App\Models\Pelabuhan;
+use App\Models\Wppnri;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -36,10 +37,11 @@ class LaporanOperasionalController extends Controller
         $kabupaten = KabupatenIkan::findOrFail($kabupatenId);
         $pelabuhanList = Pelabuhan::where('kabupaten_ikan_id', $kabupatenId)->orderBy('nama')->get();
         $laporan = null;
-        [$jenisApiList, $ikanList] = $this->opsiForm();
-
-        return view('tangkap.laporan-operasional.form', compact('pelabuhanList', 'laporan', 'kabupaten', 'jenisApiList', 'ikanList'));
-    }
+        [$jenisApiList, $ikanList, $wppnriList] = $this->opsiForm();
+        return view('tangkap.laporan-operasional.form', compact(
+            'pelabuhanList', 'laporan', 'kabupaten', 'jenisApiList', 'ikanList', 'wppnriList'
+        ));   
+        }
 
     public function store(Request $request, $kabupatenId)
     {
@@ -109,9 +111,11 @@ class LaporanOperasionalController extends Controller
         $kabupaten = $laporanOperasional->pelabuhan->kabupatenIkan;
         $pelabuhanList = Pelabuhan::where('kabupaten_ikan_id', $kabupaten->id)->orderBy('nama')->get();
         $laporan = $laporanOperasional;
-        [$jenisApiList, $ikanList] = $this->opsiForm();
+        [$jenisApiList, $ikanList, $wppnriList] = $this->opsiForm();
 
-        return view('tangkap.laporan-operasional.form', compact('pelabuhanList', 'laporan', 'kabupaten', 'jenisApiList', 'ikanList'));
+        return view('tangkap.laporan-operasional.form', compact(
+            'pelabuhanList', 'laporan', 'kabupaten', 'jenisApiList', 'ikanList', 'wppnriList'
+        ));
     }
 
     public function update(Request $request, LaporanOperasional $laporanOperasional)
@@ -220,8 +224,9 @@ class LaporanOperasionalController extends Controller
     {
         $jenisApiList = JenisApi::orderBy('nama')->pluck('nama');
         $ikanList = KomoditasIkan::query()->distinct()->orderBy('nama_ikan')->pluck('nama_ikan');
+        $wppnriList = Wppnri::orderBy('kode')->get();
 
-        return [$jenisApiList, $ikanList];
+        return [$jenisApiList, $ikanList, $wppnriList];
     }
 
     private function validateData(Request $request): array
@@ -258,6 +263,8 @@ class LaporanOperasionalController extends Controller
             'foto_lama.*' => ['nullable', 'string'],
             'lokasi_foto' => ['array'], 
             'lokasi_foto.*' => ['nullable', 'string', 'max:150'],
+            'wppnri_id' => ['array'],
+            'wppnri_id.*' => ['nullable', 'exists:wppnris,id'],
 
             // Produksi, logistik, pemasaran: dikelompokkan per kapal -> field[indexKapal][]
             'jenis_ikan' => ['array'],
@@ -301,6 +308,7 @@ class LaporanOperasionalController extends Controller
             'nama_pt' => ['array'],
             'nama_pt.*' => ['array'],
             'nama_pt.*.*' => ['nullable', 'string', 'max:150'],
+
         ]);
 
         // Tanggal pulang tidak boleh sebelum tanggal berangkat
@@ -314,6 +322,40 @@ class LaporanOperasionalController extends Controller
             }
         }
 
+        // Pemasaran tidak boleh melebihi produksi (per kapal, per jenis ikan)
+        foreach (array_keys((array) $request->input('jenis_ikan_pemasaran', [])) as $i) {
+            $produksi = [];
+            foreach ((array) $request->input("jenis_ikan.$i", []) as $j => $jenis) {
+                if (blank($jenis)) {
+                    continue;
+                }
+                $k = mb_strtolower(trim($jenis));
+                $produksi[$k] = ($produksi[$k] ?? 0) + (float) $request->input("produksi_kg.$i.$j", 0);
+            }
+
+            $pemasaran = [];
+            foreach ((array) $request->input("jenis_ikan_pemasaran.$i", []) as $j => $jenis) {
+                if (blank($jenis)) {
+                    continue;
+                }
+                $k = mb_strtolower(trim($jenis));
+                $pemasaran[$k] = ($pemasaran[$k] ?? 0) + (float) $request->input("quantity_kg.$i.$j", 0);
+            }
+
+            foreach ($pemasaran as $k => $jumlah) {
+                if ($jumlah <= 0) {
+                    continue;
+                }
+
+                $tersedia = $produksi[$k] ?? 0;
+                if (round($jumlah, 2) > round($tersedia, 2)) {
+                    $nama = $request->input("nama_armada.$i") ?: 'kapal ke-' . ((int) $i + 1);
+                    throw \Illuminate\Validation\ValidationException::withMessages([
+                        "jenis_ikan_pemasaran.$i" => "Pemasaran $k di $nama (" . number_format($jumlah, 0, ',', '.') . " Kg) melebihi produksinya (" . number_format($tersedia, 0, ',', '.') . " Kg).",
+                    ]);
+                }
+            }
+    }
         return $validated;
     }
 
@@ -349,6 +391,7 @@ class LaporanOperasionalController extends Controller
                 'ukuran_kapal' => $ukuran ?? '',
                 'jumlah_abk' => $request->input("jumlah_abk.$i", 0) ?: 0,
                 'urutan' => $urutan++,
+                'wppnri_id' => $request->input("wppnri_id.$i") ?: null,
             ]);
 
             foreach ((array) $request->input("dokumen_nama.$i", []) as $j => $namaDok) {

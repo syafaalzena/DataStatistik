@@ -261,7 +261,7 @@
         {{-- KAPAL: produksi, logistik, dan pemasaran ada di dalam tiap kapal --}}
         @php
             $kosongKapal = fn ($i) => [
-                'i' => $i, 'nama' => '', 'berangkat' => '', 'pulang' => '', 'alat' => '', 'ukuran' => '', 'abk' => '',
+                'i' => $i, 'nama' => '', 'berangkat' => '', 'pulang' => '', 'alat' => '', 'wppnri' => '', 'ukuran' => '', 'abk' => '',
                 'dokumen' => [], 'foto_lama' => '', 'lokasi' => '', 'lat' => '', 'lng' => '',
                 'produksi' => [], 'logistik' => [], 'pemasaran' => [],
             ];
@@ -289,6 +289,7 @@
                     $k['lokasi'] = old("lokasi_foto.$i");
                     $k['lat'] = old("latitude.$i");
                     $k['lng'] = old("longitude.$i");
+                    $k['wppnri'] = old("wppnri_id.$i");
                     foreach ((array) old("jenis_ikan.$i", []) as $j => $v) {
                         $k['produksi'][] = ['jenis' => $v, 'kg' => old("produksi_kg.$i.$j"), 'harga' => old("harga_rp.$i.$j")];
                     }
@@ -309,6 +310,7 @@
                     $k['alat'] = $row->jenis_alat_tangkap;
                     $k['ukuran'] = $row->ukuran_kapal;
                     $k['abk'] = $row->jumlah_abk;
+                    $k['wppnri'] = $row->wppnri_id;
                     $k['dokumen'] = $row->dokumens->pluck('nama_dokumen')->all();
                     $k['foto_lama'] = optional($row->foto)->foto;
                     $k['lokasi'] = optional($row->foto)->lokasi;
@@ -716,6 +718,7 @@ document.getElementById('petaGunakan').addEventListener('click', function () {
     function kumpulkan() {
         const peringatan = [], kapal = [];
         let fatal = false;
+        const fatalPesan = [];
 
         document.querySelectorAll('#armadaContainer .armada-card').forEach((card, n) => {
             const row = card.querySelector('.armada-row');
@@ -785,10 +788,15 @@ document.getElementById('petaGunakan').addEventListener('click', function () {
             produksi.forEach(x => { const k = x.ikan.toLowerCase(); totalProduksi[k] = (totalProduksi[k] || 0) + (parseFloat(x.kg) || 0); });
             Object.keys(totalPemasaran).forEach(k => {
                 if (!k) return;
+                const jml = totalPemasaran[k];
+                if (jml <= 0) return;
+
                 if (!(k in totalProduksi)) {
-                    peringatan.push(`${pre}pemasaran <b>${k}</b> – tidak ada di produksi kapal ini. Apakah sudah benar?`);
-                } else if (totalPemasaran[k] > totalProduksi[k]) {
-                    peringatan.push(`${pre}pemasaran <b>${k}</b> – total ${totalPemasaran[k].toLocaleString('id-ID')} Kg melebihi produksi kapal ini (${totalProduksi[k].toLocaleString('id-ID')} Kg).`);
+                    fatalPesan.push(`${pre}pemasaran ${k} (${jml.toLocaleString('id-ID')} Kg) tidak ada di produksi kapal ini.`);
+                    fatal = true;
+                } else if (jml > totalProduksi[k] + 0.001) {
+                    fatalPesan.push(`${pre}pemasaran ${k} (${jml.toLocaleString('id-ID')} Kg) melebihi produksi (${totalProduksi[k].toLocaleString('id-ID')} Kg).`);
+                    fatal = true;
                 }
             });
 
@@ -798,12 +806,14 @@ document.getElementById('petaGunakan').addEventListener('click', function () {
             if (!ukuran) peringatan.push(`${pre}ukuran kapal belum diisi.`);
             [cekUkuran(ukuran), cekAbk(abk)].forEach(m => { if (m) peringatan.push(`${pre}${m}`); });
             const tgl = cekTanggal(row);
-            if (tgl) { peringatan.push(`${pre}${tgl.pesan}`); if (tgl.fatal) fatal = true; }
-
+            if (tgl) {
+                peringatan.push(`${pre}${tgl.pesan}`);
+                if (tgl.fatal) { fatal = true; fatalPesan.push(`${pre}${tgl.pesan}`); }
+            }
             kapal.push({ nama, b, p, api, ukuran, abk, produksi, logistik, pemasaran });
         });
 
-        return { peringatan, kapal, fatal };
+        return { peringatan, kapal, fatal, fatalPesan };
     }
 
     function isiModalKonfirmasi(d) {
@@ -851,7 +861,8 @@ document.getElementById('petaGunakan').addEventListener('click', function () {
         if (!this.reportValidity()) return;
         const d = kumpulkan();
         if (d.fatal) {
-            alert('Tanggal pulang tidak boleh lebih awal dari tanggal berangkat. Perbaiki dulu sebelum menyimpan.');
+            const pesan = d.fatalPesan.map(x => '- ' + x.replace(/<[^>]+>/g, '')).join('\n');
+            alert('Data belum bisa disimpan:\n\n' + pesan + '\n\nPerbaiki dulu isiannya, lalu simpan lagi.');
             return;
         }
         isiModalKonfirmasi(d);

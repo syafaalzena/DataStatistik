@@ -11,6 +11,7 @@ class LaporanArmadaTangkap extends Model
 
     protected $fillable = [
         'laporan_operasional_id',
+        'wppnri_id',
         'nama_armada',
         'tanggal_berangkat',
         'tanggal_pulang',
@@ -57,5 +58,10 @@ class LaporanArmadaTangkap extends Model
     public function pemasaran()
     {
         return $this->hasMany(LaporanPemasaran::class)->orderBy('urutan');
+    }
+
+    public function wppnri()
+    {
+        return $this->belongsTo(Wppnri::class);
     }
 }

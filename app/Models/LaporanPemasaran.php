@@ -11,6 +11,7 @@ class LaporanPemasaran extends Model
 
     protected $fillable = [
         'laporan_operasional_id',
+        'laporan_armada_tangkap_id',
         'kategori',
         'jenis_ikan',
         'quantity_kg',
@@ -21,6 +22,11 @@ class LaporanPemasaran extends Model
 
     public function laporanOperasional()
     {
-        return $this->belongsTo(laporanOperasional::class);
+        return $this->belongsTo(LaporanOperasional::class);
+    }
+
+    public function armada()
+    {
+        return $this->belongsTo(LaporanArmadaTangkap::class, 'laporan_armada_tangkap_id');
     }
 }

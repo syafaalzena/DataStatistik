@@ -42,6 +42,16 @@
             <div class="warn-inline"></div>
         </div>
 
+        <div class="col-md-3">
+            <label class="field-label">WPPNRI</label>
+            <select name="wppnri_id[{{ $i }}]" class="form-select">
+                <option value="">-- Pilih WPPNRI --</option>
+                @foreach ($wppnriList as $w)
+                    <option value="{{ $w->id }}" @selected($a['wppnri'] == $w->id)>{{ $w->kode }}</option>
+                @endforeach
+            </select>
+        </div>
+
         <div class="col-md-12">
             <label class="field-label">Dokumen Trip (bebas diisi: SLO, SPB, CV, dll)</label>
             <div class="dokumen-list">
