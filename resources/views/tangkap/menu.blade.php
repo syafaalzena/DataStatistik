@@ -77,7 +77,7 @@
 
         <a href="{{ route('laporan-operasional.pilih-kabupaten') }}" class="kategori-card">
             <div class="kategori-icon"><img src="{{ asset('images/report.png') }}" alt="Ikan" width="32" height="32" class="card-icon"></div>
-            <div class="kategori-title">Laporan Operasional Pelabuhan Perikanan</div>
+            <div class="kategori-title">Data Input Operasional Pelabuhan Perikanan</div>
             <div class="kategori-sub">Input rekapitulasi aktivitas harian pelabuhan: armada, produksi ikan dominan, logistik, dan pemasaran per bulan.</div>
             <span class="kategori-count">{{ $totalLaporanOperasional }} Laporan Tersimpan</span>
         </a>
