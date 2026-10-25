@@ -515,7 +515,7 @@
                         <div>
                             <h2 class="mb-3 d-flex align-items-center gap-2">
                                 <img src="{{ asset('images/wave.png') }}" alt="Kelautan" width="32" height="32" class="card-icon" style="filter: hue-rotate(50deg);">
-                                Data Budidaya Tangkap
+                                Data Perikanan Tangkap
                             </h2>
                             <p style="color: var(--clr-text-muted); line-height: 1.7; font-size: 14px;">
                                 Kelola Hasil Tangkap Provinsi Aceh.
