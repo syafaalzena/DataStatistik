@@ -74,7 +74,7 @@ class LaporanOperasionalController extends Controller
 
     public function show(LaporanOperasional $laporanOperasional)
     {
-        $laporanOperasional->load(['pelabuhan.kabupatenIkan', 'armadaTangkap.dokumens', 'armadaTangkap.foto', 'produksiIkan', 'logistik', 'pemasaran']);
+        $laporanOperasional->load(['pelabuhan.kabupatenIkan', 'armadaTangkap.dokumens', 'armadaTangkap.foto', 'produksiIkan.armada', 'logistik.armada', 'pemasaran.armada']);
 
         return view('tangkap.laporan-operasional.show', ['laporan' => $laporanOperasional]);
     }
@@ -83,7 +83,7 @@ class LaporanOperasionalController extends Controller
 
     public function exportPdf(LaporanOperasional $laporanOperasional)
     {
-        $laporanOperasional->load(['pelabuhan.kabupatenIkan', 'armadaTangkap.dokumens', 'armadaTangkap.foto', 'produksiIkan', 'logistik', 'pemasaran']);
+        $laporanOperasional->load(['pelabuhan.kabupatenIkan', 'armadaTangkap.dokumens', 'armadaTangkap.foto', 'produksiIkan.armada', 'logistik.armada', 'pemasaran.armada']);
 
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('tangkap.laporan-operasional.pdf', ['laporan' => $laporanOperasional])
         ->setPaper('a4', 'portrait');
@@ -95,7 +95,7 @@ class LaporanOperasionalController extends Controller
 
     public function exportExcel(LaporanOperasional $laporanOperasional)
     {
-        $laporanOperasional->load(['pelabuhan.kabupatenIkan', 'armadaTangkap.dokumens', 'produksiIkan', 'logistik', 'pemasaran']);
+        $laporanOperasional->load(['pelabuhan.kabupatenIkan', 'armadaTangkap.dokumens', 'produksiIkan.armada', 'logistik.armada', 'pemasaran.armada']);
 
         $namaFile = 'laporan-operasional-' . \Illuminate\Support\Str::slug($laporanOperasional->pelabuhan->nama) . '-' . \Illuminate\Support\Str::slug($laporanOperasional->nama_bulan) . '-' . $laporanOperasional->tahun . '.xlsx';
 
@@ -104,7 +104,7 @@ class LaporanOperasionalController extends Controller
 
     public function edit(LaporanOperasional $laporanOperasional)
     {
-        $laporanOperasional->load(['armadaTangkap.dokumens', 'armadaTangkap.foto', 'produksiIkan', 'logistik', 'pemasaran', 'pelabuhan.kabupatenIkan']);
+        $laporanOperasional->load(['armadaTangkap.dokumens', 'armadaTangkap.foto', 'armadaTangkap.produksiIkan', 'armadaTangkap.logistik', 'armadaTangkap.pemasaran', 'produksiIkan', 'logistik', 'pemasaran', 'pelabuhan.kabupatenIkan']);
 
         $kabupaten = $laporanOperasional->pelabuhan->kabupatenIkan;
         $pelabuhanList = Pelabuhan::where('kabupaten_ikan_id', $kabupaten->id)->orderBy('nama')->get();
@@ -259,34 +259,48 @@ class LaporanOperasionalController extends Controller
             'lokasi_foto' => ['array'], 
             'lokasi_foto.*' => ['nullable', 'string', 'max:150'],
 
+            // Produksi, logistik, pemasaran: dikelompokkan per kapal -> field[indexKapal][]
             'jenis_ikan' => ['array'],
-            'jenis_ikan.*' => ['nullable', 'string', 'max:150'],
+            'jenis_ikan.*' => ['array'],
+            'jenis_ikan.*.*' => ['nullable', 'string', 'max:150'],
             'produksi_kg' => ['array'],
-            'produksi_kg.*' => ['nullable', 'numeric', 'min:0'],
+            'produksi_kg.*' => ['array'],
+            'produksi_kg.*.*' => ['nullable', 'numeric', 'min:0'],
             'harga_rp' => ['array'],
-            'harga_rp.*' => ['nullable', 'numeric', 'min:0'],
+            'harga_rp.*' => ['array'],
+            'harga_rp.*.*' => ['nullable', 'numeric', 'min:0'],
 
             'nama_item' => ['array'],
-            'nama_item.*' => ['nullable', 'string', 'max:150'],
+            'nama_item.*' => ['array'],
+            'nama_item.*.*' => ['nullable', 'string', 'max:150'],
             'jumlah_logistik' => ['array'],
-            'jumlah_logistik.*' => ['nullable', 'numeric', 'min:0'],
+            'jumlah_logistik.*' => ['array'],
+            'jumlah_logistik.*.*' => ['nullable', 'numeric', 'min:0'],
             'satuan' => ['array'],
-            'satuan.*' => ['nullable', 'string', 'max:50'],
+            'satuan.*' => ['array'],
+            'satuan.*.*' => ['nullable', 'string', 'max:50'],
             'harga_logistik' => ['array'],
-            'harga_logistik.*' => ['nullable', 'numeric', 'min:0'],
+            'harga_logistik.*' => ['array'],
+            'harga_logistik.*.*' => ['nullable', 'numeric', 'min:0'],
             'total_logistik' => ['array'],
-            'total_logistik.*' => ['nullable', 'numeric', 'min:0'],
+            'total_logistik.*' => ['array'],
+            'total_logistik.*.*' => ['nullable', 'numeric', 'min:0'],
 
             'kategori_pemasaran' => ['array'],
-            'kategori_pemasaran.*' => ['nullable', 'string', 'in:Lokal,Regional,Ekspor'],
+            'kategori_pemasaran.*' => ['array'],
+            'kategori_pemasaran.*.*' => ['nullable', 'string', 'in:Lokal,Regional,Ekspor'],
             'jenis_ikan_pemasaran' => ['array'],
-            'jenis_ikan_pemasaran.*' => ['nullable', 'string', 'max:150'],
+            'jenis_ikan_pemasaran.*' => ['array'],
+            'jenis_ikan_pemasaran.*.*' => ['nullable', 'string', 'max:150'],
             'quantity_kg' => ['array'],
-            'quantity_kg.*' => ['nullable', 'numeric', 'min:0'],
+            'quantity_kg.*' => ['array'],
+            'quantity_kg.*.*' => ['nullable', 'numeric', 'min:0'],
             'tujuan' => ['array'],
-            'tujuan.*' => ['nullable', 'string', 'max:150'],
-            'nama_pt'=>['array'],
-            'nama_pt.*' => ['nullable', 'string', 'max:150'],
+            'tujuan.*' => ['array'],
+            'tujuan.*.*' => ['nullable', 'string', 'max:150'],
+            'nama_pt' => ['array'],
+            'nama_pt.*' => ['array'],
+            'nama_pt.*.*' => ['nullable', 'string', 'max:150'],
         ]);
 
         // Tanggal pulang tidak boleh sebelum tanggal berangkat
@@ -305,22 +319,36 @@ class LaporanOperasionalController extends Controller
 
     private function syncDetails(LaporanOperasional $laporan, Request $request): void
     {
-        // Data Armada Tangkap (per trip)
-        foreach ((array) $request->input('ukuran_kapal', []) as $i => $ukuran) {
-            if (blank($ukuran)) {
+        // Semua kapal yang ada di form (kunci = nomor kapal di form)
+        $indeksKapal = collect(['nama_armada', 'ukuran_kapal', 'jenis_ikan', 'nama_item', 'jenis_ikan_pemasaran'])
+            ->flatMap(fn ($f) => array_keys((array) $request->input($f, [])))
+            ->unique()
+            ->sort()
+            ->values();
+
+        $urutan = 0;
+
+        foreach ($indeksKapal as $i) {
+            $ukuran = $request->input("ukuran_kapal.$i");
+            $adaDetail = $this->adaIsi($request->input("jenis_ikan.$i"))
+                || $this->adaIsi($request->input("nama_item.$i"))
+                || $this->adaIsi($request->input("jenis_ikan_pemasaran.$i"));
+
+            // Kapal benar-benar kosong (tidak ada ukuran, nama, maupun isian di bawahnya) dilewati
+            if (blank($ukuran) && blank($request->input("nama_armada.$i")) && ! $adaDetail) {
                 continue;
             }
 
-            $trip = $laporan->armadaTangkap()->create([
+            $kapal = $laporan->armadaTangkap()->create([
                 'nama_armada' => $request->input("nama_armada.$i"),
                 'tanggal_berangkat' => $request->input("tanggal_berangkat.$i") ?: null,
                 'tanggal_pulang' => $request->input("tanggal_pulang.$i") ?: null,
                 'jenis_alat_tangkap' => $request->input("jenis_alat_tangkap.$i"),
                 'latitude' => $request->filled("latitude.$i") ? $request->input("latitude.$i") : null,
                 'longitude' => $request->filled("longitude.$i") ? $request->input("longitude.$i") : null,
-                'ukuran_kapal' => $ukuran,
+                'ukuran_kapal' => $ukuran ?? '',
                 'jumlah_abk' => $request->input("jumlah_abk.$i", 0) ?: 0,
-                'urutan' => $i,
+                'urutan' => $urutan++,
             ]);
 
             foreach ((array) $request->input("dokumen_nama.$i", []) as $j => $namaDok) {
@@ -328,13 +356,13 @@ class LaporanOperasionalController extends Controller
                     continue;
                 }
 
-                $trip->dokumens()->create([
+                $kapal->dokumens()->create([
                     'nama_dokumen' => $namaDok,
                     'urutan' => $j,
                 ]);
             }
 
-            // Foto kapal (1 foto per trip)
+            // Foto kapal (1 foto per kapal)
             $fotoPath = null;
             if ($request->hasFile("foto.$i")) {
                 $fotoPath = $request->file("foto.$i")->store('kapal-photos', 'public');
@@ -343,66 +371,80 @@ class LaporanOperasionalController extends Controller
             }
 
             if ($fotoPath) {
-                $trip->foto()->create([
+                $kapal->foto()->create([
                     'foto' => $fotoPath,
                     'lokasi' => $request->input("lokasi_foto.$i"),
                 ]);
             }
-        }
 
-        // Produksi Ikan Dominan
-        foreach ((array) $request->input('jenis_ikan', []) as $i => $jenis) {
-            if (blank($jenis)) {
-                continue;
+            // Produksi Ikan Dominan milik kapal ini
+            foreach ((array) $request->input("jenis_ikan.$i", []) as $j => $jenis) {
+                if (blank($jenis)) {
+                    continue;
+                }
+
+                $produksi = (float) $request->input("produksi_kg.$i.$j", 0);
+                $harga = (float) $request->input("harga_rp.$i.$j", 0);
+
+                $kapal->produksiIkan()->create([
+                    'laporan_operasional_id' => $laporan->id,
+                    'jenis_ikan' => $jenis,
+                    'produksi_kg' => $produksi,
+                    'harga_rp' => $harga,
+                    'nilai_rp' => $produksi * $harga,
+                    'urutan' => $j,
+                ]);
             }
 
-            $produksi = (float) $request->input("produksi_kg.$i", 0);
-            $harga = (float) $request->input("harga_rp.$i", 0);
+            // Logistik milik kapal ini
+            foreach ((array) $request->input("nama_item.$i", []) as $j => $nama) {
+                if (blank($nama)) {
+                    continue;
+                }
 
-            $laporan->produksiIkan()->create([
-                'jenis_ikan' => $jenis,
-                'produksi_kg' => $produksi,
-                'harga_rp' => $harga,
-                'nilai_rp' => $produksi * $harga,
-                'urutan' => $i,
-            ]);
-        }
+                $jumlah = (float) $request->input("jumlah_logistik.$i.$j", 0);
+                $harga = $request->input("harga_logistik.$i.$j");
+                $total = $request->input("total_logistik.$i.$j");
+                $total = $total !== null && $total !== '' ? (float) $total : ($jumlah * (float) $harga);
 
-        // Logistik
-        foreach ((array) $request->input('nama_item', []) as $i => $nama) {
-            if (blank($nama)) {
-                continue;
+                $kapal->logistik()->create([
+                    'laporan_operasional_id' => $laporan->id,
+                    'nama_item' => $nama,
+                    'jumlah' => $jumlah,
+                    'satuan' => $request->input("satuan.$i.$j"),
+                    'harga_rp' => $harga !== null && $harga !== '' ? (float) $harga : null,
+                    'total_rp' => $total,
+                    'urutan' => $j,
+                ]);
             }
 
-            $jumlah = (float) $request->input("jumlah_logistik.$i", 0);
-            $harga = $request->input("harga_logistik.$i");
-            $total = $request->input("total_logistik.$i");
-            $total = $total !== null && $total !== '' ? (float) $total : ($jumlah * (float) $harga);
+            // Pemasaran milik kapal ini
+            foreach ((array) $request->input("jenis_ikan_pemasaran.$i", []) as $j => $jenis) {
+                if (blank($jenis)) {
+                    continue;
+                }
 
-            $laporan->logistik()->create([
-                'nama_item' => $nama,
-                'jumlah' => $jumlah,
-                'satuan' => $request->input("satuan.$i"),
-                'harga_rp' => $harga !== null && $harga !== '' ? (float) $harga : null,
-                'total_rp' => $total,
-                'urutan' => $i,
-            ]);
-        }
-
-        // Data Pemasaran
-        foreach ((array) $request->input('jenis_ikan_pemasaran', []) as $i => $jenis) {
-            if (blank($jenis)) {
-                continue;
+                $kapal->pemasaran()->create([
+                    'laporan_operasional_id' => $laporan->id,
+                    'kategori' => $request->input("kategori_pemasaran.$i.$j", 'Lokal'),
+                    'jenis_ikan' => $jenis,
+                    'quantity_kg' => (float) $request->input("quantity_kg.$i.$j", 0),
+                    'tujuan' => $request->input("tujuan.$i.$j"),
+                    'nama_pt' => $request->input("nama_pt.$i.$j"),
+                    'urutan' => $j,
+                ]);
             }
-
-            $laporan->pemasaran()->create([
-                'kategori' => $request->input("kategori_pemasaran.$i", 'Lokal'),
-                'jenis_ikan' => $jenis,
-                'quantity_kg' => (float) $request->input("quantity_kg.$i", 0),
-                'tujuan' => $request->input("tujuan.$i"),
-                'nama_pt' => $request->input("nama_pt.$i"),
-                'urutan' => $i,
-            ]);
         }
+    }
+
+    private function adaIsi($daftar): bool
+    {
+        foreach ((array) $daftar as $v) {
+            if (! blank($v)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

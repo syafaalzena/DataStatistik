@@ -106,37 +106,17 @@
     <div class="section-heading">Produksi Ikan Dominan & Nilai Produksi</div>
     <table class="recap">
         <thead>
-            <tr><th>No</th><th>Jenis Ikan</th><th>Produksi (Kg)</th><th>Harga (Rp)</th><th>Nilai (Rp)</th></tr>
+            <tr><th>No</th><th>Kapal</th><th>Jenis Ikan</th><th>Produksi (Kg)</th><th>Harga (Rp)</th><th>Nilai (Rp)</th></tr>
         </thead>
         <tbody>
             @forelse ($laporan->produksiIkan as $i => $p)
                 <tr>
                     <td>{{ $i + 1 }}</td>
+                    <td>{{ optional($p->armada)->nama_armada ?? '-' }}</td>
                     <td>{{ $p->jenis_ikan }}</td>
                     <td class="num">{{ number_format($p->produksi_kg, 0, ',', '.') }}</td>
                     <td class="num">{{ number_format($p->harga_rp, 0, ',', '.') }}</td>
                     <td class="num">{{ number_format($p->nilai_rp, 0, ',', '.') }}</td>
-                </tr>
-            @empty
-                <tr><td colspan="5" style="text-align:center;">Belum ada data</td></tr>
-            @endforelse
-        </tbody>
-    </table>
-
-    <div class="section-heading">Logistik</div>
-    <table class="recap">
-        <thead>
-            <tr><th>No</th><th>Kebutuhan</th><th>Jumlah</th><th>Satuan</th><th>Harga (Rp)</th><th>Total (Rp)</th></tr>
-        </thead>
-        <tbody>
-            @forelse ($laporan->logistik as $i => $lg)
-                <tr>
-                    <td>{{ $i + 1 }}</td>
-                    <td>{{ $lg->nama_item }}</td>
-                    <td class="num">{{ number_format($lg->jumlah, 0, ',', '.') }}</td>
-                    <td>{{ $lg->satuan ?? '-' }}</td>
-                    <td class="num">{{ $lg->harga_rp !== null ? number_format($lg->harga_rp, 0, ',', '.') : '-' }}</td>
-                    <td class="num">{{ number_format($lg->total_rp, 0, ',', '.') }}</td>
                 </tr>
             @empty
                 <tr><td colspan="6" style="text-align:center;">Belum ada data</td></tr>
@@ -144,22 +124,45 @@
         </tbody>
     </table>
 
+    <div class="section-heading">Logistik</div>
+    <table class="recap">
+        <thead>
+            <tr><th>No</th><th>Kapal</th><th>Kebutuhan</th><th>Jumlah</th><th>Satuan</th><th>Harga (Rp)</th><th>Total (Rp)</th></tr>
+        </thead>
+        <tbody>
+            @forelse ($laporan->logistik as $i => $lg)
+                <tr>
+                    <td>{{ $i + 1 }}</td>
+                    <td>{{ optional($lg->armada)->nama_armada ?? '-' }}</td>
+                    <td>{{ $lg->nama_item }}</td>
+                    <td class="num">{{ number_format($lg->jumlah, 0, ',', '.') }}</td>
+                    <td>{{ $lg->satuan ?? '-' }}</td>
+                    <td class="num">{{ $lg->harga_rp !== null ? number_format($lg->harga_rp, 0, ',', '.') : '-' }}</td>
+                    <td class="num">{{ number_format($lg->total_rp, 0, ',', '.') }}</td>
+                </tr>
+            @empty
+                <tr><td colspan="7" style="text-align:center;">Belum ada data</td></tr>
+            @endforelse
+        </tbody>
+    </table>
+
     <div class="section-heading">Data Pemasaran</div>
     <table class="recap">
         <thead>
-            <tr><th>No</th><th>Kategori</th><th>Jenis Ikan</th><th>Quantity (Kg)</th><th>Tujuan</th></tr>
+            <tr><th>No</th><th>Kapal</th><th>Kategori</th><th>Jenis Ikan</th><th>Quantity (Kg)</th><th>Tujuan</th></tr>
         </thead>
         <tbody>
             @forelse ($laporan->pemasaran as $i => $pm)
                 <tr>
                     <td>{{ $i + 1 }}</td>
+                    <td>{{ optional($pm->armada)->nama_armada ?? '-' }}</td>
                     <td>{{ $pm->kategori }}</td>
                     <td>{{ $pm->jenis_ikan }}</td>
                     <td class="num">{{ number_format($pm->quantity_kg, 0, ',', '.') }}</td>
                     <td>{{ $pm->tujuan ?? '-' }}</td>
                 </tr>
             @empty
-                <tr><td colspan="5" style="text-align:center;">Belum ada data</td></tr>
+                <tr><td colspan="6" style="text-align:center;">Belum ada data</td></tr>
             @endforelse
         </tbody>
     </table>

@@ -201,6 +201,7 @@
                     <thead>
                         <tr>
                             <th>No</th>
+                            <th>Kapal</th>
                             <th>Jenis Ikan</th>
                             <th>Produksi (Kg)</th>
                             <th>Harga Ikan (Rp)</th>
@@ -211,18 +212,19 @@
                         @forelse ($laporan->produksiIkan as $i => $p)
                             <tr>
                                 <td class="text-center">{{ $i + 1 }}</td>
+                                <td>{{ optional($p->armada)->nama_armada ?? '-' }}</td>
                                 <td>{{ $p->jenis_ikan }}</td>
                                 <td class="num">{{ number_format($p->produksi_kg, 0, ',', '.') }}</td>
                                 <td class="num">{{ number_format($p->harga_rp, 0, ',', '.') }}</td>
                                 <td class="num">{{ number_format($p->nilai_rp, 0, ',', '.') }}</td>
                             </tr>
                         @empty
-                            <tr><td colspan="5" class="text-center text-muted">Belum ada data</td></tr>
+                            <tr><td colspan="6" class="text-center text-muted">Belum ada data</td></tr>
                         @endforelse
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="2" class="text-center">Total</td>
+                            <td colspan="3" class="text-center">Total</td>
                             <td class="num">{{ number_format($laporan->total_produksi_kg, 0, ',', '.') }}</td>
                             <td></td>
                             <td class="num">{{ number_format($laporan->total_nilai_produksi, 0, ',', '.') }}</td>
@@ -240,6 +242,7 @@
                     <thead>
                         <tr>
                             <th>No</th>
+                            <th>Kapal</th>
                             <th>Kebutuhan Logistik</th>
                             <th>Jumlah</th>
                             <th>Satuan</th>
@@ -251,6 +254,7 @@
                         @forelse ($laporan->logistik as $i => $lg)
                             <tr>
                                 <td class="text-center">{{ $i + 1 }}</td>
+                                <td>{{ optional($lg->armada)->nama_armada ?? '-' }}</td>
                                 <td>{{ $lg->nama_item }}</td>
                                 <td class="num">{{ number_format($lg->jumlah, 0, ',', '.') }}</td>
                                 <td class="text-center">{{ $lg->satuan ?? '-' }}</td>
@@ -258,12 +262,12 @@
                                 <td class="num">{{ number_format($lg->total_rp, 0, ',', '.') }}</td>
                             </tr>
                         @empty
-                            <tr><td colspan="6" class="text-center text-muted">Belum ada data</td></tr>
+                            <tr><td colspan="7" class="text-center text-muted">Belum ada data</td></tr>
                         @endforelse
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="5" class="text-center">Total</td>
+                            <td colspan="6" class="text-center">Total</td>
                             <td class="num">{{ number_format($laporan->total_logistik, 0, ',', '.') }}</td>
                         </tr>
                     </tfoot>
@@ -277,6 +281,7 @@
                     <thead>
                         <tr>
                             <th>No</th>
+                            <th>Kapal</th>
                             <th>Kategori</th>
                             <th>Jenis Ikan</th>
                             <th>Quantity (Kg)</th>
@@ -288,6 +293,7 @@
                         @forelse ($laporan->pemasaran as $i => $pm)
                             <tr>
                                 <td class="text-center">{{ $i + 1 }}</td>
+                                <td>{{ optional($pm->armada)->nama_armada ?? '-' }}</td>
                                 <td class="text-center">{{ $pm->kategori }}</td>
                                 <td>{{ $pm->jenis_ikan }}</td>
                                 <td class="num">{{ number_format($pm->quantity_kg, 0, ',', '.') }}</td>
@@ -295,7 +301,7 @@
                                 <td>{{$pm->nama_pt ?? '-'}}</td>
                             </tr>
                         @empty
-                            <tr><td colspan="5" class="text-center text-muted">Belum ada data</td></tr>
+                            <tr><td colspan="7" class="text-center text-muted">Belum ada data</td></tr>
                         @endforelse
                     </tbody>
                 </table>

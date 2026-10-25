@@ -143,6 +143,14 @@
             background: #f1f5f9; 
         }
 
+        .armada-card { border: 2px solid #cbd5e1; border-radius: 14px; padding: 16px; margin-bottom: 20px; background: #fff; }
+        .armada-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .armada-judul { font-weight: 700; font-size: 15px; color: var(--clr-dark); }
+        .btn-hapus-kapal { background: #fff; border: 1px solid #dc2626; color: #dc2626; border-radius: 8px; font-size: 12.5px; font-weight: 600; padding: 4px 12px; }
+        .btn-hapus-kapal:hover { background: #dc2626; color: #fff; }
+        .sub-block { margin-top: 14px; padding-top: 10px; border-top: 1px dashed #cbd5e1; }
+        .sub-title { font-weight: 700; font-size: 13.5px; margin-bottom: 8px; }
+        .sub-hint { font-weight: 400; font-size: 12px; color: #64748b; }
         .warn-inline { font-size: 11.5px; color: #b45309; margin-top: 2px; display: none; }
         .is-suspect { border-color: #f59e0b !important; background: #fffbeb; }
         #tabelRingkasan th, #tabelRingkasan td { font-size: 13px; padding: 4px 8px; }
@@ -250,251 +258,102 @@
             </div>
         </div>
 
-        {{-- ARMADA TANGKAP --}}
+        {{-- KAPAL: produksi, logistik, dan pemasaran ada di dalam tiap kapal --}}
+        @php
+            $kosongKapal = fn ($i) => [
+                'i' => $i, 'nama' => '', 'berangkat' => '', 'pulang' => '', 'alat' => '', 'ukuran' => '', 'abk' => '',
+                'dokumen' => [], 'foto_lama' => '', 'lokasi' => '', 'lat' => '', 'lng' => '',
+                'produksi' => [], 'logistik' => [], 'pemasaran' => [],
+            ];
+
+            $armadaList = [];
+            $idxLama = [];
+            foreach (['ukuran_kapal', 'nama_armada', 'jenis_ikan', 'nama_item', 'jenis_ikan_pemasaran'] as $f) {
+                $idxLama = array_merge($idxLama, array_keys((array) old($f, [])));
+            }
+            $idxLama = array_values(array_unique($idxLama));
+            sort($idxLama);
+
+            if (count($idxLama)) {
+                // Form dikembalikan setelah gagal validasi: pakai isian terakhir pengguna
+                foreach ($idxLama as $i) {
+                    $k = $kosongKapal($i);
+                    $k['nama'] = old("nama_armada.$i");
+                    $k['berangkat'] = old("tanggal_berangkat.$i");
+                    $k['pulang'] = old("tanggal_pulang.$i");
+                    $k['alat'] = old("jenis_alat_tangkap.$i");
+                    $k['ukuran'] = old("ukuran_kapal.$i");
+                    $k['abk'] = old("jumlah_abk.$i");
+                    $k['dokumen'] = array_values((array) old("dokumen_nama.$i", []));
+                    $k['foto_lama'] = old("foto_lama.$i");
+                    $k['lokasi'] = old("lokasi_foto.$i");
+                    $k['lat'] = old("latitude.$i");
+                    $k['lng'] = old("longitude.$i");
+                    foreach ((array) old("jenis_ikan.$i", []) as $j => $v) {
+                        $k['produksi'][] = ['jenis' => $v, 'kg' => old("produksi_kg.$i.$j"), 'harga' => old("harga_rp.$i.$j")];
+                    }
+                    foreach ((array) old("nama_item.$i", []) as $j => $v) {
+                        $k['logistik'][] = ['nama' => $v, 'jumlah' => old("jumlah_logistik.$i.$j"), 'satuan' => old("satuan.$i.$j"), 'harga' => old("harga_logistik.$i.$j"), 'total' => old("total_logistik.$i.$j")];
+                    }
+                    foreach ((array) old("jenis_ikan_pemasaran.$i", []) as $j => $v) {
+                        $k['pemasaran'][] = ['kategori' => old("kategori_pemasaran.$i.$j", 'Lokal'), 'jenis' => $v, 'qty' => old("quantity_kg.$i.$j"), 'tujuan' => old("tujuan.$i.$j"), 'nama_pt' => old("nama_pt.$i.$j")];
+                    }
+                    $armadaList[] = $k;
+                }
+            } elseif ($laporan) {
+                foreach ($laporan->armadaTangkap as $n => $row) {
+                    $k = $kosongKapal($n);
+                    $k['nama'] = $row->nama_armada;
+                    $k['berangkat'] = optional($row->tanggal_berangkat)->format('Y-m-d');
+                    $k['pulang'] = optional($row->tanggal_pulang)->format('Y-m-d');
+                    $k['alat'] = $row->jenis_alat_tangkap;
+                    $k['ukuran'] = $row->ukuran_kapal;
+                    $k['abk'] = $row->jumlah_abk;
+                    $k['dokumen'] = $row->dokumens->pluck('nama_dokumen')->all();
+                    $k['foto_lama'] = optional($row->foto)->foto;
+                    $k['lokasi'] = optional($row->foto)->lokasi;
+                    $k['lat'] = $row->latitude;
+                    $k['lng'] = $row->longitude;
+                    $k['produksi'] = $row->produksiIkan->map(fn ($x) => ['jenis' => $x->jenis_ikan, 'kg' => $x->produksi_kg, 'harga' => $x->harga_rp])->all();
+                    $k['logistik'] = $row->logistik->map(fn ($x) => ['nama' => $x->nama_item, 'jumlah' => $x->jumlah, 'satuan' => $x->satuan, 'harga' => $x->harga_rp, 'total' => $x->total_rp])->all();
+                    $k['pemasaran'] = $row->pemasaran->map(fn ($x) => ['kategori' => $x->kategori, 'jenis' => $x->jenis_ikan, 'qty' => $x->quantity_kg, 'tujuan' => $x->tujuan, 'nama_pt' => $x->nama_pt])->all();
+                    $armadaList[] = $k;
+                }
+
+                // Data lama yang belum terhubung ke kapal manapun: taruh di kapal pertama supaya tidak hilang saat disimpan
+                $yatimProduksi = $laporan->produksiIkan->whereNull('laporan_armada_tangkap_id');
+                $yatimLogistik = $laporan->logistik->whereNull('laporan_armada_tangkap_id');
+                $yatimPemasaran = $laporan->pemasaran->whereNull('laporan_armada_tangkap_id');
+                if ($yatimProduksi->count() || $yatimLogistik->count() || $yatimPemasaran->count()) {
+                    if (! count($armadaList)) { $armadaList[] = $kosongKapal(0); }
+                    foreach ($yatimProduksi as $x) { $armadaList[0]['produksi'][] = ['jenis' => $x->jenis_ikan, 'kg' => $x->produksi_kg, 'harga' => $x->harga_rp]; }
+                    foreach ($yatimLogistik as $x) { $armadaList[0]['logistik'][] = ['nama' => $x->nama_item, 'jumlah' => $x->jumlah, 'satuan' => $x->satuan, 'harga' => $x->harga_rp, 'total' => $x->total_rp]; }
+                    foreach ($yatimPemasaran as $x) { $armadaList[0]['pemasaran'][] = ['kategori' => $x->kategori, 'jenis' => $x->jenis_ikan, 'qty' => $x->quantity_kg, 'tujuan' => $x->tujuan, 'nama_pt' => $x->nama_pt]; }
+                }
+            }
+
+            if (! count($armadaList)) {
+                $armadaList[] = $kosongKapal(0); // form baru: langsung ada satu kotak kapal
+            }
+            $armadaNext = max(array_map(fn ($x) => (int) $x['i'], $armadaList)) + 1;
+        @endphp
+
         <div class="panel-card">
-            <div class="section-title">Data Armada Tangkap (Per Trip)</div>
-            <div class="section-sub">Catat setiap kali kapal berangkat melaut. Satu baris = satu trip.</div>
+            <div class="section-title">Data Kapal, Produksi, Logistik &amp; Pemasaran</div>
+            <div class="section-sub">Satu kotak = satu kapal/trip. Produksi, logistik, dan pemasaran diisi di dalam kotak kapalnya. Kalau kapal dihapus, semua isi di dalam kotaknya ikut terhapus.</div>
             <div id="armadaContainer">
-                @php $armadaRows = old('ukuran_kapal', $laporan->armadaTangkap ?? []); @endphp
-                @forelse ($armadaRows as $i => $row)
-                    @php
-                        $namaArmada = is_object($row) ? $row->nama_armada : old("nama_armada.$i");
-                        $tglBerangkat = is_object($row) ? optional($row->tanggal_berangkat)->format('Y-m-d') : old("tanggal_berangkat.$i");
-                        $tglPulang = is_object($row) ? optional($row->tanggal_pulang)->format('Y-m-d') : old("tanggal_pulang.$i");
-                        $jenisAlat = is_object($row) ? $row->jenis_alat_tangkap : old("jenis_alat_tangkap.$i");
-                        $lat = is_object($row) ? $row->latitude : old("latitude.$i");
-                        $lng = is_object($row) ? $row->longitude : old("longitude.$i");
-                        $ukuran = is_object($row) ? $row->ukuran_kapal : ($row ?? old("ukuran_kapal.$i"));
-                        $jmlAbk = is_object($row) ? $row->jumlah_abk : old("jumlah_abk.$i");
-                        $fotoLama = is_object($row) ? optional($row->foto)->foto : null;
-                        $lokasiFoto = is_object($row) ? optional($row->foto)->lokasi : old("lokasi_foto.$i");
-                    @endphp
-                    <div class="row-input row g-2 align-items-end" data-index="{{ $i }}">
-                        <div class="col-md-2">
-                            <label class="field-label">Nama Kapal</label>
-                            <input type="text" name="nama_armada[{{ $i }}]" class="form-control" value="{{ $namaArmada }}" placeholder="cth: KM Sinar Laut">
-                        </div>
-                        <div class="col-md-2">
-                            <label class="field-label">Tanggal Berangkat</label>
-                            <input type="date" name="tanggal_berangkat[{{ $i }}]" class="form-control input-berangkat" value="{{ $tglBerangkat }}">
-                        </div>
-                        <div class="col-md-2">
-                            <label class="field-label">Tanggal Pulang</label>
-                            <input type="date" name="tanggal_pulang[{{ $i }}]" class="form-control input-pulang" value="{{ $tglPulang }}" min="{{ $tglBerangkat }}">
-                            <div class="warn-inline"></div>
-                        </div>
-                        <div class="col-md-2">
-                            <label class="field-label">Jenis Alat Tangkap / API</label>
-                            <select name="jenis_alat_tangkap[{{ $i }}]" class="form-select input-api">
-                                <option value="">-- Pilih API --</option>
-                                @foreach ($jenisApiList as $api)
-                                    <option value="{{ $api }}" @selected($jenisAlat == $api)>{{ $api }}</option>
-                                @endforeach
-                                @if ($jenisAlat && ! $jenisApiList->contains($jenisAlat))
-                                    <option value="{{ $jenisAlat }}" selected>{{ $jenisAlat }} (data lama)</option>
-                                @endif
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <label class="field-label">Ukuran Kapal (GT)</label>
-                            <input type="text" name="ukuran_kapal[{{ $i }}]" class="form-control input-ukuran" value="{{ $ukuran }}" placeholder="cth: < 5">
-                            <div class="warn-inline"></div>
-                        </div>
-                        <div class="col-md-2">
-                            <label class="field-label">Jumlah ABK (Org)</label>
-                            <input type="number" step="0.01" name="jumlah_abk[{{ $i }}]" class="form-control input-abk" value="{{ $jmlAbk }}">
-                            <div class="warn-inline"></div>
-                        </div>
-
-                        <div class="col-md-12">
-                            <label class="field-label">Dokumen Trip (bebas diisi: SLO, SPB, CV, dll)</label>
-                            <div class="dokumen-list">
-                                @if (is_object($row))
-                                    @foreach ($row->dokumens as $d)
-                                        <div class="d-flex gap-2 mb-1 dokumen-item">
-                                            <input type="text" name="dokumen_nama[{{ $i }}][]" class="form-control form-control-sm" value="{{ $d->nama_dokumen }}" placeholder="cth: SLO">
-                                            <button type="button" class="btn btn-sm btn-outline-danger btn-hapus-dokumen">Hapus</button>
-                                        </div>
-                                    @endforeach
-                                @endif
-                            </div>
-                            <button type="button" class="btn btn-sm btn-outline-secondary btn-tambah-dokumen mt-1">+ Tambah Dokumen</button>
-                        </div>
-
-                        <div class="col-md-4">
-                            <label class="field-label">Foto Kapal</label>
-                            <input type="file" name="foto[{{ $i }}]" class="form-control" accept="image/*">
-                            <input type="hidden" name="foto_lama[{{ $i }}]" value="{{ $fotoLama }}">
-                            @if ($fotoLama)
-                                <div class="small text-muted mt-1">
-                                    <img src="{{ Storage::url($fotoLama) }}" style="height:40px;border-radius:6px;" class="me-1">
-                                    Foto sudah ada, upload baru untuk mengganti.
-                                </div>
-                            @endif
-                        </div>
-                        <div class="col-md-3">
-                            <label class="field-label">Lokasi</label>
-                            <input type="text" name="lokasi_foto[{{ $i }}]" class="form-control" value="{{ $lokasiFoto }}" placeholder="cth: Dermaga Lampulo">
-                        </div>
-
-                        <div class="col-md-4">
-                            <label class="field-label">Titik Koordinat</label>
-                            <input type="hidden" name="latitude[{{ $i }}]" value="{{ $lat }}">
-                            <input type="hidden" name="longitude[{{ $i }}]" value="{{ $lng }}">
-                            <div class="d-flex align-items-center gap-2">
-                                <button type="button" class="btn btn-outline-secondary btn-sm btn-pilih-peta">📍 Pilih di Peta</button>
-                                <button type="button" class="btn btn-link btn-sm text-danger p-0 btn-hapus-titik">Hapus titik</button>
-                                <div class="small text-muted mt-1 koordinat-teks">{{ ($lat !== null && $lat !== '' && $lng !== null && $lng !== '') ? $lat . ', ' . $lng : 'Belum dipilih' }}</div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-1">
-                            <button type="button" class="btn-remove-row" onclick="this.closest('.row-input').remove()">Hapus</button>
-                        </div>
-                    </div>
-                @empty
-                @endforelse
+                @foreach ($armadaList as $a)
+                    @include('tangkap.laporan-operasional._armada-card', ['a' => $a])
+                @endforeach
             </div>
-            <button type="button" class="btn-add-row mt-2" onclick="addArmadaRow()">+ Tambah Trip</button>
+            <button type="button" class="btn-add-row mt-2" onclick="addArmadaRow()">+ Tambah Kapal / Trip</button>
         </div>
 
-        {{-- PRODUKSI IKAN DOMINAN --}}
-        <div class="panel-card">
-            <div class="section-title">Produksi Ikan Dominan & Nilai Produksi</div>
-            <div class="section-sub">Jenis ikan, produksi (kg), dan harga. Nilai produksi dihitung otomatis.</div>
-            <div id="produksiContainer">
-                @php $produksiRows = old('jenis_ikan', $laporan->produksiIkan ?? []); @endphp
-                @forelse ($produksiRows as $i => $row)
-                    @php
-                        $jenis = is_object($row) ? $row->jenis_ikan : ($row ?? old("jenis_ikan.$i"));
-                        $produksiKg = is_object($row) ? $row->produksi_kg : old("produksi_kg.$i");
-                        $harga = is_object($row) ? $row->harga_rp : old("harga_rp.$i");
-                    @endphp
-                    <div class="row-input row g-2 align-items-end produksi-row">
-                        <div class="col-md-4">
-                            <label class="field-label">Jenis Ikan</label>
-                            <input type="text" name="jenis_ikan[]" class="form-control input-ikan" list="daftarIkan" autocomplete="off" value="{{ $jenis }}" placeholder="ketik / pilih nama ikan">
-                            <div class="warn-inline"></div>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="field-label">Produksi (Kg)</label>
-                            <input type="number" step="0.01" name="produksi_kg[]" class="form-control produksi-kg" value="{{ $produksiKg }}" oninput="hitungNilai(this)">
-                            <div class="warn-inline"></div>
-                        </div>
-                        <div class="col-md-2">
-                            <label class="field-label">Harga Ikan (Rp)</label>
-                            <input type="number" step="0.01" name="harga_rp[]" class="form-control produksi-harga" value="{{ $harga }}" oninput="hitungNilai(this)">
-                            <div class="warn-inline"></div>
-                        </div>
-                        <div class="col-md-2">
-                            <label class="field-label">Nilai Produksi (Rp)</label>
-                            <input type="text" class="form-control produksi-nilai" value="{{ number_format((float)$produksiKg * (float)$harga, 0, ',', '.') }}" readonly>
-                        </div>
-                        <div class="col-md-1">
-                            <button type="button" class="btn-remove-row" onclick="this.closest('.row-input').remove()">Hapus</button>
-                        </div>
-                    </div>
-                @empty
-                @endforelse
-            </div>
-            <button type="button" class="btn-add-row mt-2" onclick="addProduksiRow()">+ Tambah Baris</button>
-        </div>
-
-        {{-- LOGISTIK --}}
-        <div class="panel-card">
-            <div class="section-title">Logistik</div>
-            <div class="section-sub">Kebutuhan logistik (BBM, Air, Es, Garam, Oli, Gas, Ransum, dll). Bisa tambah item lain.</div>
-            <div id="logistikContainer">
-                @php $logistikRows = old('nama_item', $laporan->logistik ?? []); @endphp
-                @forelse ($logistikRows as $i => $row)
-                    @php
-                        $nama = is_object($row) ? $row->nama_item : ($row ?? old("nama_item.$i"));
-                        $jml = is_object($row) ? $row->jumlah : old("jumlah_logistik.$i");
-                        $satuan = is_object($row) ? $row->satuan : old("satuan.$i");
-                        $hrg = is_object($row) ? $row->harga_rp : old("harga_logistik.$i");
-                        $total = is_object($row) ? $row->total_rp : old("total_logistik.$i");
-                    @endphp
-                    <div class="row-input row g-2 align-items-end logistik-row">
-                        <div class="col-md-3">
-                            <label class="field-label">Kebutuhan Logistik</label>
-                            <input type="text" name="nama_item[]" class="form-control" value="{{ $nama }}">
-                        </div>
-                        <div class="col-md-2">
-                            <label class="field-label">Jumlah</label>
-                            <input type="number" step="0.01" name="jumlah_logistik[]" class="form-control logistik-jumlah" value="{{ $jml }}" oninput="hitungTotalLogistik(this)">
-                        </div>
-                        <div class="col-md-2">
-                            <label class="field-label">Satuan</label>
-                            <input type="text" name="satuan[]" class="form-control" value="{{ $satuan }}" placeholder="Liter/Kg/Rp">
-                        </div>
-                        <div class="col-md-2">
-                            <label class="field-label">Harga (Rp)</label>
-                            <input type="number" step="0.01" name="harga_logistik[]" class="form-control logistik-harga" value="{{ $hrg }}" oninput="hitungTotalLogistik(this)">
-                        </div>
-                        <div class="col-md-2">
-                            <label class="field-label">Total (Rp)</label>
-                            <input type="number" step="0.01" name="total_logistik[]" class="form-control logistik-total" value="{{ $total }}">
-                        </div>
-                        <div class="col-md-1">
-                            <button type="button" class="btn-remove-row" onclick="this.closest('.row-input').remove()">Hapus</button>
-                        </div>
-                    </div>
-                @empty
-                @endforelse
-            </div>
-            <button type="button" class="btn-add-row mt-2" onclick="addLogistikRow()">+ Tambah Baris</button>
-        </div>
-
-        {{-- PEMASARAN --}}
-        <div class="panel-card">
-            <div class="section-title">Data Pemasaran</div>
-            <div class="section-sub">Pemasaran dalam negeri (lokal/regional) maupun ekspor.</div>
-            <div id="pemasaranContainer">
-                @php $pemasaranRows = old('jenis_ikan_pemasaran', $laporan->pemasaran ?? []); @endphp
-                @forelse ($pemasaranRows as $i => $row)
-                    @php
-                        $kategori = is_object($row) ? $row->kategori : old("kategori_pemasaran.$i");
-                        $jenis = is_object($row) ? $row->jenis_ikan : ($row ?? old("jenis_ikan_pemasaran.$i"));
-                        $qty = is_object($row) ? $row->quantity_kg : old("quantity_kg.$i");
-                        $tujuan = is_object($row) ? $row->tujuan : old("tujuan.$i");
-                        $namaPt = is_object($row) ? $row->nama_pt : old("nama_pt.$i");
-                    @endphp
-                    <div class="row-input row g-2 align-items-end">
-                        <div class="col-md-2">
-                            <label class="field-label">Kategori</label>
-                            <select name="kategori_pemasaran[]" class="form-select">
-                                <option value="Lokal" @selected($kategori == 'Lokal')>Lokal (Antar Kabupaten)</option>
-                                <option value="Regional" @selected($kategori == 'Regional')>Regional (Antar Provinsi)</option>
-                                <option value="Ekspor" @selected($kategori == 'Ekspor')>Ekspor</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="field-label">Jenis Ikan</label>
-                            <input type="text" name="jenis_ikan_pemasaran[]" class="form-control input-ikan" list="daftarIkan" autocomplete="off" value="{{ $jenis }}" placeholder="ketik / pilih nama ikan">
-                            <div class="warn-inline"></div>
-                        </div>
-                        <div class="col-md-2">
-                            <label class="field-label">Quantity (Kg)</label>
-                            <input type="number" step="0.01" name="quantity_kg[]" class="form-control produksi-kg" value="{{ $qty }}">
-                            <div class="warn-inline"></div>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="field-label">Tujuan (Kabupaten/Provinsi/Negara)</label>
-                            <input type="text" name="tujuan[]" class="form-control" value="{{ $tujuan }}">
-                        </div>
-                        <div class="col-md-3">
-                            <label class="field-label">Nama PT (opsional)</label>
-                            <input type="text" name="nama_pt[]" class="form-control" value="{{ $namaPt }}" placeholder="cth: PT Samudra Jaya">
-                        </div>
-                        <div class="col-md-1">
-                            <button type="button" class="btn-remove-row" onclick="this.closest('.row-input').remove()">Hapus</button>
-                        </div>
-                    </div>
-                @empty
-                @endforelse
-            </div>
-            <button type="button" class="btn-add-row mt-2" onclick="addPemasaranRow()">+ Tambah Baris</button>
-        </div>
+        {{-- Cetakan baris baru (dipakai JavaScript; tidak ikut terkirim) --}}
+        <template id="tplArmada">@include('tangkap.laporan-operasional._armada-card', ['a' => $kosongKapal('__I__')])</template>
+        <template id="tplProduksi">@include('tangkap.laporan-operasional._baris-produksi', ['i' => '__I__', 'r' => []])</template>
+        <template id="tplLogistik">@include('tangkap.laporan-operasional._baris-logistik', ['i' => '__I__', 'r' => []])</template>
+        <template id="tplPemasaran">@include('tangkap.laporan-operasional._baris-pemasaran', ['i' => '__I__', 'r' => []])</template>
 
         <div class="d-flex justify-content-end gap-2">
          <a href="{{ route('laporan-operasional.index', $kabupaten->id) }}" class="btn btn-outline-secondary">Batal</a>
@@ -561,7 +420,7 @@
 
 <script>
     let petaMap = null, petaMarker = null, petaRow = null, petaLat = null, petaLng = null;
-    let armadaIndexCounter = {{ count($armadaRows ?? []) }};
+    let armadaIndexCounter = {{ $armadaNext }};
 const petaModalEl = document.getElementById('modalPeta');
 const PETA_AWAL = [4.6951, 96.7494]; // tengah Aceh
 
@@ -853,76 +712,98 @@ document.getElementById('petaGunakan').addEventListener('click', function () {
         }
     });
 
-    // Kumpulkan semua data + peringatan untuk dialog konfirmasi
+    // Kumpulkan semua data + peringatan untuk dialog konfirmasi (dikelompokkan per kapal)
     function kumpulkan() {
-        const peringatan = [], armada = [], produksi = [];
+        const peringatan = [], kapal = [];
         let fatal = false;
 
-        document.querySelectorAll('#armadaContainer .row-input').forEach((row, n) => {
-            const nama = row.querySelector('[name^="nama_armada"]').value.trim() || ('Trip ' + (n + 1));
+        document.querySelectorAll('#armadaContainer .armada-card').forEach((card, n) => {
+            const row = card.querySelector('.armada-row');
+            const namaIsi = row.querySelector('[name^="nama_armada"]').value.trim();
+            const nama = namaIsi || ('Kapal ' + (n + 1));
             const ukuran = row.querySelector('.input-ukuran').value.trim();
             const abk = row.querySelector('.input-abk').value;
             const b = row.querySelector('.input-berangkat').value, p = row.querySelector('.input-pulang').value;
             const api = row.querySelector('.input-api').value;
-            if (!ukuran) return;
-            armada.push({ nama, b, p, api, ukuran, abk });
-            [[cekUkuran(ukuran), 'Ukuran kapal'], [cekAbk(abk), 'ABK']].forEach(([m, label]) => {
-                if (m) peringatan.push(`<b>${nama}</b> – ${m}`);
+            const pre = `<b>${nama}</b> › `;
+
+            // --- Produksi
+            const produksi = [], sudah = {};
+            card.querySelectorAll('.produksi-row').forEach(r => {
+                const ikan = r.querySelector('.input-ikan').value.trim();
+                const kg = r.querySelector('.produksi-kg').value;
+                const harga = r.querySelector('.produksi-harga').value;
+                if (!ikan) return;
+                const nilai = (parseFloat(kg) || 0) * (parseFloat(harga) || 0);
+                produksi.push({ ikan, kg, harga, nilai });
+
+                const k = ikan.toLowerCase();
+                if (sudah[k]) peringatan.push(`${pre}<b>${ikan}</b> – diisi lebih dari satu kali di kapal ini. Apakah ada yang dobel?`);
+                sudah[k] = true;
+
+                if (kg === '' || harga === '') peringatan.push(`${pre}<b>${ikan}</b> – produksi (Kg) atau harga belum diisi, nilai produksi akan menjadi 0.`);
+                [cekIkan(ikan), cekKg(kg), cekHarga(harga)].forEach(m => { if (m) peringatan.push(`${pre}<b>${ikan}</b> – ${m}`); });
+                if (nilai > BATAS.nilaiMax) peringatan.push(`${pre}<b>${ikan}</b> – nilai produksi ${rp(nilai)} sangat besar. Cek Kg dan harganya.`);
             });
+
+            // --- Logistik
+            const logistik = [];
+            card.querySelectorAll('.logistik-row').forEach(r => {
+                const item = r.querySelector('[name^="nama_item"]').value.trim();
+                const jumlah = r.querySelector('.logistik-jumlah').value;
+                const satuan = r.querySelector('[name^="satuan"]').value.trim();
+                const harga = r.querySelector('.logistik-harga').value;
+                const totalIsi = r.querySelector('.logistik-total').value;
+                if (!item) return;
+                const total = totalIsi !== '' ? (parseFloat(totalIsi) || 0) : (parseFloat(jumlah) || 0) * (parseFloat(harga) || 0);
+                logistik.push({ item, jumlah, satuan, total });
+                if (jumlah === '') peringatan.push(`${pre}logistik <b>${item}</b> – jumlah belum diisi.`);
+            });
+
+            // --- Pemasaran
+            const pemasaran = [], totalPemasaran = {};
+            card.querySelectorAll('.pemasaran-row').forEach(r => {
+                const kategori = r.querySelector('[name^="kategori_pemasaran"]').value;
+                const ikan = r.querySelector('.input-ikan').value.trim();
+                const qty = r.querySelector('.produksi-kg').value;
+                const tujuan = r.querySelector('[name^="tujuan"]').value.trim();
+                if (!ikan && qty === '' && !tujuan) return;
+                const label = ikan || '(jenis ikan kosong)';
+                pemasaran.push({ kategori, ikan: label, qty, tujuan });
+
+                if (!ikan) peringatan.push(`${pre}pemasaran – jenis ikan belum diisi (tujuan: ${tujuan || '-'}).`);
+                if (qty === '') peringatan.push(`${pre}pemasaran <b>${label}</b> – quantity (Kg) belum diisi.`);
+                if (!tujuan) peringatan.push(`${pre}pemasaran <b>${label}</b> – tujuan belum diisi.`);
+                [cekIkan(ikan), cekKg(qty)].forEach(m => { if (m) peringatan.push(`${pre}pemasaran <b>${label}</b> – ${m}`); });
+
+                const k = ikan.toLowerCase();
+                totalPemasaran[k] = (totalPemasaran[k] || 0) + (parseFloat(qty) || 0);
+            });
+
+            // Pemasaran dibandingkan dengan produksi kapal yang SAMA
+            const totalProduksi = {};
+            produksi.forEach(x => { const k = x.ikan.toLowerCase(); totalProduksi[k] = (totalProduksi[k] || 0) + (parseFloat(x.kg) || 0); });
+            Object.keys(totalPemasaran).forEach(k => {
+                if (!k) return;
+                if (!(k in totalProduksi)) {
+                    peringatan.push(`${pre}pemasaran <b>${k}</b> – tidak ada di produksi kapal ini. Apakah sudah benar?`);
+                } else if (totalPemasaran[k] > totalProduksi[k]) {
+                    peringatan.push(`${pre}pemasaran <b>${k}</b> – total ${totalPemasaran[k].toLocaleString('id-ID')} Kg melebihi produksi kapal ini (${totalProduksi[k].toLocaleString('id-ID')} Kg).`);
+                }
+            });
+
+            // Kotak kapal yang benar-benar kosong dilewati
+            if (!namaIsi && !ukuran && !produksi.length && !logistik.length && !pemasaran.length) return;
+
+            if (!ukuran) peringatan.push(`${pre}ukuran kapal belum diisi.`);
+            [cekUkuran(ukuran), cekAbk(abk)].forEach(m => { if (m) peringatan.push(`${pre}${m}`); });
             const tgl = cekTanggal(row);
-            if (tgl) { peringatan.push(`<b>${nama}</b> – ${tgl.pesan}`); if (tgl.fatal) fatal = true; }
+            if (tgl) { peringatan.push(`${pre}${tgl.pesan}`); if (tgl.fatal) fatal = true; }
+
+            kapal.push({ nama, b, p, api, ukuran, abk, produksi, logistik, pemasaran });
         });
 
-        const sudah = {};
-        document.querySelectorAll('#produksiContainer .produksi-row').forEach(row => {
-            const ikan = row.querySelector('.input-ikan').value.trim();
-            const kg = row.querySelector('.produksi-kg').value;
-            const harga = row.querySelector('.produksi-harga').value;
-            if (!ikan) return;
-            const nilai = (parseFloat(kg) || 0) * (parseFloat(harga) || 0);
-            produksi.push({ ikan, kg, harga, nilai });
-
-            const k = ikan.toLowerCase();
-            if (sudah[k]) peringatan.push(`<b>${ikan}</b> – diisi lebih dari satu kali. Apakah ada yang dobel?`);
-            sudah[k] = true;
-
-            if (kg === '' || harga === '') peringatan.push(`<b>${ikan}</b> – produksi (Kg) atau harga belum diisi, nilai produksi akan menjadi 0.`);
-            [cekIkan(ikan), cekKg(kg), cekHarga(harga)].forEach(m => { if (m) peringatan.push(`<b>${ikan}</b> – ${m}`); });
-            if (nilai > BATAS.nilaiMax) peringatan.push(`<b>${ikan}</b> – nilai produksi ${rp(nilai)} sangat besar. Cek Kg dan harganya.`);
-        });
-
-        // Total produksi per jenis ikan (untuk dibandingkan dengan pemasaran)
-        const totalProduksi = {};
-        produksi.forEach(p => { const k = p.ikan.toLowerCase(); totalProduksi[k] = (totalProduksi[k] || 0) + (parseFloat(p.kg) || 0); });
-
-        const pemasaran = [], totalPemasaran = {};
-        document.querySelectorAll('#pemasaranContainer .row-input').forEach(row => {
-            const kategori = row.querySelector('[name^="kategori_pemasaran"]').value;
-            const ikan = row.querySelector('.input-ikan').value.trim();
-            const qty = row.querySelector('.produksi-kg').value;
-            const tujuan = row.querySelector('[name^="tujuan"]').value.trim();
-            if (!ikan && qty === '' && !tujuan) return;
-            const label = ikan || '(jenis ikan kosong)';
-            pemasaran.push({ kategori, ikan: label, qty, tujuan });
-
-            if (!ikan) peringatan.push(`Pemasaran – jenis ikan belum diisi (tujuan: ${tujuan || '-'}).`);
-            if (qty === '') peringatan.push(`<b>${label}</b> (pemasaran) – quantity (Kg) belum diisi.`);
-            if (!tujuan) peringatan.push(`<b>${label}</b> (pemasaran) – tujuan belum diisi.`);
-            [cekIkan(ikan), cekKg(qty)].forEach(m => { if (m) peringatan.push(`<b>${label}</b> (pemasaran) – ${m}`); });
-
-            const k = ikan.toLowerCase();
-            totalPemasaran[k] = (totalPemasaran[k] || 0) + (parseFloat(qty) || 0);
-        });
-        Object.keys(totalPemasaran).forEach(k => {
-            if (!k) return;
-            if (!(k in totalProduksi)) {
-                if (produksi.length) peringatan.push(`<b>${k}</b> (pemasaran) – tidak ada di tabel produksi ikan dominan. Apakah sudah benar?`);
-            } else if (totalPemasaran[k] > totalProduksi[k]) {
-                peringatan.push(`<b>${k}</b> (pemasaran) – total ${totalPemasaran[k].toLocaleString('id-ID')} Kg melebihi produksi ${totalProduksi[k].toLocaleString('id-ID')} Kg.`);
-            }
-        });
-
-        return { peringatan, armada, produksi, pemasaran, fatal };
+        return { peringatan, kapal, fatal };
     }
 
     function isiModalKonfirmasi(d) {
@@ -932,22 +813,33 @@ document.getElementById('petaGunakan').addEventListener('click', function () {
               d.peringatan.map(x => `<li>${x}</li>`).join('') + '</ul></div>'
             : '<div class="alert alert-success py-2 small mb-2">Tidak ada isian yang mencurigakan, tetapi tetap periksa ringkasan di bawah.</div>';
 
-        let html = '';
-        if (d.armada.length) {
-            html += '<div class="fw-semibold small mt-2">Armada</div><table class="table table-sm table-bordered"><thead><tr><th>Kapal</th><th>Berangkat</th><th>Pulang</th><th>API</th><th>Ukuran (GT)</th><th>ABK</th></tr></thead><tbody>' +
-                d.armada.map(a => `<tr><td>${a.nama}</td><td>${a.b || '-'}</td><td>${a.p || '-'}</td><td>${a.api || '-'}</td><td>${a.ukuran}</td><td>${a.abk || '-'}</td></tr>`).join('') + '</tbody></table>';
-        }
-        if (d.produksi.length) {
-            let total = 0;
-            html += '<div class="fw-semibold small mt-2">Produksi Ikan</div><table class="table table-sm table-bordered"><thead><tr><th>Jenis Ikan</th><th class="text-end">Produksi (Kg)</th><th class="text-end">Harga/Kg</th><th class="text-end">Nilai</th></tr></thead><tbody>' +
-                d.produksi.map(p => { total += p.nilai; return `<tr><td>${p.ikan}</td><td class="text-end">${(parseFloat(p.kg)||0).toLocaleString('id-ID')}</td><td class="text-end">${rp(parseFloat(p.harga)||0)}</td><td class="text-end">${rp(p.nilai)}</td></tr>`; }).join('') +
-                `<tr class="fw-bold"><td colspan="3" class="text-end">Total Nilai</td><td class="text-end">${rp(total)}</td></tr></tbody></table>`;
-        }
-        if (d.pemasaran.length) {
-            html += '<div class="fw-semibold small mt-2">Pemasaran</div><table class="table table-sm table-bordered"><thead><tr><th>Kategori</th><th>Jenis Ikan</th><th class="text-end">Quantity (Kg)</th><th>Tujuan</th></tr></thead><tbody>' +
-                d.pemasaran.map(m => `<tr><td>${m.kategori}</td><td>${m.ikan}</td><td class="text-end">${(parseFloat(m.qty)||0).toLocaleString('id-ID')}</td><td>${m.tujuan || '-'}</td></tr>`).join('') + '</tbody></table>';
-        }
-        document.getElementById('tabelRingkasan').innerHTML = html || '<div class="small text-muted">Belum ada data armada/produksi yang diisi.</div>';
+        let html = '', grandNilai = 0;
+        d.kapal.forEach((k, n) => {
+            html += `<div class="border rounded p-2 mb-3"><div class="fw-bold">Kapal ${n + 1}: ${k.nama}</div>` +
+                `<div class="small text-muted mb-1">Berangkat ${k.b || '-'} · Pulang ${k.p || '-'} · API ${k.api || '-'} · Ukuran ${k.ukuran || '-'} GT · ABK ${k.abk || '-'}</div>`;
+
+            if (k.produksi.length) {
+                let total = 0;
+                html += '<div class="fw-semibold small mt-2">Produksi Ikan</div><table class="table table-sm table-bordered mb-1"><thead><tr><th>Jenis Ikan</th><th class="text-end">Produksi (Kg)</th><th class="text-end">Harga/Kg</th><th class="text-end">Nilai</th></tr></thead><tbody>' +
+                    k.produksi.map(x => { total += x.nilai; return `<tr><td>${x.ikan}</td><td class="text-end">${(parseFloat(x.kg) || 0).toLocaleString('id-ID')}</td><td class="text-end">${rp(parseFloat(x.harga) || 0)}</td><td class="text-end">${rp(x.nilai)}</td></tr>`; }).join('') +
+                    `<tr class="fw-bold"><td colspan="3" class="text-end">Nilai kapal ini</td><td class="text-end">${rp(total)}</td></tr></tbody></table>`;
+                grandNilai += total;
+            }
+            if (k.logistik.length) {
+                let total = 0;
+                html += '<div class="fw-semibold small mt-2">Logistik</div><table class="table table-sm table-bordered mb-1"><thead><tr><th>Kebutuhan</th><th class="text-end">Jumlah</th><th>Satuan</th><th class="text-end">Total</th></tr></thead><tbody>' +
+                    k.logistik.map(x => { total += x.total; return `<tr><td>${x.item}</td><td class="text-end">${(parseFloat(x.jumlah) || 0).toLocaleString('id-ID')}</td><td>${x.satuan || '-'}</td><td class="text-end">${rp(x.total)}</td></tr>`; }).join('') +
+                    `<tr class="fw-bold"><td colspan="3" class="text-end">Total logistik</td><td class="text-end">${rp(total)}</td></tr></tbody></table>`;
+            }
+            if (k.pemasaran.length) {
+                html += '<div class="fw-semibold small mt-2">Pemasaran</div><table class="table table-sm table-bordered mb-1"><thead><tr><th>Kategori</th><th>Jenis Ikan</th><th class="text-end">Quantity (Kg)</th><th>Tujuan</th></tr></thead><tbody>' +
+                    k.pemasaran.map(m => `<tr><td>${m.kategori}</td><td>${m.ikan}</td><td class="text-end">${(parseFloat(m.qty) || 0).toLocaleString('id-ID')}</td><td>${m.tujuan || '-'}</td></tr>`).join('') + '</tbody></table>';
+            }
+            html += '</div>';
+        });
+        if (d.kapal.length) html += `<div class="text-end fw-bold">Total nilai produksi semua kapal: ${rp(grandNilai)}</div>`;
+
+        document.getElementById('tabelRingkasan').innerHTML = html || '<div class="small text-muted">Belum ada data kapal yang diisi.</div>';
         document.getElementById('cekBenar').checked = false;
         document.getElementById('btnSimpanFinal').disabled = true;
     }
@@ -987,165 +879,51 @@ document.getElementById('petaGunakan').addEventListener('click', function () {
         row.querySelector('.logistik-total').value = (jumlah * harga).toFixed(2);
     }
 
+    // Cetakan baris dari <template> (tidak ada markup ganda di JavaScript)
+    const TPL = {
+        armada: document.getElementById('tplArmada').innerHTML,
+        produksi: document.getElementById('tplProduksi').innerHTML,
+        logistik: document.getElementById('tplLogistik').innerHTML,
+        pemasaran: document.getElementById('tplPemasaran').innerHTML,
+    };
+
+    function nomoriKapal() {
+        document.querySelectorAll('#armadaContainer .armada-card').forEach((c, n) => {
+            c.querySelector('.armada-no').textContent = '#' + (n + 1);
+        });
+    }
+
     function addArmadaRow() {
         const idx = armadaIndexCounter++;
-        const html = `
-        <div class="row-input row g-2 align-items-end" data-index="${idx}">
-            <div class="col-md-2">
-                <label class="field-label">Nama Kapal</label>
-                <input type="text" name="nama_armada[${idx}]" class="form-control" placeholder="cth: KM Sinar Laut">
-            </div>
-            <div class="col-md-2">
-                <label class="field-label">Tanggal Berangkat</label>
-                <input type="date" name="tanggal_berangkat[${idx}]" class="form-control input-berangkat">
-            </div>
-            <div class="col-md-2">
-                <label class="field-label">Tanggal Pulang</label>
-                <input type="date" name="tanggal_pulang[${idx}]" class="form-control input-pulang">
-                <div class="warn-inline"></div>
-            </div>
-            <div class="col-md-2">
-                <label class="field-label">Jenis Alat Tangkap / API</label>
-                <select name="jenis_alat_tangkap[${idx}]" class="form-select input-api">${apiOptionsHtml()}</select>
-            </div>
-            <div class="col-md-2">
-                <label class="field-label">Ukuran Kapal (GT)</label>
-                <input type="text" name="ukuran_kapal[${idx}]" class="form-control input-ukuran" placeholder="cth: < 5">
-                <div class="warn-inline"></div>
-            </div>
-            <div class="col-md-2">
-                <label class="field-label">Jumlah ABK (Org)</label>
-                <input type="number" step="0.01" name="jumlah_abk[${idx}]" class="form-control input-abk">
-                <div class="warn-inline"></div>
-            </div>
-
-            <div class="col-md-12">
-                <label class="field-label">Dokumen Trip (bebas diisi: SLO, SPB, CV, dll)</label>
-                <div class="dokumen-list"></div>
-                <button type="button" class="btn btn-sm btn-outline-secondary btn-tambah-dokumen mt-1">+ Tambah Dokumen</button>
-            </div>
-
-            <div class="col-md-4">
-                <label class="field-label">Foto Kapal</label>
-                <input type="file" name="foto[${idx}]" class="form-control" accept="image/*">
-            </div>
-            <div class="col-md-3">
-                <label class="field-label">Lokasi</label>
-                <input type="text" name="lokasi_foto[${idx}]" class="form-control" placeholder="cth: Dermaga Lampulo">
-            </div>
-
-            <div class="col-md-4">
-                <label class="field-label">Titik Koordinat</label>
-                <input type="hidden" name="latitude[${idx}]">
-                <input type="hidden" name="longitude[${idx}]">
-                <div class="d-flex align-items-center gap-2">
-                    <button type="button" class="btn btn-outline-secondary btn-sm btn-pilih-peta">📍 Pilih di Peta</button>
-                    <button type="button" class="btn btn-link btn-sm text-danger p-0 btn-hapus-titik">Hapus titik</button>
-                </div>
-                <div class="small text-muted mt-1 koordinat-teks">Belum dipilih</div>
-            </div>
-
-            <div class="col-md-1">
-                <button type="button" class="btn-remove-row" onclick="this.closest('.row-input').remove()">Hapus</button>
-            </div>
-        </div>`;
-        document.getElementById('armadaContainer').insertAdjacentHTML('beforeend', html);
+        document.getElementById('armadaContainer').insertAdjacentHTML('beforeend', TPL.armada.split('__I__').join(idx));
+        nomoriKapal();
     }
 
-    function addProduksiRow() {
-        const html = `
-        <div class="row-input row g-2 align-items-end produksi-row">
-            <div class="col-md-4">
-                <label class="field-label">Jenis Ikan</label>
-                <input type="text" name="jenis_ikan[]" class="form-control input-ikan" list="daftarIkan" autocomplete="off" placeholder="ketik / pilih nama ikan">
-                <div class="warn-inline"></div>
-            </div>
-            <div class="col-md-3">
-                <label class="field-label">Produksi (Kg)</label>
-                <input type="number" step="0.01" name="produksi_kg[]" class="form-control produksi-kg" oninput="hitungNilai(this)">
-                <div class="warn-inline"></div>
-            </div>
-            <div class="col-md-2">
-                <label class="field-label">Harga Ikan (Rp)</label>
-                <input type="number" step="0.01" name="harga_rp[]" class="form-control produksi-harga" oninput="hitungNilai(this)">
-                <div class="warn-inline"></div>
-            </div>
-            <div class="col-md-2">
-                <label class="field-label">Nilai Produksi (Rp)</label>
-                <input type="text" class="form-control produksi-nilai" value="0" readonly>
-            </div>
-            <div class="col-md-1">
-                <button type="button" class="btn-remove-row" onclick="this.closest('.row-input').remove()">Hapus</button>
-            </div>
-        </div>`;
-        document.getElementById('produksiContainer').insertAdjacentHTML('beforeend', html);
-    }
+    document.getElementById('armadaContainer').addEventListener('click', function (e) {
+        // Tambah baris produksi / logistik / pemasaran di dalam kapal yang sama
+        const tambah = e.target.closest('[data-tambah]');
+        if (tambah) {
+            const card = tambah.closest('.armada-card');
+            const jenis = tambah.dataset.tambah;
+            card.querySelector('.' + jenis + '-list').insertAdjacentHTML('beforeend', TPL[jenis].split('__I__').join(card.dataset.index));
+            return;
+        }
 
-    function addLogistikRow() {
-        const html = `
-        <div class="row-input row g-2 align-items-end logistik-row">
-            <div class="col-md-3">
-                <label class="field-label">Kebutuhan Logistik</label>
-                <input type="text" name="nama_item[]" class="form-control">
-            </div>
-            <div class="col-md-2">
-                <label class="field-label">Jumlah</label>
-                <input type="number" step="0.01" name="jumlah_logistik[]" class="form-control logistik-jumlah" oninput="hitungTotalLogistik(this)">
-            </div>
-            <div class="col-md-2">
-                <label class="field-label">Satuan</label>
-                <input type="text" name="satuan[]" class="form-control" placeholder="Liter/Kg/Rp">
-            </div>
-            <div class="col-md-2">
-                <label class="field-label">Harga (Rp)</label>
-                <input type="number" step="0.01" name="harga_logistik[]" class="form-control logistik-harga" oninput="hitungTotalLogistik(this)">
-            </div>
-            <div class="col-md-2">
-                <label class="field-label">Total (Rp)</label>
-                <input type="number" step="0.01" name="total_logistik[]" class="form-control logistik-total">
-            </div>
-            <div class="col-md-1">
-                <button type="button" class="btn-remove-row" onclick="this.closest('.row-input').remove()">Hapus</button>
-            </div>
-        </div>`;
-        document.getElementById('logistikContainer').insertAdjacentHTML('beforeend', html);
-    }
+        // Hapus kapal: seluruh isi di dalam kotaknya ikut terhapus
+        const hapus = e.target.closest('.btn-hapus-kapal');
+        if (hapus) {
+            const card = hapus.closest('.armada-card');
+            const nama = card.querySelector('[name^="nama_armada"]').value.trim() || 'ini';
+            const nP = card.querySelectorAll('.produksi-row').length;
+            const nL = card.querySelectorAll('.logistik-row').length;
+            const nM = card.querySelectorAll('.pemasaran-row').length;
+            if (!confirm(`Hapus kapal "${nama}" beserta ${nP} baris produksi, ${nL} baris logistik, dan ${nM} baris pemasarannya?`)) return;
+            card.remove();
+            nomoriKapal();
+        }
+    });
 
-    function addPemasaranRow() {
-        const html = `
-        <div class="row-input row g-2 align-items-end">
-            <div class="col-md-2">
-                <label class="field-label">Kategori</label>
-                <select name="kategori_pemasaran[]" class="form-select">
-                    <option value="Lokal">Lokal (Antar Kabupaten)</option>
-                    <option value="Regional">Regional (Antar Provinsi)</option>
-                    <option value="Ekspor">Ekspor</option>
-                </select>
-            </div>
-            <div class="col-md-3">
-                <label class="field-label">Jenis Ikan</label>
-                <input type="text" name="jenis_ikan_pemasaran[]" class="form-control input-ikan" list="daftarIkan" autocomplete="off" placeholder="ketik / pilih nama ikan">
-                <div class="warn-inline"></div>
-            </div>
-            <div class="col-md-2">
-                <label class="field-label">Quantity (Kg)</label>
-                <input type="number" step="0.01" name="quantity_kg[]" class="form-control produksi-kg">
-                <div class="warn-inline"></div>
-            </div>
-            <div class="col-md-3">
-                <label class="field-label">Tujuan (Kabupaten/Provinsi/Negara)</label>
-                <input type="text" name="tujuan[]" class="form-control">
-            </div>
-            <div class="col-md-3">
-                <label class="field-label">Nama PT (opsional)</label>
-                <input type="text" name="nama_pt[]" class="form-control" placeholder="cth: PT Samudra Jaya">
-            </div>
-            <div class="col-md-1">
-                <button type="button" class="btn-remove-row" onclick="this.closest('.row-input').remove()">Hapus</button>
-            </div>
-        </div>`;
-        document.getElementById('pemasaranContainer').insertAdjacentHTML('beforeend', html);
-    }
+    nomoriKapal();
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

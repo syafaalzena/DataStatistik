@@ -40,12 +40,13 @@ class LaporanOperasionalExport implements FromArray, ShouldAutoSize, WithEvents
         $tambah(['']); // baris jarak -- diisi 1 sel kosong, BUKAN array kosong, biar tetap kehitung 1 baris
 
         $this->sectionRows[] = $tambah(['DATA ARMADA TANGKAP (PER TRIP)']);
-        $this->tableHeaderRows[] = $tambah(['No', 'Nama Kapal', 'Tanggal Berangkat', 'Jenis Alat Tangkap', 'Ukuran (GT)', 'ABK', 'Dokumen']);
+        $this->tableHeaderRows[] = $tambah(['No', 'Nama Kapal', 'Tanggal Berangkat', 'Tanggal Pulang', 'Jenis Alat Tangkap', 'Ukuran (GT)', 'ABK', 'Dokumen']);
         foreach ($this->laporan->armadaTangkap as $i => $a) {
             $tambah([
                 $i + 1,
                 $a->nama_armada ?? '-',
                 optional($a->tanggal_berangkat)->format('d-m-Y') ?? '-',
+                optional($a->tanggal_pulang)->format('d-m-Y') ?? '-',
                 $a->jenis_alat_tangkap ?? '-',
                 $a->ukuran_kapal,
                 $a->jumlah_abk,
@@ -55,23 +56,23 @@ class LaporanOperasionalExport implements FromArray, ShouldAutoSize, WithEvents
         $tambah(['']);
 
         $this->sectionRows[] = $tambah(['PRODUKSI IKAN DOMINAN & NILAI PRODUKSI']);
-        $this->tableHeaderRows[] = $tambah(['No', 'Jenis Ikan', 'Produksi (Kg)', 'Harga (Rp)', 'Nilai (Rp)']);
+        $this->tableHeaderRows[] = $tambah(['No', 'Kapal', 'Jenis Ikan', 'Produksi (Kg)', 'Harga (Rp)', 'Nilai (Rp)']);
         foreach ($this->laporan->produksiIkan as $i => $p) {
-            $tambah([$i + 1, $p->jenis_ikan, $p->produksi_kg, $p->harga_rp, $p->nilai_rp]);
+            $tambah([$i + 1, optional($p->armada)->nama_armada ?? '-', $p->jenis_ikan, $p->produksi_kg, $p->harga_rp, $p->nilai_rp]);
         }
         $tambah(['']);
 
         $this->sectionRows[] = $tambah(['LOGISTIK']);
-        $this->tableHeaderRows[] = $tambah(['No', 'Kebutuhan', 'Jumlah', 'Satuan', 'Harga (Rp)', 'Total (Rp)']);
+        $this->tableHeaderRows[] = $tambah(['No', 'Kapal', 'Kebutuhan', 'Jumlah', 'Satuan', 'Harga (Rp)', 'Total (Rp)']);
         foreach ($this->laporan->logistik as $i => $lg) {
-            $tambah([$i + 1, $lg->nama_item, $lg->jumlah, $lg->satuan, $lg->harga_rp, $lg->total_rp]);
+            $tambah([$i + 1, optional($lg->armada)->nama_armada ?? '-', $lg->nama_item, $lg->jumlah, $lg->satuan, $lg->harga_rp, $lg->total_rp]);
         }
         $tambah(['']);
 
         $this->sectionRows[] = $tambah(['DATA PEMASARAN']);
-        $this->tableHeaderRows[] = $tambah(['No', 'Kategori', 'Jenis Ikan', 'Quantity (Kg)', 'Tujuan', 'Nama PT']);
+        $this->tableHeaderRows[] = $tambah(['No', 'Kapal', 'Kategori', 'Jenis Ikan', 'Quantity (Kg)', 'Tujuan', 'Nama PT']);
         foreach ($this->laporan->pemasaran as $i => $pm) {
-            $tambah([$i + 1, $pm->kategori, $pm->jenis_ikan, $pm->quantity_kg, $pm->tujuan, $pm->nama_pt]);
+            $tambah([$i + 1, optional($pm->armada)->nama_armada ?? '-', $pm->kategori, $pm->jenis_ikan, $pm->quantity_kg, $pm->tujuan, $pm->nama_pt]);
         }
 
         $this->lastRow = count($rows);
@@ -86,26 +87,26 @@ class LaporanOperasionalExport implements FromArray, ShouldAutoSize, WithEvents
                 $sheet = $event->sheet->getDelegate();
 
                 foreach ($this->judulRows as $row) {
-                    $sheet->mergeCells("A{$row}:G{$row}");
+                    $sheet->mergeCells("A{$row}:H{$row}");
                     $sheet->getStyle("A{$row}")->getFont()->setBold(true)->setSize(13);
                     $sheet->getStyle("A{$row}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
                 }
 
                 foreach ($this->sectionRows as $row) {
-                    $sheet->mergeCells("A{$row}:G{$row}");
+                    $sheet->mergeCells("A{$row}:H{$row}");
                     $style = $sheet->getStyle("A{$row}");
                     $style->getFont()->setBold(true)->getColor()->setRGB('FFFFFF');
                     $style->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('0F172A');
                 }
 
                 foreach ($this->tableHeaderRows as $row) {
-                    $style = $sheet->getStyle("A{$row}:G{$row}");
+                    $style = $sheet->getStyle("A{$row}:H{$row}");
                     $style->getFont()->setBold(true);
                     $style->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('F1F5F9');
                     $style->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
                 }
 
-                $sheet->getStyle("A1:G{$this->lastRow}")->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+                $sheet->getStyle("A1:H{$this->lastRow}")->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
             },
         ];
     }

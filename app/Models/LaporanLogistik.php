@@ -11,6 +11,7 @@ class LaporanLogistik extends Model
 
     protected $fillable = [
         'laporan_operasional_id',
+        'laporan_armada_tangkap_id',
         'nama_item',
         'jumlah',
         'satuan',
@@ -22,5 +23,10 @@ class LaporanLogistik extends Model
     public function laporanOperasional()
     {
         return $this->belongsTo(LaporanOperasional::class);
+    }
+
+    public function armada()
+    {
+        return $this->belongsTo(LaporanArmadaTangkap::class, 'laporan_armada_tangkap_id');
     }
 }

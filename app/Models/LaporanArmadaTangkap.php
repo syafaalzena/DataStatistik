@@ -43,4 +43,19 @@ class LaporanArmadaTangkap extends Model
     {
         return $this->hasOne(LaporanArmadaFoto::class);
     }
+
+    public function produksiIkan()
+    {
+        return $this->hasMany(LaporanProduksiIkan::class)->orderBy('urutan');
+    }
+
+    public function logistik()
+    {
+        return $this->hasMany(LaporanLogistik::class)->orderBy('urutan');
+    }
+
+    public function pemasaran()
+    {
+        return $this->hasMany(LaporanPemasaran::class)->orderBy('urutan');
+    }
 }

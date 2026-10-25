@@ -11,6 +11,7 @@ class LaporanProduksiIkan extends Model
 
     protected $fillable = [
         'laporan_operasional_id',
+        'laporan_armada_tangkap_id',
         'jenis_ikan',
         'produksi_kg',
         'harga_rp',
@@ -21,5 +22,10 @@ class LaporanProduksiIkan extends Model
     public function laporanOperasional()
     {
         return $this->belongsTo(LaporanOperasional::class);
+    }
+
+    public function armada()
+    {
+        return $this->belongsTo(LaporanArmadaTangkap::class, 'laporan_armada_tangkap_id');
     }
 }
