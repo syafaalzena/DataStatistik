@@ -172,6 +172,9 @@
                     <thead>
                         <tr>
                             <th>Pelabuhan</th>
+                            <th>Nama Kapal</th>
+                            <th>Berangkat</th>
+                            <th>Pulang</th>
                             <th>Bulan</th>
                             <th>Tahun</th>
                             <th>Total Produksi (Kg)</th>
@@ -181,8 +184,12 @@
                     </thead>
                     <tbody>
                         @foreach ($laporans as $l)
+                        @php $kapal = $l->armadaTangkap->first(); @endphp
                             <tr>
                                 <td>{{ $l->pelabuhan->nama ?? '-' }}</td>
+                                <td>{{ $kapal->nama_armada ?? '-' }}</td>
+                                <td>{{ $kapal?->tanggal_berangkat ? $kapal->tanggal_berangkat->format('d/m/Y') : '-' }}</td>
+                                <td>{{ $kapal?->tanggal_pulang ? $kapal->tanggal_pulang->format('d/m/Y') : '-' }}</td>
                                 <td>{{ $l->nama_bulan }}</td>
                                 <td>{{ $l->tahun }}</td>
                                 <td>{{ number_format($l->total_produksi_kg, 0, ',', '.') }}</td>
@@ -197,6 +204,7 @@
                                         <button type="submit" class="btn-icon-sm text-danger">Hapus</button>
                                     </form>
                                 </td>
+                                @php $kapal = $l->armadaTangkap->first(); @endphp
                             </tr>
                         @endforeach
                     </tbody>

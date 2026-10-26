@@ -12,17 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('laporan_operasionals', function (Blueprint $table) {
-            //
+            $table->index('pelabuhan_id'); // harus dibuat dulu, kalau tidak MySQL menolak
+            $table->dropUnique(['pelabuhan_id', 'bulan', 'tahun']);
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::table('laporan_operasionals', function (Blueprint $table) {
-            //
+            $table->unique(['pelabuhan_id', 'bulan', 'tahun']);
+            $table->dropIndex(['pelabuhan_id']);
         });
     }
 };

@@ -215,7 +215,7 @@ Route::get('/tangkap/laporan-operasional/rekap', [LaporanOperasionalController::
 Route::get('/tangkap/laporan-operasional/rekap/pdf', [LaporanOperasionalController::class, 'rekapTahunanPdf'])->name('laporan-operasional.rekap.pdf');
 Route::get('/tangkap/laporan-operasional/rekap/excel', [LaporanOperasionalController::class, 'rekapTahunanExcel'])->name('laporan-operasional.rekap.excel');
 
-Route::get('/tangkap/{kabupaten}', [ProduksiTangkapController::class, 'input'])->name('tangkap.input');
+Route::get('/tangkap/{kabupaten}', fn ($kabupaten) => redirect()->route('tangkap.rekap.bulanan', ['kabupaten_id' => $kabupaten]))->name('tangkap.input');
 // Route::get('/tangkap/{kabupaten}/produksi/create', [ProduksiTangkapController::class, 'create'])->name('tangkap.produksi.create');
 Route::get('/tangkap/{kabupaten}/produksi/rekap', [ProduksiTangkapController::class, 'rekap'])->name('tangkap.produksi.rekap');
 Route::get('/tangkap/{kabupaten}/produksi/export', [ProduksiTangkapController::class, 'export'])->name('tangkap.produksi.export');
@@ -244,7 +244,7 @@ Route::get('/tangkap/laporan-operasional/{laporanOperasional}/pdf',[LaporanOpera
 Route::get('/tangkap/laporan-operasional/{laporanOperasional}/excel', [LaporanOperasionalController::class, 'exportExcel'])->name('laporan-operasional.excel');
 
 // Trip Tangkap (dobel route sebelumnya dibersihkan, ini versi final tanpa duplikat)
-Route::get('/tangkap/{kabupaten}/trip', [TripTangkapController::class, 'input'])->name('tangkap.trip.input');
+Route::get('/tangkap/{kabupaten}/trip', fn ($kabupaten) => redirect()->route('tangkap.rekap.bulanan', ['kabupaten_id' => $kabupaten, 'include_trip' => 1]))->name('tangkap.trip.input');
 // Route::get('/tangkap/{kabupaten}/trip/create', [TripTangkapController::class, 'create'])->name('tangkap.trip.create');
 Route::get('/tangkap/{kabupaten}/trip/rekap', [TripTangkapController::class, 'rekap'])->name('tangkap.trip.rekap');
 Route::get('/tangkap/{kabupaten}/trip/export', [TripTangkapController::class, 'export'])->name('tangkap.trip.export');

@@ -166,6 +166,51 @@
             background: #1e293b; 
             color: #fff; 
         }
+
+        modalKonfirmasi .form-check {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 14px 16px;
+        background: #f1f5f9;
+        border: 2px solid #0f172a;
+        border-radius: 10px;
+    }
+
+    /* Kotak centang: lebih besar dan bergaris gelap */
+    #modalKonfirmasi .form-check-input {
+        float: none;              /* matikan float bawaan Bootstrap */
+        margin: 2px 0 0 0;        /* matikan margin kiri negatif bawaan Bootstrap */
+        flex-shrink: 0;
+        width: 1.6rem;
+        height: 1.6rem;
+        border: 2px solid #0f172a;
+        cursor: pointer;
+    }
+
+    /* Saat dicentang: isi kotak jadi gelap */
+    #modalKonfirmasi .form-check-input:checked {
+        background-color: #0f172a;
+        border-color: #0f172a;
+    }
+
+    /* Cincin saat kotak sedang dipilih (fokus) */
+    #modalKonfirmasi .form-check-input:focus {
+        box-shadow: 0 0 0 .25rem rgba(15, 23, 42, .25);
+    }
+
+    /* Tulisan pernyataan: lebih tebal dan gelap */
+    #modalKonfirmasi .form-check-label {
+        font-weight: 600;
+        color: #0f172a;
+        cursor: pointer;
+    }
+
+    /* Tombol simpan yang belum aktif dibuat pudar, jadi terlihat jelas bedanya dengan yang aktif */
+    #btnSimpanFinal:disabled {
+        opacity: .45;
+        cursor: not-allowed;
+    }
     </style>
 </head>
 <body>
@@ -897,6 +942,63 @@ document.getElementById('petaGunakan').addEventListener('click', function () {
         logistik: document.getElementById('tplLogistik').innerHTML,
         pemasaran: document.getElementById('tplPemasaran').innerHTML,
     };
+
+
+    // ===== Ikan di produksi otomatis jadi pilihan di pemasaran (per kapal) =====
+
+    // Ambil daftar nama ikan (tanpa duplikat) dari baris produksi di dalam SATU kotak kapal
+    function ikanDariProduksi(card) {
+        const unik = new Map(); // kunci huruf kecil -> nama asli, supaya "Tongkol" dan "tongkol" tidak dobel
+        card.querySelectorAll('.produksi-row .input-ikan').forEach(inp => {
+            const nama = inp.value.trim().replace(/\s+/g, ' ');
+            if (nama && !unik.has(nama.toLowerCase())) unik.set(nama.toLowerCase(), nama);
+        });
+        return Array.from(unik.values());
+    }
+
+    // Bangun ulang isi semua dropdown pemasaran di kotak kapal itu
+    function sinkronIkanPemasaran(card) {
+        const daftar = ikanDariProduksi(card);
+
+        card.querySelectorAll('.pemasaran-row .select-ikan-produksi').forEach(sel => {
+            const dipilih = sel.value;           // ingat pilihan sekarang
+            const opsi = [...daftar];
+
+            // Kalau ikan yang tersimpan sudah tidak ada di produksi, tetap ditampilkan agar data tidak
+            // hilang diam-diam. Validasi saat simpan akan memperingatkan ("tidak ada di produksi kapal ini").
+            if (dipilih && !opsi.some(x => x.toLowerCase() === dipilih.toLowerCase())) opsi.push(dipilih);
+
+            sel.innerHTML = '';
+            sel.add(new Option('-- Pilih ikan dari produksi --', ''));
+            opsi.forEach(nama => {
+                // new Option(teks, nilai, defaultSelected, selected)
+                sel.add(new Option(nama, nama, false, nama.toLowerCase() === dipilih.toLowerCase()));
+            });
+        });
+    }
+
+    function sinkronSemuaIkan() {
+        document.querySelectorAll('#armadaContainer .armada-card').forEach(sinkronIkanPemasaran);
+    }
+
+    // 1) Setiap nama ikan di produksi diketik / dipilih -> pilihan pemasaran langsung ikut berubah
+    document.getElementById('armadaContainer').addEventListener('input', function (e) {
+        if (e.target.matches('.produksi-row .input-ikan')) {
+            sinkronIkanPemasaran(e.target.closest('.armada-card'));
+        }
+    });
+
+    // 2) Setelah tambah baris, hapus baris, atau hapus kapal -> sinkron ulang.
+    //    setTimeout(..., 0) menunggu klik selesai diproses dulu (tombol Hapus menghapus barisnya lewat
+    //    onclick bawaan), baru dihitung ulang.
+    document.getElementById('armadaContainer').addEventListener('click', function (e) {
+        if (e.target.closest('[data-tambah], .btn-remove-row, .btn-hapus-kapal')) {
+            setTimeout(sinkronSemuaIkan, 0);
+        }
+    });
+
+    // 3) Saat halaman pertama dibuka (mode edit, atau form dikembalikan setelah gagal validasi)
+    sinkronSemuaIkan();
 
     function nomoriKapal() {
         document.querySelectorAll('#armadaContainer .armada-card').forEach((c, n) => {

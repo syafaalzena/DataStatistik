@@ -16,7 +16,13 @@
     </div>
     <div class="col-md-3">
         <label class="field-label">Jenis Ikan</label>
-        <input type="text" name="jenis_ikan_pemasaran[{{ $i }}][]" class="form-control input-ikan" list="daftarIkan" autocomplete="off" value="{{ $jenis }}" placeholder="ketik / pilih nama ikan">
+        <select name="jenis_ikan_pemasaran[{{ $i }}][]" class="form-select input-ikan select-ikan-produksi">
+            <option value="">-- Pilih ikan dari produksi --</option>
+            @if ($jenis !== '')
+                {{-- Nilai tersimpan ditampilkan dulu; JavaScript melengkapi pilihan lainnya --}}
+                <option value="{{ $jenis }}" selected>{{ $jenis }}</option>
+            @endif
+        </select>
         <div class="warn-inline"></div>
     </div>
     <div class="col-md-2">

@@ -23,10 +23,11 @@ class LaporanOperasionalController extends Controller
     {
         $kabupaten = KabupatenIkan::findOrFail($kabupatenId);
 
-        $laporans = LaporanOperasional::with('pelabuhan')
+        $laporans = LaporanOperasional::with(['pelabuhan', 'armadaTangkap'])
             ->whereHas('pelabuhan', fn ($q) => $q->where('kabupaten_ikan_id', $kabupatenId))
             ->orderByDesc('tahun')
             ->orderByDesc('bulan')
+            ->orderByDesc('id')
             ->get();
 
         return view('tangkap.laporan-operasional.index', compact('laporans', 'kabupaten'));
@@ -48,13 +49,8 @@ class LaporanOperasionalController extends Controller
         $kabupaten = KabupatenIkan::findOrFail($kabupatenId);
         $validated = $this->validateData($request);
 
-        $exists = LaporanOperasional::where('pelabuhan_id', $validated['pelabuhan_id'])
-            ->where('bulan', $validated['bulan'])
-            ->where('tahun', $validated['tahun'])
-            ->exists();
-
-        if ($exists) {
-            return back()->withInput()->with('error', 'Laporan untuk pelabuhan, bulan, dan tahun ini sudah ada. Silakan edit laporan yang sudah ada.');
+        if ($this->tripSudahAda($request, $validated)) {
+        return back()->withInput()->with('error', 'Trip kapal ini (nama kapal dan tanggal berangkat yang sama) sudah pernah dilaporkan di pelabuhan ini.');
         }
 
         $laporan = DB::transaction(function () use ($validated, $request) {
@@ -122,14 +118,8 @@ class LaporanOperasionalController extends Controller
     {
         $validated = $this->validateData($request);
 
-        $exists = LaporanOperasional::where('pelabuhan_id', $validated['pelabuhan_id'])
-            ->where('bulan', $validated['bulan'])
-            ->where('tahun', $validated['tahun'])
-            ->where('id', '!=', $laporanOperasional->id)
-            ->exists();
-
-        if ($exists) {
-            return back()->withInput()->with('error', 'Laporan untuk pelabuhan, bulan, dan tahun ini sudah ada.');
+        if ($this->tripSudahAda($request, $validated, $laporanOperasional->id)) {
+            return back()->withInput()->with('error', 'Trip kapal ini (nama kapal dan tanggal berangkat yang sama) sudah pernah dilaporkan di pelabuhan ini.');
         }
 
         DB::transaction(function () use ($validated, $request, $laporanOperasional) {
@@ -556,6 +546,32 @@ class LaporanOperasionalController extends Controller
     {
         foreach ((array) $daftar as $v) {
             if (! blank($v)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function tripSudahAda(Request $request, array $validated, ?int $kecualiId = null): bool
+    {
+        foreach (array_keys((array) $request->input('nama_armada', [])) as $i) {
+            $nama = trim((string) $request->input("nama_armada.$i"));
+            $berangkat = $request->input("tanggal_berangkat.$i");
+
+            // Kotak yang belum diisi nama atau tanggal berangkatnya dilewati
+            if ($nama === '' || blank($berangkat)) {
+                continue;
+            }
+
+            $ada = LaporanOperasional::where('pelabuhan_id', $validated['pelabuhan_id'])
+                ->when($kecualiId, fn ($q) => $q->where('id', '!=', $kecualiId))
+                ->whereHas('armadaTangkap', fn ($q) => $q
+                    ->where('nama_armada', $nama)
+                    ->whereDate('tanggal_berangkat', $berangkat))
+                ->exists();
+
+            if ($ada) {
                 return true;
             }
         }
