@@ -63,7 +63,7 @@
         </a>
         <div>
             <h2 class="fw-bold mb-1">Data Tangkap</h2>
-            <p class="text-muted mb-0">Pilih kategori data tangkap yang ingin dikelola.</p>
+            <p class="text-muted mb-0">Silahkan input data di laporan Operasional, dan rekap data di Rekap Perikanan Tangkap Provinsi Aceh.  </p>
         </div>
     </div>
 
