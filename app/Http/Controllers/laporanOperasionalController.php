@@ -185,12 +185,19 @@ class LaporanOperasionalController extends Controller
             'ukuran' => ['nullable', 'string', 'max:100'],
             'dari' => ['nullable', 'date'],
             'sampai' => ['nullable', 'date'],
+            'asal' => ['nullable', 'in:laporan,produksi'],
         ]);
 
         $tahun = (int) $request->input('tahun', now()->year);
         $ukuran = trim((string) $request->input('ukuran', ''));
         $dari = $request->input('dari');
         $sampai = $request->input('sampai');
+
+        
+        $asal = $request->input('asal') === 'produksi' ? 'produksi' : 'laporan';
+        $urlKembali = $asal === 'produksi'
+            ? url('/tangkap/produksi')
+            : url('/tangkap/laporan-operasional');
 
         $tahunTersedia = LaporanOperasional::select('tahun')->distinct()->orderByDesc('tahun')->pluck('tahun');
         if ($tahunTersedia->isEmpty()) {
@@ -277,10 +284,10 @@ class LaporanOperasionalController extends Controller
 
         return compact(
             'laporans', 'tahun', 'tahunTersedia', 'ukuranTersedia', 'ukuran', 'dari', 'sampai',
-            'grandTotalProduksi', 'grandTotalNilai', 'totalTrip', 'totalKapal', 'keterangan'
+            'grandTotalProduksi', 'grandTotalNilai', 'totalTrip', 'totalKapal', 'keterangan',
+            'asal', 'urlKembali'
         );
     }
-
     // Daftar pilihan untuk form: Jenis API (sama dengan portal Produksi) & nama ikan (untuk saran + cek typo)
     private function opsiForm(): array
     {
