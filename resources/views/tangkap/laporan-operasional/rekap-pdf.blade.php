@@ -67,10 +67,6 @@
     @empty
         <p style="text-align:center; margin-top:20px;">Tidak ada data untuk tahun {{ $tahun }} dengan filter ini.</p>
     @endforelse
-            </tbody>
-        </table>
-    @empty
-        <p style="text-align:center; margin-top:20px;">Belum ada laporan untuk tahun {{ $tahun }}.</p>
-    @endforelse
+            
 </body>
 </html>
