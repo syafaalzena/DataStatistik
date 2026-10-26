@@ -57,8 +57,8 @@
             <img src="{{ asset('images/back.png') }}" alt="Back" width="22" height="22">
         </a>
         <div>
-            <h2 class="fw-bold mb-1">Data Tangkap Provinsi Aceh</h2>
-            <p class="text-muted mb-0">Silakan pilih kabupaten untuk mengelola data produksi tangkap.</p>
+            <h2 class="fw-bold mb-1">Rekap Tangkap Provinsi Aceh</h2>
+            <p class="text-muted mb-0">Silakan pilih kabupaten atau menu rekapan untuk melihat/unduh data rekapan tangkap.</p>
         </div>
     </div>
 
