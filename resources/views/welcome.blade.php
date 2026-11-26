@@ -846,9 +846,8 @@
             <div class="col-lg-7 hero-left">
                 <p class="label">DATA KELAUTAN & PERIKANAN ACEH</p>
 
-                <h1>
-                    Samudra Aceh
-                </h1>
+                <a href="#" class="brand-wrapper">
+            <img src="{{ asset('images/logo_samudra_bulat.png') }}" alt="Samudra Aceh" class="brand-emblem"> </a>
 
                 <div class="text-switcher-container">
                     <p class="switch-text" id="changing-text">
